@@ -28,14 +28,14 @@ public class Point {
 
     /**
      * check if object is equal to one point
-     * @param obj the object the=at is being checked
+     * @param obj the object that is being checked
      * @return true if equal, false if not
      */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
         return (obj instanceof Point point)
-        && Objects.equals(xyz, point.xyz);
+        && xyz.equals(point.xyz);
     }
 
     /**

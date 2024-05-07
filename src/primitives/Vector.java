@@ -1,5 +1,10 @@
 package primitives;
 
+/**
+ * Class Vector is a fundamental object in 3D geometry, with direction and size
+ * defined by a point
+ * The class inherits from the Point class
+ */
 public class Vector extends Point{
     /**
      * parameter ctor
@@ -22,10 +27,12 @@ public class Vector extends Point{
             throw new IllegalArgumentException("cannot create a Vector with zero coordinates");
     }
 
+
     @Override
     public boolean equals(Object obj) {
-        return super.equals(obj);
+       return super.equals(obj);
     }
+
 
     @Override
     public String toString() {
@@ -81,7 +88,7 @@ public class Vector extends Point{
      * @return the length
      */
     public double length(){
-        return Math.sqrt(this.lengthSquared()); this.dotProduct(this);
+        return Math.sqrt(this.lengthSquared());
     }
 
     /**
@@ -91,5 +98,4 @@ public class Vector extends Point{
     public Vector normalize() {
         return new Vector(xyz.d1/length(), xyz.d2/length(), xyz.d3/length());
     }
-
 }
