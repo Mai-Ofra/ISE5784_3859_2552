@@ -23,7 +23,7 @@ public class Vector extends Point{
      */
     public Vector(Double3 xyz) {
         super(xyz);
-        if(xyz == Double3.ZERO)
+        if(xyz.equals(Double3.ZERO))
             throw new IllegalArgumentException("cannot create a Vector with zero coordinates");
     }
 
@@ -45,7 +45,7 @@ public class Vector extends Point{
      * @return the new vector
      */
     public Vector add(Vector v) {
-        return new Vector(v.xyz.add(xyz));
+      return new Vector(v.xyz.add(xyz));
     }
 
     /**
