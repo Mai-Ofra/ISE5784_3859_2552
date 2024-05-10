@@ -9,6 +9,9 @@ public class Point {
     public static final Point ZERO = new Point(0, 0, 0);
     protected Double3 xyz;
 
+    /** Zero triad (0,0,0) */
+    public static final Point ZERO = new Point(Double3.ZERO);
+
     /**
      * parameter ctor
      * @param x the first coordinate of the point
@@ -55,7 +58,7 @@ public class Point {
      */
     public Vector subtract(Point p)
     {
-      return new Vector(xyz.subtract(p.xyz));
+        return new Vector(xyz.subtract(p.xyz));
     }
 
     /**

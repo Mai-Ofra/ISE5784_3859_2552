@@ -45,7 +45,7 @@ public class Vector extends Point{
      * @return the new vector
      */
     public Vector add(Vector v) {
-        return new Vector(v.xyz.add(xyz));
+      return new Vector(v.xyz.add(xyz));
     }
 
     /**
