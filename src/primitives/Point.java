@@ -6,7 +6,7 @@ import java.util.Objects;
  * Class Point is a basic object in 3-dimensional geometry, which has three coordinates to represent the location
  */
 public class Point {
-    public static final Point ZERO = new Point(0, 0, 0);
+
     protected Double3 xyz;
 
     /** Zero triad (0,0,0) */
