@@ -8,6 +8,8 @@ public abstract class RadialGeometry implements Geometry{
      * @param radius the radius of the new object
      */
     public RadialGeometry(double radius) {
+        if(radius<=0)
+            throw  new IllegalArgumentException("The radius must be bigger than 0");
         this.radius = radius;
     }
     
