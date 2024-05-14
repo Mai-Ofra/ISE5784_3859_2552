@@ -60,6 +60,8 @@ class PlaneTest {
         assertDoesNotThrow(planeE::getNormal, "Get normal threw unexpected exception");
         // generate the test result
         Vector result = planeE.getNormal();
+        // ensure |result| = 1
+        assertEquals(1, result.length(), DELTA, "Plane's normal is not a unit vector");
         // ensure the result is orthogonal to two not parallel vectors on the plane
         Vector v1 = (new Point(0,0,1)).subtract(new Point(0,1,0));
         Vector v2 = (new Point(0,0,1)).subtract(new Point(1,0,0));

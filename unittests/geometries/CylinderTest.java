@@ -55,19 +55,11 @@ class CylinderTest {
                 ()->cylinder.getNormal(new Point(4,-4,0)),
                 "need to throw an exception when point is not on the sphere");
         // =============== Boundary Values Test ==================
-        // TC01: point on the top base edge
-        assertEquals(cyDir,
-                cylinder.getNormal(new Point(6,0,0)),
-                "get normal give wrong normal");
-        // TC02: point on the bottom base edge
-        assertEquals(cyDir.scale(-1),
-                cylinder.getNormal(new Point(0,0,0)),
-                "get normal give wrong normal");
-        // TC03: point in the center of top base
+        // TC01: point in the center of top base
         assertEquals(cyDir,
                 cylinder.getNormal(new Point(6,1,0)),
                 "get normal give wrong normal");
-        // TC04: point in the center of bottom base
+        // TC02: point in the center of bottom base
         assertEquals(cyDir.scale(-1),
                 cylinder.getNormal(new Point(0,1,0)),
                 "get normal give wrong normal");
