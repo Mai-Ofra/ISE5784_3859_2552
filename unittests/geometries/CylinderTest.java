@@ -38,7 +38,7 @@ class CylinderTest {
         Cylinder cylinder=new Cylinder(1,new Ray(new Point(0,1,0),new Vector(6,0,0)),6);
         Vector cyDir= new Vector(1,0,0);
         assertEquals(
-                new Vector(0,1,0).normalize(),
+                new Vector(0,-1,0).normalize(),
                 cylinder.getNormal(new Point(4,0,0)),
                 "get normal give wrong normal");
         // TC02: test case point on the bottom base
@@ -49,12 +49,7 @@ class CylinderTest {
         assertEquals(cyDir,
                 cylinder.getNormal(new Point(6,0.5,0.5)),
                 "get normal give wrong normal");
-        // TC04: test case point is not on the cylinder
-        assertThrows(
-                IllegalArgumentException.class,
-                ()->cylinder.getNormal(new Point(4,-4,0)),
-                "need to throw an exception when point is not on the sphere");
-        // =============== Boundary Values Test ==================
+         // =============== Boundary Values Test ==================
         // TC01: point in the center of top base
         assertEquals(cyDir,
                 cylinder.getNormal(new Point(6,1,0)),

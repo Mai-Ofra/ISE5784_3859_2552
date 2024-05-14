@@ -12,9 +12,4 @@ public class Triangle extends Polygon {
      * @param vertices list of point to creat triangle
      */
     public Triangle(Point... vertices){ super(vertices);}
-
-    @Override
-    public Vector getNormal(Point point) {
-        return super.getNormal(point);
-    }
 }

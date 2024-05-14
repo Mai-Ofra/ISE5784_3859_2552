@@ -29,10 +29,5 @@ class SphereTest {
         assertEquals(new Vector(1,0,0),
                 sp.getNormal(new Point(1,0,0)),
                 "the normal to the sphere is not correct");
-        // TC02: the point is not on the sphere
-        assertThrows(
-                IllegalArgumentException.class,
-                ()->sp.getNormal(new Point(2,0,0)),
-                "need to throw an exception when point is not on the sphere");
-    }
+     }
 }

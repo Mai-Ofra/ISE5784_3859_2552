@@ -47,4 +47,16 @@ public class Ray {
                 "head=" + head +
                 ", directions=" + directions;
     }
+
+/**
+ * can we do that?
+ */
+
+    public Vector getDirections() {
+        return directions;
+    }
+
+    public Point getHead() {
+        return head;
+    }
 }

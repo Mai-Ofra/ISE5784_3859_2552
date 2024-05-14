@@ -25,6 +25,23 @@ class VectorTest {
      */
     private final double DELTA = 0.000001;
 
+    /** Test method for {@link primitives.Vector#Vector(double, double, double)}
+     *  and {@link primitives.Vector#Vector(Double3)}. */
+    @Test
+    void testConstructor() {
+        // =============== Boundary Values Test ==================
+        // TC01: check that the ctor throw exception when try to create the zero vector (ctor that get two coordinates)
+        assertThrows(
+                IllegalArgumentException.class,
+                ()->new Vector(0,0,0),
+                "need to throw an exception when try to make the zero vector");
+        // TC02: check that the ctor throw exception when try to create the zero vector (ctor that get a Double3)
+        assertThrows(
+                IllegalArgumentException.class,
+                ()->new Vector(new Double3(0,0,0)),
+                "need to throw an exception when try to make the zero vector");
+
+    }
 
     /** Test method for {@link primitives.Vector#add(Vector)}. */
     @Test

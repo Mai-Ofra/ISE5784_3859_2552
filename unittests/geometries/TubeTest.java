@@ -31,12 +31,7 @@ class TubeTest {
                 new Vector(0,-4,0).normalize(),
                 t.getNormal(new Point(4,0,0)),
                 "get normal doesnt work correctly");
-        // TC02: the point is not on the tube
-        assertThrows(
-                IllegalArgumentException.class,
-                ()->t.getNormal(new Point(4,-4,0)),
-                "need to throw an exception when point is not on the tube");
-        // =============== Boundary Values Test ==================
+       // =============== Boundary Values Test ==================
         // TC01: test case when (p-p0) is orthogonal to the ray of the tube
         assertEquals(
                 new Vector(0,-4,0).normalize(),

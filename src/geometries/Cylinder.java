@@ -30,6 +30,19 @@ public class Cylinder extends Tube {
      */
     @Override
     public Vector getNormal(Point p) {
-        return null;
+        if(p.equals(ray.getHead()))//if so, can't calc t and we know the needed output
+            return ray.getDirections().scale(-1);
+        //calculate the distance between the head of the cylinder, and the center
+        // of the cylinder next to the point that was received
+        double t = ray.getDirections().dotProduct(p.subtract(ray.getHead()));
+        if (t == 0)//if the distance i 0, the point is on the bottom base
+            return ray.getDirections().scale(-1);
+        if (t == height)//if the distance is equal to the height, the point is on the top base
+            return ray.getDirections();
+        //else, on the sides of the cylinder
+        //calculate the center of the cylinder next to the point that was received
+        Point center = ray.getHead().add(ray.getDirections().scale(t));
+        //calculate the normal
+        return p.subtract(center).normalize();
     }
 }
