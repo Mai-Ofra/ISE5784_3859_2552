@@ -59,4 +59,8 @@ class CylinderTest {
                 cylinder.getNormal(new Point(0,1,0)),
                 "get normal give wrong normal");
     }
+
+    @Test
+    void testFindIntersections() {
+    }
 }

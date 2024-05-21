@@ -4,6 +4,8 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
+import java.util.List;
+
 /**
  * class to present 3D Tube
  */
@@ -32,5 +34,10 @@ public class Tube extends RadialGeometry{
         Point center = ray.getHead().add(ray.getDirections().scale(t));
         //calculate the normal
         return p.subtract(center).normalize();
+    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }

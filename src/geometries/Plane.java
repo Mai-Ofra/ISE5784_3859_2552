@@ -1,11 +1,13 @@
 package geometries;
 import primitives.*;
 
+import java.util.List;
+
 /**
  * Class Plane present a geometric flat surface
  *
  */
-public class Plane {
+public class Plane implements Geometry{
     private Point p;
     private Vector normal;
 
@@ -46,5 +48,15 @@ public class Plane {
      */
     public Vector getNormal() {
         return normal;
+    }
+
+    @Override
+    public Vector getNormal(Point p) {
+        return getNormal();
+    }
+
+    @Override
+    public List<Point> findIntersections(Ray ray) {
+        return null;
     }
 }

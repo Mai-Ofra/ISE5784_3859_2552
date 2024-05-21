@@ -39,4 +39,7 @@ class TubeTest {
                 "get normal doesnt work correctly");
     }
 
+    @Test
+    void testFindIntersections() {
+    }
 }

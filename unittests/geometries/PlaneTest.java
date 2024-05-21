@@ -47,7 +47,7 @@ class PlaneTest {
                 "ctor need to throw exception when two of the points are the same");
 
     }
-    /** Test method for {@link Plane#getNormal()}  */
+    /** Test method for {@link Plane#getNormal(Point)}  */
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
@@ -56,8 +56,6 @@ class PlaneTest {
                   new Point(0, 0, 1),
                   new Point(1, 0, 0),
                   new Point(0, 1, 0));
-        // ensure there are no exceptions
-        assertDoesNotThrow(planeE::getNormal, "Get normal threw unexpected exception");
         // generate the test result
         Vector result = planeE.getNormal();
         // ensure |result| = 1
@@ -67,5 +65,9 @@ class PlaneTest {
         Vector v2 = (new Point(0,0,1)).subtract(new Point(1,0,0));
         assertTrue(isZero(result.dotProduct(v1)) && isZero(result.dotProduct(v2)),
                 "getNormal result is not orthogonal to the plane");
+    }
+
+    @Test
+    void testFindIntersections() {
     }
 }
