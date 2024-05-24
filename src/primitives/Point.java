@@ -3,7 +3,8 @@ package primitives;
 import java.util.Objects;
 
 /**
- * Class Point is a basic object in 3-dimensional geometry, which has three coordinates to represent the location
+ * Class Point is a basic object in 3-dimensional geometry,
+ * which has three coordinates to represent the location
  */
 public class Point {
 
@@ -14,9 +15,9 @@ public class Point {
 
     /**
      * parameter ctor
-     * @param x the first coordinate of the point
-     * @param y the second coordinate of the point
-     * @param z the third coordinate of the point
+     * @param x the first coordinate of this point
+     * @param y the second coordinate of this point
+     * @param z the third coordinate of this point
      */
     public Point(double x, double y, double z) {
         xyz=new Double3(x,y,z);
@@ -30,11 +31,6 @@ public class Point {
         this.xyz = xyz;
     }
 
-    /**
-     * check if object is equal to one point
-     * @param obj the object that is being checked
-     * @return true if equal, false if not
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -42,19 +38,16 @@ public class Point {
         && xyz.equals(point.xyz);
     }
 
-    /**
-     * present a single point
-     * @return string of the point's appearance
-     */
     @Override
     public String toString() {
         return xyz.toString();
     }
 
     /**
-     * create a vector between p to this
-     * @param p the second point
-     * @return subtract p from this
+     * Subtracts the given point from the current point and returns the resulting vector.
+     * @param p the point to subtract from the current point
+     * @return a new Vector representing the difference between the current point
+     * and the given point
      */
     public Vector subtract(Point p)
     {
@@ -62,9 +55,9 @@ public class Point {
     }
 
     /**
-     * add vector to the point
-     * @param vec the vector that is being added
-     * @return the new point
+     * Adds the given vector to the current point and returns the resulting point.
+     * @param vec the vector to add to the current point
+     * @return a new Point representing the sum of the current point and the given vector
      */
     public Point add(Vector vec)
     {
@@ -72,18 +65,18 @@ public class Point {
     }
 
     /**
-     * calculate the distance squared between two points
-     * @param p the second point
-     * @return the distance
+     * Calculates the squared distance between the current point and the given point.
+     * @param p the point to which the squared distance is calculated
+     * @return the squared distance between the current point and the given point
      */
     public double distanceSquared(Point p){
         return (xyz.d1-p.xyz.d1)*(xyz.d1-p.xyz.d1)+(xyz.d2-p.xyz.d2)*(xyz.d2-p.xyz.d2)+(xyz.d3-p.xyz.d3)*(xyz.d3-p.xyz.d3);
     }
 
     /**
-     * calculate the distance between two points
-     * @param p the second point
-     * @return the distance
+     * Calculates the distance between the current point and the given point.
+     * @param p the point to which the distance is calculated
+     * @return the  distance between the current point and the given point
      */
     public double distance(Point p)
     {

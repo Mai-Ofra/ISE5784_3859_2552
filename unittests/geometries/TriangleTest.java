@@ -19,10 +19,11 @@ class TriangleTest {
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
+
         // TC01: There is a simple single test here
         Point[] pts =
                 { new Point(0, 0, 1), new Point(1, 0, 0), new Point(0, 1, 0)};
-        Triangle tri = new Triangle(pts);
+        Triangle tri = new Triangle(pts[0], pts[1], pts[2]);
         // ensure there are no exceptions
         assertDoesNotThrow(() -> tri.getNormal(new Point(0, 0, 1)), "");
         // generate the test result

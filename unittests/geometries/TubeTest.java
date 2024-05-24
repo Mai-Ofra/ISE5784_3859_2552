@@ -15,6 +15,7 @@ class TubeTest {
     @Test
     void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
+
         // TC01: test case when radius is negative
         assertThrows(
                 IllegalArgumentException.class,
@@ -26,12 +27,15 @@ class TubeTest {
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
         Tube t=new Tube(1,new Ray(new Point(0,1,0),new Vector(6,0,0)));
+
         // TC01: test case when point is on the tube
         assertEquals(
                 new Vector(0,-4,0).normalize(),
                 t.getNormal(new Point(4,0,0)),
                 "get normal doesnt work correctly");
+
        // =============== Boundary Values Test ==================
+
         // TC01: test case when (p-p0) is orthogonal to the ray of the tube
         assertEquals(
                 new Vector(0,-4,0).normalize(),

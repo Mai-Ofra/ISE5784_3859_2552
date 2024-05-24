@@ -16,11 +16,11 @@ import primitives.Vector;
 
 public class Polygon implements Geometry {
    /** List of polygon's vertices */
-   protected final List<Point> vertices;
+   protected  List<Point> vertices;
    /** Associated plane in which the polygon lays */
-   protected final Plane       plane;
+   protected Plane       plane;
    /** The size of the polygon - the amount of the vertices in the polygon */
-   private final int           size;
+   protected int    size;
 
    /**
     * Polygon constructor based on vertices list. The list must be ordered by edge

@@ -48,14 +48,18 @@ public class Ray {
                 ", directions=" + directions;
     }
 
-/**
- * can we do that?
- */
-
+    /**
+     * getter of directions of the ray
+     * @return the direction of the ray
+     */
     public Vector getDirections() {
         return directions;
     }
 
+    /**
+     * getter of the head point of the ray
+     * @return the head point of the ray
+     */
     public Point getHead() {
         return head;
     }

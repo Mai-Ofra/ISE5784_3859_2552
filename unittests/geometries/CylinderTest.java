@@ -20,7 +20,9 @@ class CylinderTest {
         // TC01: test if the ctor throw error when the height is negative
         assertThrows(
                 IllegalArgumentException.class,
-                ()-> new Cylinder(1,new Ray(new Point(0,0,0), new Vector(1,0,0)),-4),
+                ()-> new Cylinder(
+                        1,
+                        new Ray(new Point(0,0,0), new Vector(1,0,0)),-4),
                 "ctor must throw error when height is negative");
         // TC02: test if the ctor throw error when the radius is negative
         assertThrows(

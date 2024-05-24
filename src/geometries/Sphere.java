@@ -10,13 +10,13 @@ import java.util.List;
  * class to present 3D Sphere
  */
 public class Sphere extends RadialGeometry{
-    private Point center;
+    private final Point center;
 
 
     /**
      * parameters ctor
-     * @param center of the Sphere
-     * @param radius of the Sphere (sent to super)
+     * @param center center point of the Sphere
+     * @param radius radius of the Sphere (sent to super)
      */
     public Sphere(Point center, double radius) {
         super(radius);
