@@ -79,62 +79,57 @@ class PlaneTest {
     void testFindIntersections() {
         Vector v001 = new Vector(0,0,1);
         Vector v111 = new Vector(1,1,1);
+        Vector v100 = new Vector(1,0,0);
+        Point p001 = new Point(0,0,1);
         Plane plane = new Plane(Point.ZERO,v001);
         final var exp1 = List.of(new Point(1,1,1));
+        final var exp2 = List.of(p001);
 
         // ============ Equivalence Partitions Tests ==============
         // **** Group: The ray not orthogonal and not parallel to the plane
-        // TC01: Ray intersects the plane
+        // TC01: Ray intersects the plane (1 point)
         final var result1 = plane.findIntersections(new Ray(Point.ZERO, v111))
                 .stream().sorted(Comparator.comparingDouble(p ->p.distance(Point.ZERO))).toList();
         assertEquals(1, result1.size(), "Wrong number of points");
         assertEquals(exp1, result1, "Ray crosses plane");
 
-        // TC02: Ray does not intersect the plane
+        // TC02: Ray does not intersect the plane (0 point)
         assertNull(plane.findIntersections(new Ray(new Point(1,2,3),v111)),
                 "Ray does not intersect the plane");
 
         // =============== Boundary Values Tests ==================
-        // **** Group: Ray's line crosses the sphere (but not the center)
-        // TC11: Ray starts at sphere and goes inside (1 point)
-        final var result3 = sphere.findIntersections(new Ray(gp110, v110.scale(-1)))
-                .stream().sorted(Comparator.comparingDouble(p ->p.distance(gp110))).toList();
-        assertEquals(1, result3.size(), "Wrong number of points");
-        assertEquals(exp3, result3, "Ray crosses sphere");
+        // **** Group: Ray is parallel to the plane
+        // TC11:the ray included in the plane (0 point)
+        assertNull(plane.findIntersections(new Ray(p001,v100)),
+                "Ray include the plane");
 
-        // TC12: Ray starts at sphere and goes outside (0 points)
-        assertNull(sphere.findIntersections(new Ray(p01,v110)),
-                "Ray's line out of sphere");
+        // TC12: the ray does not included in the plane (0 point)
+        assertNull(plane.findIntersections(new Ray(Point.ZERO,v100)),
+                "Ray does not include the plane");
 
-        // **** Group: Ray's line goes through the center
-        // TC13: Ray starts before the sphere (2 points)
-        final var result4 = sphere.findIntersections(new Ray(p01, v100))
-                .stream().sorted(Comparator.comparingDouble(p ->p.distance(p01))).toList();
-        assertEquals(2, result4.size(), "Wrong number of points");
-        assertEquals(exp4, result4, "Ray crosses sphere");
+        // **** Group: Ray is orthogonal to the plane
+        // TC13: Ray starts before the plane (1 points)
+        final var result2 = plane.findIntersections(new Ray(Point.ZERO, v001))
+                .stream().sorted(Comparator.comparingDouble(p ->p.distance(Point.ZERO))).toList();
+        assertEquals(1, result2.size(), "Wrong number of points");
+        assertEquals(exp2, result2, "Ray crosses plane");
 
-        // TC14: Ray starts at sphere and goes inside (1 point)
-        final var result5 = sphere.findIntersections(new Ray(pZero, v100))
-                .stream().sorted(Comparator.comparingDouble(p ->p.distance(pZero))).toList();
-        assertEquals(1, result5.size(), "Wrong number of points");
-        assertEquals(exp5, result5, "Ray crosses sphere");
+        // TC14: Ray starts at plane (0 point)
+        assertNull(plane.findIntersections(new Ray(new Point(0.5,0.5,1),v001)),
+                "Ray orthogonal to the plane, starts at it");
 
-        // TC15: Ray starts inside (1 point)
-        final var result6 = sphere.findIntersections(new Ray(new Point(1.5,0,0), v100))
-                .stream().sorted(Comparator.comparingDouble(p ->p.distance(new Point(1.5,0,0)))).toList();
-        assertEquals(1, result6.size(), "Wrong number of points");
-        assertEquals(exp5, result6, "Ray crosses sphere");
+        // TC15: Ray starts after the plane (0 point)
+        assertNull(plane.findIntersections(new Ray(new Point(0,0,2),v001)),
+                "Ray orthogonal to the plane, starts after it");
 
-        // TC16: Ray starts at the center (1 point)
-        final var result7 = sphere.findIntersections(new Ray(p100, v100))
-                .stream().sorted(Comparator.comparingDouble(p ->p.distance(p100))).toList();
-        assertEquals(1, result7.size(), "Wrong number of points");
-        assertEquals(exp5, result7, "Ray crosses sphere");
+        // **** Group: The ray not orthogonal and not parallel to the plane
+        // TC16: Ray starts at the plane (0 point)
+        assertNull(plane.findIntersections(new Ray(new Point(0.5,0.5,1),v111)),
+                "Ray start at the plane");
 
-        // TC17: Ray starts at sphere and goes outside (0 points)
-        assertNull(sphere.findIntersections(new Ray(p200,v100)),
-                "no intersaction with the ray, starts at the sphere");
+        // TC17: Ray starts at the point that present the plane (0 points)
+        assertNull(plane.findIntersections(new Ray(p001,v111)),
+                "Ray start at the point that presents the plane ");
     }
 
-}
 }
