@@ -5,8 +5,10 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import java.util.Comparator;
+
+import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
  * Testing Cylinder
@@ -72,5 +74,4 @@ class CylinderTest {
 
     @Test
     void testFindIntersections() {
-    }
-}
+   }
