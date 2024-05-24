@@ -24,11 +24,14 @@ class PlaneTest {
     @Test
     void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
+
         // TC01: test for Constructor that receives point and normal
         Plane planeE = new Plane(new Point(0, 0, 1),new Vector(-1,-1,-1));
         //ensure that plan's normal is a unit vector
         assertEquals(1, planeE.getNormal().length(), DELTA, "plane's normal is not a unit vector");
+
         // =============== Boundary Values Test ==================
+
         // TC01: ensure the ctor throw exception when the three points are on the same ray
         assertThrows(
                 IllegalArgumentException.class,
@@ -37,6 +40,7 @@ class PlaneTest {
                 new Point(1, 0, 0),
                 new Point(3, 0, 0)),
                 "ctor need to throw exception when all points are on the same ray");
+
         // TC02: ensure the ctor throw exception when there are two equal points
         assertThrows(
                 IllegalArgumentException.class,
@@ -51,6 +55,7 @@ class PlaneTest {
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
+
         // TC01: There is a simple single test here
           Plane planeE = new Plane(
                   new Point(0, 0, 1),

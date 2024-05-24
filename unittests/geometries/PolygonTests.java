@@ -31,6 +31,7 @@ public class PolygonTests {
                                            new Point(-1, 1, 1)),
                          "Failed constructing a correct polygon");
 
+
       // TC02: Wrong vertices order
       assertThrows(IllegalArgumentException.class, //
                    () -> new Polygon(new Point(0, 0, 1), new Point(0, 1, 0), new Point(1, 0, 0), new Point(-1, 1, 1)), //
@@ -46,7 +47,6 @@ public class PolygonTests {
                    () -> new Polygon(new Point(0, 0, 1), new Point(1, 0, 0), new Point(0, 1, 0),
                                      new Point(0.5, 0.25, 0.5)), //
                    "Constructed a concave polygon");
-
 
       // TC10: Vertex on a side of a quadrangular
       assertThrows(IllegalArgumentException.class, //
@@ -70,6 +70,7 @@ public class PolygonTests {
    @Test
    public void testGetNormal() {
       // ============ Equivalence Partitions Tests ==============
+
       // TC01: There is a simple single test here - using a quad
       Point[] pts =
          { new Point(0, 0, 1), new Point(1, 0, 0), new Point(0, 1, 0), new Point(-1, 1, 1) };

@@ -1,9 +1,5 @@
 package geometries;
-
-import primitives.Point;
-import primitives.Ray;
-import primitives.Vector;
-
+import primitives.*;
 import java.util.List;
 
 /**
@@ -20,16 +16,11 @@ public class Cylinder extends Tube {
      */
     public Cylinder(double radius, Ray ray,double height) {
         super(radius,ray);
-        if(height<=0)
+        if(height<0 || Util.isZero(height))
             throw new IllegalArgumentException("height of cylinder must be bigger than 0");
         this.height = height;
     }
 
-    /**
-     *get normal
-     * @param p that the normal
-     * @return normal from the point that was received (on the cylinder)
-     */
     @Override
     public Vector getNormal(Point p) {
         if(p.equals(ray.getHead()))//if so, can't calc t and we know the needed output

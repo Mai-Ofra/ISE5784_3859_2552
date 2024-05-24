@@ -1,9 +1,8 @@
 package primitives;
 
-import java.util.Objects;
-
 /**
- * Class Point is a basic object in 3-dimensional geometry, which has three coordinates to represent the location
+ * Class Point is a basic object in 3-dimensional geometry,
+ * which has three coordinates to represent the location
  */
 public class Point {
 
@@ -30,11 +29,6 @@ public class Point {
         this.xyz = xyz;
     }
 
-    /**
-     * check if object is equal to one point
-     * @param obj the object that is being checked
-     * @return true if equal, false if not
-     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;
@@ -42,10 +36,6 @@ public class Point {
         && xyz.equals(point.xyz);
     }
 
-    /**
-     * present a single point
-     * @return string of the point's appearance
-     */
     @Override
     public String toString() {
         return xyz.toString();
@@ -77,7 +67,10 @@ public class Point {
      * @return the distance
      */
     public double distanceSquared(Point p){
-        return (xyz.d1-p.xyz.d1)*(xyz.d1-p.xyz.d1)+(xyz.d2-p.xyz.d2)*(xyz.d2-p.xyz.d2)+(xyz.d3-p.xyz.d3)*(xyz.d3-p.xyz.d3);
+        return (
+                xyz.d1-p.xyz.d1)*(xyz.d1-p.xyz.d1)+
+                (xyz.d2-p.xyz.d2)*(xyz.d2-p.xyz.d2)+
+                (xyz.d3-p.xyz.d3)*(xyz.d3-p.xyz.d3);
     }
 
     /**

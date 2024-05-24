@@ -10,7 +10,6 @@ public final class Util {
    private Util() {}
 
    /** {@code double} data format in memory (bit level):<br>
-    * seee eeee eeee (1.)mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm<br>
     * 1 bit sign, 11 bits exponent, 53 bits (52 stored) normalized mantissa<br>
     * the number is m+2^e where 1&lt;=m&lt;2<br>
     * NB: exponent is stored "normalized" (i.e. always positive by adding 1023)<br>
@@ -35,13 +34,16 @@ public final class Util {
     * @param  number the number to align
     * @return        0.0 if the number is very close to zero, the number itself
     *                otherwise */
-   public static double alignZero(double number) { return isZero(number) ? 0.0 : number; }
+   public static double alignZero(double number) {
+      return isZero(number) ? 0.0 : number;
+   }
 
    /** Check whether two numbers have the same sign
     * @param  n1 1st number
     * @param  n2 2nd number
     * @return    true if the numbers have the same sign */
    public static boolean compareSign(double n1, double n2) {
+
       return (n1 < 0 && n2 < 0) || (n1 > 0 && n2 > 0);
    }
 
@@ -50,7 +52,7 @@ public final class Util {
     * @param  max value (excluded)
     * @return     the random value */
    public static double random(double min, double max) {
+
       return Math.random() * (max - min) + min;
    }
-
 }
