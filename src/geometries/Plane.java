@@ -4,12 +4,11 @@ import primitives.*;
 import java.util.List;
 
 /**
- * Class Plane present a geometric flat surface
- *
+ * Class Plane present a geometric flat Infinite surface
  */
 public class Plane implements Geometry{
-    private Point p;
-    private Vector normal;
+    private final Point p;
+    private final Vector normal;
 
     /**
      * parameter ctor

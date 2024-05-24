@@ -26,6 +26,7 @@ class SphereTest {
     @Test
     void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
+
         // TC01: test if the ctor throw error when the radius is negative
         assertThrows(
                 IllegalArgumentException.class,
@@ -40,6 +41,7 @@ class SphereTest {
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
         Sphere sp = new Sphere(new Point(0, 0, 0), 1);
+
         // TC01: the point is on the sphere
         assertEquals(new Vector(1, 0, 0),
                 sp.getNormal(new Point(1, 0, 0)),
@@ -64,22 +66,28 @@ class SphereTest {
         final Point p01 = new Point(-1, 0, 0);
         final Point p02 = new Point(0.5,0.5, 0);
         // ============ Equivalence Partitions Tests ==============
+
         // TC01: Ray's line is outside the sphere (0 points)
         assertNull(sphere.findIntersections(new Ray(p01, v110)), "Ray's line out of sphere");
+
         // TC02: Ray starts before and crosses the sphere (2 points)
         final var result1 = sphere.findIntersections(new Ray(p01, v310))
                 .stream().sorted(Comparator.comparingDouble(p ->p.distance(p01))).toList();
         assertEquals(2, result1.size(), "Wrong number of points");
         assertEquals(exp1, result1, "Ray crosses sphere");
+
         // TC03: Ray starts inside the sphere (1 point)
         final var result2 = sphere.findIntersections(new Ray(p02, v110))
                 .stream().sorted(Comparator.comparingDouble(p ->p.distance(p02))).toList();
         assertEquals(1, result2.size(), "Wrong number of points");
         assertEquals(exp2, result2, "Ray crosses sphere");
+
         // TC04: Ray starts after the sphere (0 points)
         assertNull(sphere.findIntersections(new Ray(p01, v310.scale(-1))), "Ray's line out of sphere");
+
         // =============== Boundary Values Tests ==================
         // **** Group: Ray's line crosses the sphere (but not the center)
+
         // TC11: Ray starts at sphere and goes inside (1 point)
         final var result3 = sphere.findIntersections(new Ray(gp110, v110.scale(-1)))
                 .stream().sorted(Comparator.comparingDouble(p ->p.distance(gp110))).toList();

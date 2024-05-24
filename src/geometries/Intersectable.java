@@ -1,7 +1,6 @@
 package geometries;
 import primitives.*;
 import java.util.List;
-
 /**
  * interface to present all shapes that are intersectable
  */

@@ -1,14 +1,17 @@
 package geometries;
-
 import primitives.Point;
 import primitives.Ray;
-
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-
+//לא מתועדדדדדדדדדדדדדדדדדדדדדדדדדדדדדד
+/**
+ * The {@code Geometries} class represents a collection of geometric shapes
+ * that can be intersected by a ray.
+ * This class implements the {@code Intersectable} interface.
+ */
 public class Geometries implements Intersectable{
+
     List<Intersectable> geometries=new LinkedList<Intersectable>();
 
     public Geometries() {
