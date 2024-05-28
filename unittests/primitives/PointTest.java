@@ -28,7 +28,8 @@ class PointTest{
     void testSubtract() {
         // ============ Equivalence Partitions Test ==============
         // TC01: simple subtract between two points
-        assertEquals(new Vector(1, 2, 3), p2.subtract(p1),"Subtract does not work correctly");
+        assertEquals(new Vector(1, 2, 3), p2.subtract(p1),
+                "Subtract does not work correctly");
         // =============== Boundary Values Test ==================
         // TC01: subtract between point and itself
         assertThrows(IllegalArgumentException.class,
@@ -36,7 +37,8 @@ class PointTest{
                 "(point - itself) does not throw an exception"
         );
         // TC02: subtract between two vectors when the second vector is negative
-        assertEquals(new Vector(3, 6, 9),v1.subtract(v2),"Vector - Vector does not work correctly");
+        assertEquals(new Vector(3, 6, 9),v1.subtract(v2),
+                "Vector - Vector does not work correctly");
         // TC03: subtract between two vectors when the result is the zero vector
         assertThrows(
                 IllegalArgumentException.class,
@@ -77,11 +79,14 @@ class PointTest{
     void testDistanceSquared() {
         // ============ Equivalence Partitions Test ==============
         // TC01: simple squared distance between points
-        assertEquals(9,p1.distanceSquared(p3),DELTA,"squared distance between points is wrong");
+        assertEquals(9,p1.distanceSquared(p3),DELTA,
+                "squared distance between points is wrong");
         // TC02: simple squared distance between points (the other way)
-        assertEquals(9,p3.distanceSquared(p1),DELTA,"squared distance between points is wrong");
+        assertEquals(9,p3.distanceSquared(p1),DELTA,
+                "squared distance between points is wrong");
         // =============== Boundary Values Test ==================
         // TC01: squared distance between point to itself that supposed to return zero
-        assertTrue(isZero(p1.distanceSquared(p1)),"point squared distance to itself is not zero");
+        assertTrue(isZero(p1.distanceSquared(p1)),
+                "point squared distance to itself is not zero");
     }
 }

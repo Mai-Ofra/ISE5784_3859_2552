@@ -4,11 +4,8 @@ import org.junit.jupiter.api.Test;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
-
-import java.util.Comparator;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertNull;
+
 
 /**
  * Testing Cylinder
@@ -31,7 +28,8 @@ class CylinderTest {
         // TC02: test if the ctor throw error when the radius is negative
         assertThrows(
                 IllegalArgumentException.class,
-                ()-> new Cylinder(-1,new Ray(new Point(0,0,0), new Vector(1,0,0)),6),
+                ()-> new Cylinder(-1,
+                        new Ray(new Point(0,0,0), new Vector(1,0,0)),6),
                 "ctor must throw error when radius is negative");
 
     }
@@ -42,7 +40,8 @@ class CylinderTest {
         // ============ Equivalence Partitions Tests ==============
 
         // TC01: test case point on the round surface
-        Cylinder cylinder=new Cylinder(1,new Ray(new Point(0,1,0),new Vector(6,0,0)),6);
+        Cylinder cylinder=new Cylinder(1,
+                new Ray(new Point(0,1,0),new Vector(6,0,0)),6);
         Vector cyDir= new Vector(1,0,0);
         assertEquals(
                 new Vector(0,-1,0).normalize(),
@@ -75,3 +74,4 @@ class CylinderTest {
     @Test
     void testFindIntersections() {
    }
+}
