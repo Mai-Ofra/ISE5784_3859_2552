@@ -100,6 +100,6 @@ public class Vector extends Point{
      * @return the normalized vector
      */
     public Vector normalize() {
-        return new Vector(xyz.d1/length(), xyz.d2/length(), xyz.d3/length());
+        return new Vector(xyz.reduce(length()));
     }
 }
