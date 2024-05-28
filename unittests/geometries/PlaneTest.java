@@ -31,7 +31,8 @@ class PlaneTest {
         // TC01: test for Constructor that receives point and normal
         Plane planeE = new Plane(new Point(0, 0, 1),new Vector(-1,-1,-1));
         //ensure that plan's normal is a unit vector
-        assertEquals(1, planeE.getNormal().length(), DELTA, "plane's normal is not a unit vector");
+        assertEquals(1,
+                planeE.getNormal().length(), DELTA, "plane's normal is not a unit vector");
 
         // =============== Boundary Values Test ==================
 
