@@ -33,23 +33,36 @@ public class Sphere extends RadialGeometry{
             return List.of(center.add(ray.getDirections().scale(radius)));
         Vector u = center.subtract(ray.getHead());
         double tm = ray.getDirections().dotProduct(u);
+        double ULength = u.length();
         // TC11: Ray starts at sphere and goes inside (1 point)
-        if(u.length()==radius)
-            if (tm>0)
+        if(ULength==radius)
+            if (Util.alignZero(tm)>0)
                 return List.of(ray.getHead().add(ray.getDirections().scale(tm+tm)));
             else
                 return  null;
-
         if (u.normalize().equals(ray.getDirections()))
             if(tm<radius||Util.isZero(tm-radius))
                 return List.of(center.add(ray.getDirections().scale(radius)));
             else
                 return List.of(center.add(ray.getDirections().scale(radius)),center.add(ray.getDirections().scale(-radius)));
+        else if (u.normalize().equals(ray.getDirections().scale(-1)))
+            if(ULength>radius)
+                return null;
+            else
+                return List.of(center.add(ray.getDirections().scale(radius)));
         double distanceSquared = u.lengthSquared()-tm*tm;
         double radiusSquared = radius*radius;
         if(distanceSquared>radiusSquared || Util.isZero(distanceSquared-radiusSquared))
             return null;
+        if(ULength>radius)
+            if(tm<0||distanceSquared>radiusSquared)
+                return null;
         double th=Math.sqrt(radiusSquared-distanceSquared);
+        if (ULength<radius) {
+            return List.of(ray.getHead().add(ray.getDirections().scale(tm+th)));
+
+        }
+
         Point p1 = ray.getHead().add(ray.getDirections().scale(tm-th));
         Point p2 = ray.getHead().add(ray.getDirections().scale(tm+th));
         return List.of(p1,p2);
