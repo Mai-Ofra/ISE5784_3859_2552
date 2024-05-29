@@ -82,15 +82,16 @@ class PlaneTest {
         Vector v111 = new Vector(1,1,1);
         Vector v100 = new Vector(1,0,0);
         Point p001 = new Point(0,0,1);
-        Plane plane = new Plane(Point.ZERO,v001);
+        Plane plane = new Plane(p001,v001);
         final var exp1 = List.of(new Point(1,1,1));
         final var exp2 = List.of(p001);
 
         // ============ Equivalence Partitions Tests ==============
         // **** Group: The ray not orthogonal and not parallel to the plane
         // TC01: Ray intersects the plane (1 point)
-        final var result1 = plane.findIntersections(new Ray(Point.ZERO, v111))
-                .stream().sorted(Comparator.comparingDouble(p ->p.distance(Point.ZERO))).toList();
+        final var result1 = plane.findIntersections(new Ray(Point.ZERO, v111)).
+                stream().sorted(Comparator.
+                        comparingDouble(p ->p.distance(Point.ZERO))).toList();
         assertEquals(1, result1.size(), "Wrong number of points");
         assertEquals(exp1, result1, "Ray crosses plane");
 
@@ -101,15 +102,15 @@ class PlaneTest {
         // =============== Boundary Values Tests ==================
         // **** Group: Ray is parallel to the plane
         // TC11:the ray included in the plane (0 point)
-        assertNull(plane.findIntersections(new Ray(p001,v100)),
+        assertNull(plane.findIntersections(new Ray(new Point(0.5,0.5,1),v100)),
                 "Ray include the plane");
 
         // TC12: the ray does not included in the plane (0 point)
-        assertNull(plane.findIntersections(new Ray(Point.ZERO,v100)),
+        assertNull(plane.findIntersections(new Ray(new Point(0,0,2),v100)),
                 "Ray does not include the plane");
 
         // **** Group: Ray is orthogonal to the plane
-        // TC13: Ray starts before the plane (1 points)
+        // TC13: Ray starts before the plane (1 point)
         final var result2 = plane.findIntersections(new Ray(Point.ZERO, v001))
                 .stream().sorted(Comparator.comparingDouble(p ->p.distance(Point.ZERO))).toList();
         assertEquals(1, result2.size(), "Wrong number of points");

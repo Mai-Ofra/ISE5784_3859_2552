@@ -2,8 +2,10 @@ package geometries;
 
 import primitives.*;
 
-import java.util.LinkedList;
+import java.util.Comparator;
 import java.util.List;
+
+import static primitives.Util.*;
 
 /**
  * class to present 3D Sphere
@@ -29,42 +31,78 @@ public class Sphere extends RadialGeometry{
 
     @Override
     public List<Point> findIntersections(Ray ray) {
-        if(ray.getHead().equals(center))
+        // If the ray starts at the sphere's center
+        if (ray.getHead().equals(center)) {
             return List.of(center.add(ray.getDirections().scale(radius)));
-        Vector u = center.subtract(ray.getHead());
-        double tm = ray.getDirections().dotProduct(u);
-        double ULength = u.length();
-        // TC11: Ray starts at sphere and goes inside (1 point)
-        if(ULength==radius)
-            if (Util.alignZero(tm)>0)
-                return List.of(ray.getHead().add(ray.getDirections().scale(tm+tm)));
-            else
-                return  null;
-        if (u.normalize().equals(ray.getDirections()))
-            if(tm<radius||Util.isZero(tm-radius))
-                return List.of(center.add(ray.getDirections().scale(radius)));
-            else
-                return List.of(center.add(ray.getDirections().scale(radius)),center.add(ray.getDirections().scale(-radius)));
-        else if (u.normalize().equals(ray.getDirections().scale(-1)))
-            if(ULength>radius)
-                return null;
-            else
-                return List.of(center.add(ray.getDirections().scale(radius)));
-        double distanceSquared = u.lengthSquared()-tm*tm;
-        double radiusSquared = radius*radius;
-        if(distanceSquared>radiusSquared || Util.isZero(distanceSquared-radiusSquared))
-            return null;
-        if(ULength>radius)
-            if(tm<0||distanceSquared>radiusSquared)
-                return null;
-        double th=Math.sqrt(radiusSquared-distanceSquared);
-        if (ULength<radius) {
-            return List.of(ray.getHead().add(ray.getDirections().scale(tm+th)));
-
         }
 
-        Point p1 = ray.getHead().add(ray.getDirections().scale(tm-th));
-        Point p2 = ray.getHead().add(ray.getDirections().scale(tm+th));
-        return List.of(p1,p2);
+        // Vector from ray head to sphere center
+        Vector u = center.subtract(ray.getHead());
+
+        double uLength = alignZero(u.length());
+        double tm = alignZero(ray.getDirections().dotProduct(u));
+
+
+        // If the ray starts at the sphere's surface and goes inside
+        if (uLength == radius) {
+            if (tm > 0)//if the angle smaller than 90 degrees
+            {
+                return List.of(ray.getHead().add(ray.getDirections().scale(tm + tm)));
+            } else//The ray is tangent to the sphere or goes outside (no intersections)
+            {
+                return null;
+            }
+        }
+
+        // If the ray's direction is aligned with vector u
+        if (u.normalize().equals(ray.getDirections())) {
+            if (tm < radius || isZero(tm - radius)) {
+                return List.of(center.add(ray.getDirections().scale(radius)));
+            } else {
+                return List.of(
+                        center.add(ray.getDirections().scale(radius)),
+                        center.add(ray.getDirections().scale(-radius))).stream().
+                        sorted(Comparator.comparingDouble(p ->p.distance(ray.getHead()))).toList();
+            }
+        }
+        // If the ray's direction is opposite to vector u
+        else if (u.normalize().equals(ray.getDirections().scale(-1))) {
+            if (uLength > radius) {
+                return null;
+            } else {
+                return List.of(center.add(ray.getDirections().scale(radius)));
+            }
+        }
+
+        // Calculate the squared distance from the ray to the sphere's center
+        double distanceSquared = alignZero(u.lengthSquared() - tm * tm);
+        double radiusSquared = alignZero(radius * radius);
+
+        // If the distance from the ray to the center is greater than or equal to the radius
+        if (distanceSquared > radiusSquared || isZero(distanceSquared - radiusSquared)) {
+            return null;
+        }
+
+        // If the ray's head is outside the sphere
+        if (uLength > radius) {
+            if (tm < 0 || distanceSquared > radiusSquared) {
+                return null;
+            }
+        }
+
+        double th = alignZero(Math.sqrt(radiusSquared - distanceSquared));
+
+        // If the ray's head is inside the sphere
+        if (uLength < radius) {
+            return List.of(ray.getHead().add(ray.getDirections().scale(tm + th)));
+        }
+
+        // Calculate the intersection points
+        Point p1 = ray.getHead().add(ray.getDirections().scale(tm - th));
+        Point p2 = ray.getHead().add(ray.getDirections().scale(tm + th));
+        return List.of(p1, p2).stream().
+                sorted(Comparator.comparingDouble(p ->p.distance(ray.getHead()))).toList();
     }
+
+
 }

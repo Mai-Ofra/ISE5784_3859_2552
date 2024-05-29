@@ -3,6 +3,8 @@ import primitives.*;
 
 import java.util.List;
 
+import static primitives.Util.*;
+
 /**
  * Class Plane present a geometric flat Infinite surface
  */
@@ -56,6 +58,21 @@ public class Plane implements Geometry{
 
     @Override
     public List<Point> findIntersections(Ray ray) {
-        return null;
+        //in case the ray starts at point that present the plane
+        if(p.equals(ray.getHead()))
+            return null;
+
+        Vector u=p.subtract(ray.getHead());
+        double checkAngle=alignZero(u.dotProduct(ray.getDirections()));
+        //in case the ray does not cross the plane
+        if(checkAngle<0||isZero(checkAngle))
+            return null;
+
+        double denominator = alignZero(normal.dotProduct(ray.getDirections()));
+        //in case the ray direction is parallel to the plane
+        if(isZero(denominator))
+            return null;
+        double t = alignZero(normal.dotProduct(u)/denominator);
+        return List.of(ray.getHead().add(ray.getDirections().scale(t)));
     }
 }
