@@ -2,6 +2,8 @@ package primitives;
 
 import java.util.Objects;
 
+import static primitives.Util.*;
+
 /**
  * A fundamental object in 3D geometry,
  * the set of points on a straight line that are on one side of a given point
@@ -54,5 +56,17 @@ public class Ray {
      */
     public Point getHead() {
         return head;
+    }
+
+    /**
+     * returns a point on the ray at a distance t from the ray's head
+     * If t is zero, the head point of the ray is returned
+     * @param t the distance from the ray's head
+     * @return the point on the ray at distance t
+     */
+    public Point getPoint(double t) {
+        if(isZero(t))
+            return head;
+        return head.add(directions.scale(t));
     }
 }

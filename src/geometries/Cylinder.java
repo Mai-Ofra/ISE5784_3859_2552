@@ -34,7 +34,7 @@ public class Cylinder extends Tube {
             return ray.getDirections();
         //else, on the sides of the cylinder
         //calculate the center of the cylinder next to the point that was received
-        Point center = ray.getHead().add(ray.getDirections().scale(t));
+        Point center = ray.getPoint(t);
         //calculate the normal
         return p.subtract(center).normalize();
     }

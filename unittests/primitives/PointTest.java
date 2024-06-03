@@ -85,7 +85,7 @@ class PointTest{
         assertEquals(9,p3.distanceSquared(p1),DELTA,
                 "squared distance between points is wrong");
         // =============== Boundary Values Test ==================
-        // TC01: squared distance between point to itself that supposed to return zero
+        // TC11: squared distance between point to itself that supposed to return zero
         assertTrue(isZero(p1.distanceSquared(p1)),
                 "point squared distance to itself is not zero");
     }

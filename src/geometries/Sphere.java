@@ -47,7 +47,7 @@ public class Sphere extends RadialGeometry{
         if (uLength == radius) {
             if (tm > 0)//if the angle smaller than 90 degrees
             {
-                return List.of(ray.getHead().add(ray.getDirections().scale(tm + tm)));
+                return List.of(ray.getPoint(tm + tm));
             } else//The ray is tangent to the sphere or goes outside (no intersections)
             {
                 return null;
@@ -94,12 +94,12 @@ public class Sphere extends RadialGeometry{
 
         // If the ray's head is inside the sphere
         if (uLength < radius) {
-            return List.of(ray.getHead().add(ray.getDirections().scale(tm + th)));
+            return List.of(ray.getPoint(tm + th));
         }
 
         // Calculate the intersection points
-        Point p1 = ray.getHead().add(ray.getDirections().scale(tm - th));
-        Point p2 = ray.getHead().add(ray.getDirections().scale(tm + th));
+        Point p1 = ray.getPoint(tm - th);
+        Point p2 = ray.getPoint(tm + th);
         return List.of(p1, p2).stream().
                 sorted(Comparator.comparingDouble(p ->p.distance(ray.getHead()))).toList();
     }

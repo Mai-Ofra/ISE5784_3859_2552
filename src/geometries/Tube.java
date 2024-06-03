@@ -31,7 +31,7 @@ public class Tube extends RadialGeometry{
         if (Util.isZero(t))
             return p.subtract(ray.getHead()).normalize();
         //calculate the center of the tube next to the point that was received
-        Point center = ray.getHead().add(ray.getDirections().scale(t));
+        Point center = ray.getPoint(t);
         //calculate the normal
         return p.subtract(center).normalize();
     }

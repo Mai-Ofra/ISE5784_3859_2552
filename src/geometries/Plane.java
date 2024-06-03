@@ -63,16 +63,15 @@ public class Plane implements Geometry{
             return null;
 
         Vector u=p.subtract(ray.getHead());
-        double checkAngle=alignZero(u.dotProduct(ray.getDirections()));
-        //in case the ray does not cross the plane
-        if(checkAngle<0||isZero(checkAngle))
-            return null;
-
         double denominator = alignZero(normal.dotProduct(ray.getDirections()));
         //in case the ray direction is parallel to the plane
         if(isZero(denominator))
             return null;
         double t = alignZero(normal.dotProduct(u)/denominator);
-        return List.of(ray.getHead().add(ray.getDirections().scale(t)));
+        // If t is negative, the intersection is behind the ray's start point.
+        if (t <= 0) {
+            return null;
+        }
+        return List.of(ray.getPoint(t));
     }
 }
