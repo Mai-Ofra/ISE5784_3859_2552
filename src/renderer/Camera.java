@@ -84,7 +84,6 @@ public class Camera implements Cloneable{
     /**
      * Builds and returns the Camera instance.
      * @return the constructed Camera instance
-     * @throws CloneNotSupportedException if the Camera instance cannot be cloned
      * @throws MissingResourceException   if any required field is missing
      * @throws IllegalArgumentException   if the direction vectors are parallel
      */
@@ -120,7 +119,7 @@ public class Camera implements Cloneable{
             if(camera.vTo.length()!=1)
                 camera.vTo=camera.vTo.normalize();
             //calc the vRight
-            camera.vRight=camera.vTo.crossProduct(camera.vRight).normalize();
+            camera.vRight=camera.vTo.crossProduct(camera.vUp).normalize();
             try {
                 return  (Camera) camera.clone();
             } catch (CloneNotSupportedException e) {
@@ -128,13 +127,14 @@ public class Camera implements Cloneable{
             }
         }
     }
-    private Vector vTo=null;
-    private Vector vUp=null;
+
+    private Vector vTo = null;
+    private Vector vUp = null;
     private Vector vRight;
-    private Point p0=null;
-    private double height=0d;
-    private double width=0d;
-    private double distance=0d;
+    private Point p0 = null;
+    private double height = 0d;
+    private double width = 0d;
+    private double distance = 0d;
 
     /**
      * private empty ctor
@@ -187,16 +187,9 @@ public class Camera implements Cloneable{
     public Point getP0() {
         return p0;
     }
-
     public double getWidth() {
         return width;
     }
-
-    public double getheight() {
-        return height;
-    }
-
-    public double getDistance() {
-        return distance;
-    }
+    public double getheight() { return height; }
+    public double getDistance() { return distance; }
 }

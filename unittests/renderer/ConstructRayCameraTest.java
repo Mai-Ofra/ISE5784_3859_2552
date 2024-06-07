@@ -5,8 +5,18 @@ import org.junit.jupiter.api.Test;
 import primitives.*;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
-
+/**
+ * Unit tests for constructing rays from the camera and finding intersections
+ */
 class ConstructRayCameraTest {
+    /**
+     * Helper method to test the number of intersections between rays from the camera
+     * and a given geometric shape.
+     * @param shape     the geometric shape to test
+     * @param camera    the camera from which rays are constructed
+     * @param expected  the expected number of intersections
+     * @param testType  description of the test case
+     */
     void testIntersection(Geometry shape, Camera camera, int expected, String testType )
     {
         int counter=0;
@@ -18,9 +28,10 @@ class ConstructRayCameraTest {
             }
         assertEquals(expected,counter,"wrong number of intersections in"+ testType);
     }
-
+    // Direction vectors
     Vector minusZ=new Vector(0,0,-1);
     Vector y = new Vector(0,1,0);
+    // Camera instances
     Camera camera000=Camera.getBuilder()
             .setViewPlaneSize(3,3)
             .setViewPlaneDistance(1)
@@ -31,7 +42,9 @@ class ConstructRayCameraTest {
             .setViewPlaneDistance(1)
             .setLocation(new Point(0,0,0.5))
             .setDirection(minusZ,y).build();
-
+    /**
+     * Test cases for ray-sphere intersections.
+     */
     @Test
     void testSphereConstructRay() {
 
@@ -56,6 +69,9 @@ class ConstructRayCameraTest {
         //TC05: 0 intersection points
         testIntersection(sphere5,camera1,0,"Sphere TC05");
     }
+    /**
+     * Test cases for ray-triangle intersections.
+     */
     @Test
     void testTriangleConstructRay() {
         Triangle triangle1=new Triangle(
@@ -73,6 +89,9 @@ class ConstructRayCameraTest {
         //TC02: two intersection points
         testIntersection(triangle2,camera000,2, "Triangle TC02");
     }
+    /**
+     * Test cases for ray-plane intersections.
+     */
     @Test
     void testPlaneConstructRay() {
         Plane plane1= new Plane(new Point(0,0,-3),new Vector(0,0,-1));
