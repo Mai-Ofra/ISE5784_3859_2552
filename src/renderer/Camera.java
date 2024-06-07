@@ -65,10 +65,8 @@ public class Camera implements Cloneable{
          * @throws IllegalArgumentException if height or width is not greater than zero
          */
         public Builder setViewPlaneSize(double width, double height) {
-            if (alignZero(height) <= 0 || alignZero(width) <= 0)
-                throw new IllegalArgumentException("Height and width must be greater than zero");
             camera.width = width;
-            camera.hight = height;
+            camera.height = height;
             return this;
         }
 
@@ -79,8 +77,6 @@ public class Camera implements Cloneable{
          * @throws IllegalArgumentException if the distance is not greater than zero
          */
         public Builder setViewPlaneDistance(double distance) {
-            if (alignZero(distance) <= 0)
-                throw new IllegalArgumentException("Distance must be greater than zero");
             camera.distance=distance;
             return this;
         }
@@ -92,16 +88,16 @@ public class Camera implements Cloneable{
      * @throws MissingResourceException   if any required field is missing
      * @throws IllegalArgumentException   if the direction vectors are parallel
      */
-        public Camera build() throws CloneNotSupportedException {
+        public Camera build() {
             final String MISSING_RENDER_DATA_ERROR = "Missing rendering data";
             //making sure all the values were received
-            if (isZero(camera.hight))
+            if (isZero(camera.height))
                 throw new MissingResourceException(MISSING_RENDER_DATA_ERROR,
                         "Missing height value", Camera.class.getName());
             if (isZero(camera.width))
                 throw new MissingResourceException(MISSING_RENDER_DATA_ERROR,
                         "Missing width value", Camera.class.getName());
-            if (isZero(camera.distance))
+             if (isZero(camera.distance))
                 throw new MissingResourceException(MISSING_RENDER_DATA_ERROR,
                         "Missing distance value", Camera.class.getName());
             if (camera.vTo == null)
@@ -113,29 +109,30 @@ public class Camera implements Cloneable{
             if (camera.p0 == null)
                 throw new MissingResourceException(MISSING_RENDER_DATA_ERROR,
                         "Missing p0 value", Camera.class.getName());
-
-            //making sure the vUp and vTo are not parallel
-            try {
-                camera.vRight=camera.vUp.crossProduct(camera.vTo).normalize();
-            }
-            catch (Exception e) {
-                throw new IllegalArgumentException("Two vectors must not be parallel");
-            }
-
+            //make sure all values are correct
+            if (alignZero(camera.height) <= 0 || alignZero(camera.width) <= 0)
+                throw new IllegalArgumentException("Height and width must be greater than zero");
+            if (alignZero(camera.distance) <= 0)
+                throw new IllegalArgumentException("Distance must be greater than zero");
             //making sure that the vectors are normalized
             if(camera.vUp.length()!=1)
                 camera.vUp=camera.vUp.normalize();
             if(camera.vTo.length()!=1)
                 camera.vTo=camera.vTo.normalize();
-
-            return  (Camera) camera.clone();
+            //calc the vRight
+            camera.vRight=camera.vTo.crossProduct(camera.vRight).normalize();
+            try {
+                return  (Camera) camera.clone();
+            } catch (CloneNotSupportedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
     private Vector vTo=null;
     private Vector vUp=null;
     private Vector vRight;
     private Point p0=null;
-    private double hight=0d;
+    private double height=0d;
     private double width=0d;
     private double distance=0d;
 
@@ -175,8 +172,8 @@ public class Camera implements Cloneable{
         return width;
     }
 
-    public double getHight() {
-        return hight;
+    public double getheight() {
+        return height;
     }
 
     public double getDistance() {
