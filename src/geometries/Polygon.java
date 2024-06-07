@@ -23,6 +23,12 @@ public class Polygon implements Geometry {
    protected int    size;
 
    /**
+    * empty ctor for triangle
+    */
+   public Polygon() {
+   }
+
+   /**
     * Polygon constructor based on vertices list. The list must be ordered by edge
     * path. The polygon must be convex.
     * @param  vertices                 list of vertices according to their order by

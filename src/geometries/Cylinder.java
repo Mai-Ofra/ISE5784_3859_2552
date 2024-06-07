@@ -2,6 +2,8 @@ package geometries;
 import primitives.*;
 import java.util.List;
 
+import static primitives.Util.isZero;
+
 /**
  * class to present 3D Cylinder
  */
@@ -16,24 +18,22 @@ public class Cylinder extends Tube {
      */
     public Cylinder(double radius, Ray ray,double height) {
         super(radius,ray);
-        if(height<0 || Util.isZero(height))
+        if(height<0 || isZero(height))
             throw new IllegalArgumentException("height of cylinder must be bigger than 0");
         this.height = height;
     }
 
     @Override
     public Vector getNormal(Point p) {
-        if(p.equals(ray.getHead()))//if so, can't calc t and we know the needed output
+        if(p.equals(ray.getHead()))//if so, can't calc t
             return ray.getDirections().scale(-1);
-        //calculate the distance between the head of the cylinder, and the center
-        // of the cylinder next to the point that was received
-        double t = ray.getDirections().dotProduct(p.subtract(ray.getHead()));
-        if (t == 0)//if the distance i 0, the point is on the bottom base
+        Vector pMinusPO = p.subtract(ray.getHead());
+        double t = ray.getDirections().dotProduct(pMinusPO);
+        if (isZero(t))//if so, the point is on the bottom base
             return ray.getDirections().scale(-1);
-        if (t == height)//if the distance is equal to the height, the point is on the top base
+        if (t == height)//if so, the point is on the top base
             return ray.getDirections();
         //else, on the sides of the cylinder
-        //calculate the center of the cylinder next to the point that was received
         Point center = ray.getPoint(t);
         //calculate the normal
         return p.subtract(center).normalize();

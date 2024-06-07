@@ -5,6 +5,13 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RayTest {
+    @Test
+    void testConstructor() {
+        // TC01: check if the direction vector is normalized
+        Ray ray= new Ray(new Point(1,0,0),new Vector(1,2,3));
+        assertEquals(1,ray.getDirections().length(),
+                "vector directions not normalized");
+    }
 
     @Test
     void testGetPoint() {

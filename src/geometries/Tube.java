@@ -3,8 +3,11 @@ package geometries;
 import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
-import primitives.Util;
+
 import java.util.List;
+
+import static primitives.Util.isZero;
+
 /**
  * class to present 3D Tube
  */
@@ -28,7 +31,7 @@ public class Tube extends RadialGeometry{
         // of the tube next to the point that was received
         double t = ray.getDirections().dotProduct(p.subtract(ray.getHead()));
         //Boundary Values, when (p-p0) is orthogonal to the ray of the tube
-        if (Util.isZero(t))
+        if (isZero(t))
             return p.subtract(ray.getHead()).normalize();
         //calculate the center of the tube next to the point that was received
         Point center = ray.getPoint(t);

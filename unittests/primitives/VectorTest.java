@@ -30,12 +30,14 @@ class VectorTest {
     @Test
     void testConstructor() {
         // =============== Boundary Values Test ==================
-        // TC01: check that the ctor throw exception when try to create the zero vector (ctor that get two coordinates)
+        // TC01: check that the ctor throw exception when try to create the zero vector
+        // (ctor that get two coordinates)
         assertThrows(
                 IllegalArgumentException.class,
                 ()->new Vector(0,0,0),
                 "need to throw an exception when try to make the zero vector");
-        // TC02: check that the ctor throw exception when try to create the zero vector (ctor that get a Double3)
+        // TC02: check that the ctor throw exception when try to create the zero vector
+        // (ctor that get a Double3)
         assertThrows(
                 IllegalArgumentException.class,
                 ()->new Vector(new Double3(0,0,0)),
@@ -70,7 +72,8 @@ class VectorTest {
     void testDotProduct() {
         // =============== Boundary Values Test ==================
         // TC01: check dotProduct between orthogonal vectors
-        assertTrue(isZero(v1.dotProduct(v3)),"dotProduct() for orthogonal vectors is not zero");
+        assertTrue(isZero(v1.dotProduct(v3)),
+                "dotProduct() for orthogonal vectors is not zero");
         // TC02: check dotProduct between vector and normalized vector
         assertEquals(3,
                 v1.dotProduct((new Vector(0,0,5).normalize())),
@@ -141,16 +144,16 @@ class VectorTest {
     void testNormalize() {
         Vector v = new Vector(1, 2, 3);
         Vector u = v.normalize();
-        // =============== Boundary Values Test ==================
-        // TC01:
         // ============ Equivalence Partitions Tests ==============
         // TC01: simple test case for normalize function
-        assertEquals(1,u.length(),DELTA,"the normalized vector is not a unit vector");
+        assertEquals(1, u.length(), DELTA,
+                "the normalized vector is not a unit vector");
         // TC02: check if normalize vector is parallel to the original one
         assertThrows(IllegalArgumentException.class,
                 ()->v.crossProduct(u),
                 "the normalized vector is not parallel to the original one");
         // TC03: check if normalize vector is not in opposite direction to the original one
-        assertFalse(v.dotProduct(u) < 0,"the normalized vector is opposite to the original one");
+        assertFalse(v.dotProduct(u) < 0,
+                "the normalized vector is opposite to the original one");
     }
 }

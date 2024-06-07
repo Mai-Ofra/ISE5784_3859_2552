@@ -13,6 +13,8 @@ class PointTest{
     Point  p1         = new Point(1, 2, 3);
     Point  p2         = new Point(2, 4, 6);
     Point  p3         = new Point(2, 4, 5);
+    Point  p4         = new Point(1, 0,0);
+    Point  p5         = new Point(5,0,0);
     Vector v1         = new Vector(1, 2, 3);
     Vector v2         = new Vector(-2, -4, -6);
     Vector v1Opposite = new Vector(-1, -2, -3);
@@ -79,10 +81,10 @@ class PointTest{
     void testDistanceSquared() {
         // ============ Equivalence Partitions Test ==============
         // TC01: simple squared distance between points
-        assertEquals(9,p1.distanceSquared(p3),DELTA,
+        assertEquals(16,p5.distanceSquared(p4),DELTA,
                 "squared distance between points is wrong");
         // TC02: simple squared distance between points (the other way)
-        assertEquals(9,p3.distanceSquared(p1),DELTA,
+        assertEquals(16,p4.distanceSquared(p5),DELTA,
                 "squared distance between points is wrong");
         // =============== Boundary Values Test ==================
         // TC11: squared distance between point to itself that supposed to return zero

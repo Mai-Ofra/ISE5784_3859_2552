@@ -20,12 +20,12 @@ public class Triangle extends Polygon {
      * @param p3 third point of the triangle
      */
     public Triangle(Point p1, Point p2, Point p3) {
-        super(p1, p2, p3);
-//        if(p1.subtract(p2).normalize()==p1.subtract(p3).normalize())
-//            throw new IllegalArgumentException("The points are aligned and cannot form a triangle.");
-//        vertices = List.of(p1,p2,p3);
-//        size=3;
-//        plane= new Plane(p1, p2, p3);
+        super();
+        if(p1.subtract(p2).normalize()==p1.subtract(p3).normalize())
+            throw new IllegalArgumentException("The points are aligned and cannot form a triangle.");
+        vertices = List.of(p1,p2,p3);
+        size=3;
+        plane= new Plane(p1, p2, p3);
     }
 
     @Override
