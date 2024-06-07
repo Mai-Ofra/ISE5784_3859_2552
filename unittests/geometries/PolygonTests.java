@@ -1,12 +1,11 @@
 package geometries;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import org.junit.jupiter.api.Test;
+import geometries.*;
+import primitives.*;
 
-import geometries.Polygon;
-import primitives.Point;
-import primitives.Vector;
+import java.util.List;
 
 /**
  * Testing Polygons
@@ -129,7 +128,49 @@ public class PolygonTests {
                     "Polygon's normal is not orthogonal to one of the edges");
     }
 
+    /**
+     * Test method for {@link geometries.Polygon#findIntersections(Ray)}.
+     */
     @Test
     void testFindIntersections() {
+        Polygon rectangle = new Polygon(
+                new Point(2, 0, 0),
+                new Point(2, 0, 1),
+                new Point(0, 0, 1),
+                new Point(0, 0, 0));
+        
+        // ================= Equivalence Partitions Tests ===========================
+        // TC01: intersection inside the Polygon (1 point)
+        List<Point> result = rectangle.findIntersections(
+                new Ray(new Point(0.25d, 3d, 0.25d), new Vector(0, -1, 0)));
+        assertEquals(1, result.size(), "Wrong number of points");
+        assertEquals(new Point(0.25, 0, 0.25), result.getFirst(), "wrong point was found");
+        
+        // TC02: intersection with plane but outside the Polygon against edge (0 points)
+        result = rectangle.findIntersections(
+                new Ray(new Point(4, 1, -2), new Vector(-1, -1, 0)));
+        assertNull(result, "Wrong number of points");
+        
+        // TC03: intersection with plane but outside the Polygon against vertex (0 points)
+        result = rectangle.findIntersections(
+                new Ray(new Point(-1, -4, -5), new Vector(0, 1, 1)));
+        assertNull(result, "Wrong number of points");
+
+        // ================= BVA Tests ===========================
+        // TC11: intersection on edge (0 points)
+        result = rectangle.findIntersections(
+                new Ray(new Point(1, 3, 1), new Vector(0, -1, 0)));
+        assertNull(result, "Wrong number of points");
+        
+        // TC12: intersection on vertex (0 points)
+        result = rectangle.findIntersections(
+                new Ray(new Point(3, 2, 2), new Vector(-1, -2, -1)));
+        assertNull(result, "Wrong number of points");
+        
+        // TC13: intersection on continuation of edge (0 points)
+        result = rectangle.findIntersections(
+                new Ray(new Point(4, 1, 2), new Vector(-1, -1, -1)));
+        assertNull(result, "Wrong number of points");
+
     }
 }

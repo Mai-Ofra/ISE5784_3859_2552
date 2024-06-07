@@ -5,8 +5,9 @@ import org.junit.jupiter.api.Test;
 import primitives.*;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
+
 /**
- * Unit tests for constructing rays from the camera and finding intersections
+ * Test class for {@link renderer.Camera#constructRay(int, int, int, int)}
  */
 class ConstructRayCameraTest {
     /**

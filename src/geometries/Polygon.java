@@ -2,10 +2,10 @@ package geometries;
 
 import java.util.List;
 
-import static primitives.Util.isZero;
-
+import static primitives.Util.*;
 import primitives.Point;
 import primitives.Ray;
+
 import primitives.Vector;
 
 /**
@@ -94,6 +94,25 @@ public class Polygon implements Geometry {
 
    @Override
    public List<Point> findIntersections(Ray ray) {
-      return null;
+      //first check if has intersection with the plane
+      List<Point> intersections = plane.findIntersections(ray);
+      if (intersections == null)
+         return null;
+      Point rayP0 = ray.getHead();
+      Vector rayDir = ray.getDirections();
+      int n = vertices.size();
+      Vector[] edgeVectors = new Vector[n];
+      //calc all the vectors from p0 to all the edges
+      for (int i = 0; i < n; ++i)
+         edgeVectors[i] = vertices.get(i).subtract(rayP0);
+      double[] scalars = new double[n];
+      //calc all the dotProduct with the rayDir and the normal of each two nearby vectors in edgeVectors
+      for (int i = 0; i < n - 1; ++i)
+         scalars[i] = rayDir.dotProduct(edgeVectors[i].crossProduct(edgeVectors[i + 1]));
+      scalars[n - 1] = rayDir.dotProduct(edgeVectors[n - 1].crossProduct(edgeVectors[0]));
+      for (int i = 0; i < n - 1; ++i)
+         if (alignZero(scalars[i] * scalars[i + 1]) <= 0)
+            return null;
+      return List.of(intersections.getFirst());
    }
 }
