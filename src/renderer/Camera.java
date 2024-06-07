@@ -152,7 +152,27 @@ public class Camera implements Cloneable{
     }
 
     public Ray constructRay(int nX, int nY, int j, int i){
-        return null;
+        //the center point of the view plane
+        Point pc= p0.add(vTo.scale(distance));
+
+        if (nY == 0 || nX == 0) {
+            throw new IllegalArgumentException("It is impossible to divide by 0");
+        }
+
+        //the size of the height and width of a pixel
+        double Ry = height/nY;
+        double Rx = width/nX;
+
+        //calculate the number of steps right left up and down
+        double Yi= -(i- (double) (nY - 1) /2)*Ry;
+        double Xj= (j- (double) (nX - 1) /2)*Rx;
+
+        Point pIJ=pc;
+        if(!isZero(Xj))
+            pIJ=pIJ.add(vRight.scale(Xj));
+        if(!isZero(Yi))
+            pIJ=pIJ.add(vUp.scale(Yi));
+        return new Ray(p0,pIJ.subtract(p0));
     }
   /**-----------------Getters---------------------------------*/
     public Vector getvTo() {
