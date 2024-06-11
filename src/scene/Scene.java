@@ -3,6 +3,7 @@ package scene;
 import geometries.Geometries;
 import lighting.AmbientLight;
 import primitives.Color;
+import java.io.File;
 
 /**
  * The {@code Scene} class represents a 3D scene containing various geometric shapes,
@@ -21,6 +22,8 @@ public class Scene {
     public Scene(String name) {
         this.name = name;
     }
+
+
 
     /**
      * Sets the background color of the scene.
@@ -51,4 +54,5 @@ public class Scene {
         this.geometries = geometries;
         return this;
     }
+
 }
