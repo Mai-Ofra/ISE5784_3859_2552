@@ -70,16 +70,25 @@ public class Ray {
             return head;
         return head.add(directions.scale(t));
     }
+
+    /**
+     * Finds the closest point to the head point from a list of points.
+     * @param pointList the list of points that the ray go throw
+     * @return the point from the list that is closest to the head point,
+     *         or null if the list is empty
+     */
     public Point findClosestPoint(List<Point> pointList)
     {
         if(pointList.isEmpty())
             return null;
+        // Initialize the minimum distance and closest point with the first point in the list
         double min= pointList.getFirst().distanceSquared(head);
         Point minPoint=pointList.getFirst();
         double distanceSquared;
         for (int i = 1; i < pointList.size(); i++)
         {
             distanceSquared= pointList.get(i).distanceSquared(head);
+            // Update the minimum distance and closest point if a closer point is found
             if(min>distanceSquared) {
                 min = distanceSquared;
                 minPoint = pointList.get(i);

@@ -39,7 +39,7 @@ class TubeTest {
         // TC01: test case when (p-p0) is orthogonal to the ray of the tube
         assertEquals(
                 new Vector(0,-4,0).normalize(),
-                t.getNormal(new Point(0,0,0)),
+                t.getNormal(Point.ZERO),
                 "get normal doesnt work correctly");
     }
 

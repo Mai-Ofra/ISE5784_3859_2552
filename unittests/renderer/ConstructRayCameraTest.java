@@ -3,6 +3,8 @@ package renderer;
 import geometries.*;
 import org.junit.jupiter.api.Test;
 import primitives.*;
+import scene.Scene;
+
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -10,6 +12,14 @@ import static org.junit.jupiter.api.Assertions.*;
  * Test class for {@link renderer.Camera#constructRay(int, int, int, int)}
  */
 class ConstructRayCameraTest {
+    private final Camera.Builder cameraBuilder = Camera.getBuilder()
+            .setRayTracer(new SimpleRayTracer(new Scene("Test")))
+            .setImageWriter(new ImageWriter("Test", 1, 1))
+            .setLocation(Point.ZERO)
+            .setDirection(Vector.Z.scale(-1),Vector.Y)
+            .setViewPlaneDistance(1)
+            .setViewPlaneSize(3,3);
+
     /**
      * Helper method to test the number of intersections between rays from the camera
      * and a given geometric shape.
@@ -29,20 +39,11 @@ class ConstructRayCameraTest {
             }
         assertEquals(expected,counter,"wrong number of intersections in"+ testType);
     }
-    // Direction vectors
-    Vector minusZ=new Vector(0,0,-1);
-    Vector y = new Vector(0,1,0);
     // Camera instances
-    Camera camera000=Camera.getBuilder()
-            .setViewPlaneSize(3,3)
-            .setViewPlaneDistance(1)
-            .setLocation(Point.ZERO)
-            .setDirection(minusZ,y).build();
-    Camera camera1=Camera.getBuilder()
-            .setViewPlaneSize(3,3)
-            .setViewPlaneDistance(1)
+    Camera camera000=cameraBuilder.build();
+    Camera camera1=cameraBuilder
             .setLocation(new Point(0,0,0.5))
-            .setDirection(minusZ,y).build();
+            .build();
     /**
      * Test cases for ray-sphere intersections.
      */

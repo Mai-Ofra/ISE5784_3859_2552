@@ -37,7 +37,8 @@ public class RenderTests {
                 .setBackground(new Color(75, 127, 90));
 
         // right
-       Camera camera1 = camera.setImageWriter(new ImageWriter("base render test", 1000, 1000))
+        Camera camera1 = camera
+                .setImageWriter(new ImageWriter("base render test", 1000, 1000))
                 .build();
         camera1.renderImage();
         camera1.printGrid(100, new Color(YELLOW));

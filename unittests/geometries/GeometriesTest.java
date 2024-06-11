@@ -30,8 +30,7 @@ class GeometriesTest {
                 new Point(1, 1, 0));
         Geometries g1 = new Geometries(sphere1, triangle1, plane);
         assertEquals(2, g1.findIntersections(new Ray(
-                new Point(0, 0, 1),
-                new Vector(1, 0, 0)))
+                new Point(0, 0, 1),Vector.X))
                 .size(), "Some of geometries intersect but not all");
 
         // =============== Boundary Values Tests ==================
@@ -45,8 +44,7 @@ class GeometriesTest {
         //TC12: none of the geometries intersect
         Geometries g3 = new Geometries(sphere, plane);
         assertNull(g3.findIntersections(new Ray(
-                new Point(0, 0, 1),
-                new Vector(1, 0, 0))),
+                new Point(0, 0, 1),Vector.X)),
                 "None of the geometries intersect");
 
         //TC13: one of the geometries intersects
@@ -57,7 +55,7 @@ class GeometriesTest {
         Geometries g4 = new Geometries(sphere, triangle);
         assertEquals(1, g4.findIntersections(new Ray(
                 new Point(1, 0, 0),
-                new Vector(0, 0, 1))).size(),
+                Vector.Z)).size(),
                 "Wrong number of points");
 
         //TC14: all geometries intersect
@@ -70,7 +68,7 @@ class GeometriesTest {
         //triangle that intersects ray with 1 point
         Geometries g5 = new Geometries(sphere1, triangle1, plane2);
         assertEquals(3,
-                g5.findIntersections(new Ray(new Point(0, 0, 1), new Vector(1, 0, 0)))
+                g5.findIntersections(new Ray(new Point(0, 0, 1), Vector.X))
                         .size(),"all geometries intersect");
     }
 }
