@@ -4,6 +4,7 @@ import primitives.*;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Stream;
 
 import static primitives.Util.*;
 
@@ -59,9 +60,9 @@ public class Sphere extends RadialGeometry{
             if (tm < radius || isZero(tm - radius)) {
                 return List.of(center.add(ray.getDirections().scale(radius)));
             } else {
-                return List.of(
+                return Stream.of(
                         center.add(ray.getDirections().scale(radius)),
-                        center.add(ray.getDirections().scale(-radius))).stream().
+                        center.add(ray.getDirections().scale(-radius))).
                         sorted(Comparator.comparingDouble(p ->p.distance(ray.getHead()))).toList();
             }
         }
@@ -100,9 +101,7 @@ public class Sphere extends RadialGeometry{
         // Calculate the intersection points
         Point p1 = ray.getPoint(tm - th);
         Point p2 = ray.getPoint(tm + th);
-        return List.of(p1, p2).stream().
+        return Stream.of(p1, p2).
                 sorted(Comparator.comparingDouble(p ->p.distance(ray.getHead()))).toList();
     }
-
-
 }

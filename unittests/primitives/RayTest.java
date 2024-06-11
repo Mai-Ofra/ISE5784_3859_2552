@@ -19,7 +19,7 @@ class RayTest {
     void testGetPoint() {
         // ============ Equivalence Partitions Test ==============
         // TC01: when the distance is positive
-        Ray ray = new Ray(new Point(1,0,0),new Vector(1,0,0));
+        Ray ray = new Ray(new Point(1,0,0),Vector.X);
         double t = -2;
         assertEquals(new Point(-1,0,0),ray.getPoint(t),"Wrong point");
 

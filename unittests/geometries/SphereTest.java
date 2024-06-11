@@ -28,7 +28,7 @@ class SphereTest {
         // TC01: test if the ctor throw error when the radius is negative
         assertThrows(
                 IllegalArgumentException.class,
-                () -> new Sphere(new Point(0, 0, 0), -4),
+                () -> new Sphere(Point.ZERO, -4),
                 "ctor must throw error when radius is negative");
     }
 
@@ -38,10 +38,10 @@ class SphereTest {
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
-        Sphere sp = new Sphere(new Point(0, 0, 0), 1);
+        Sphere sp = new Sphere(Point.ZERO, 1);
 
         // TC01: the point is on the sphere
-        assertEquals(new Vector(1, 0, 0),
+        assertEquals(Vector.X,
                 sp.getNormal(new Point(1, 0, 0)),
                 "the normal to the sphere is not correct");
     }
@@ -63,7 +63,6 @@ class SphereTest {
         final var exp5 = List.of(p200);
         final Vector v310 = new Vector(3, 1, 0);
         final Vector v110 = new Vector(1, 1, 0);
-        final Vector v100 = new Vector(1, 0, 0);
         final Point p01 = new Point(-1, 0, 0);
 
         // ============ Equivalence Partitions Tests ==============
@@ -111,48 +110,48 @@ class SphereTest {
         assertEquals(exp4, result4, "Ray crosses sphere");
 
         // TC14: Ray starts at sphere and goes inside (1 point)
-        final var result5 = sphere.findIntersections(new Ray(Point.ZERO, v100))
+        final var result5 = sphere.findIntersections(new Ray(Point.ZERO, Vector.X))
                 .stream().sorted(Comparator.comparingDouble(p ->p.distance(Point.ZERO))).toList();
         assertEquals(1, result5.size(), "Wrong number of points");
         assertEquals(exp5, result5, "Ray crosses sphere");
 
         // TC15: Ray starts inside (1 point)
-        final var result6 = sphere.findIntersections(new Ray(new Point(1.5,0,0), v100))
+        final var result6 = sphere.findIntersections(new Ray(new Point(1.5,0,0), Vector.X))
                 .stream().sorted(Comparator.
                         comparingDouble(p ->p.distance(new Point(1.5,0,0)))).toList();
         assertEquals(1, result6.size(), "Wrong number of points");
         assertEquals(exp5, result6, "Ray crosses sphere");
 
         // TC16: Ray starts at the center (1 point)
-        final var result7 = sphere.findIntersections(new Ray(p100, v100))
+        final var result7 = sphere.findIntersections(new Ray(p100, Vector.X))
                 .stream().sorted(Comparator.comparingDouble(p ->p.distance(p100))).toList();
         assertEquals(1, result7.size(), "Wrong number of points");
         assertEquals(exp5, result7, "Ray crosses sphere");
 
      /**/   // TC17: Ray starts at sphere and goes outside (0 points)
-        assertNull(sphere.findIntersections(new Ray(p200,v100)),
-                "no intersaction with the ray, starts at the sphere");
+        assertNull(sphere.findIntersections(new Ray(p200,Vector.X)),
+                "no intersection with the ray, starts at the sphere");
 
      /**/   // TC18: Ray starts after sphere (0 points)
-        assertNull(sphere.findIntersections(new Ray(new Point(3,0,0),v100)),
+        assertNull(sphere.findIntersections(new Ray(new Point(3,0,0),Vector.X)),
                 "Ray's line out of sphere");
 
         // **** Group: Ray's line is tangent to the sphere (all tests 0 points)
         // TC19: Ray starts before the tangent point
-        assertNull(sphere.findIntersections(new Ray(new Point(0,1,0),v100)),
+        assertNull(sphere.findIntersections(new Ray(new Point(0,1,0),Vector.X)),
                 "tangent ray");
 
         // TC20: Ray starts at the tangent point
-        assertNull(sphere.findIntersections(new Ray(gp110,v100)),
+        assertNull(sphere.findIntersections(new Ray(gp110,Vector.X)),
                 "tangent ray that start on the sphere");
 
         // TC21: Ray starts after the tangent point
-        assertNull(sphere.findIntersections(new Ray(new Point(2,1,0),v100)),
+        assertNull(sphere.findIntersections(new Ray(new Point(2,1,0),Vector.X)),
                 "Ray's line out of sphere");
 
         // **** Group: Special cases
         // TC22: Ray's line is outside, ray is orthogonal to ray start to sphere's center line
-        assertNull(sphere.findIntersections(new Ray(new Point(1,2,0),v100)),
+        assertNull(sphere.findIntersections(new Ray(new Point(1,2,0),Vector.X)),
                 "Ray's line out of sphere");
 
     }

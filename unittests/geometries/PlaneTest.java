@@ -68,7 +68,8 @@ class PlaneTest {
         // generate the test result
         Vector result = planeE.getNormal();
         // ensure |result| = 1
-        assertEquals(1, result.length(), DELTA, "Plane's normal is not a unit vector");
+        assertEquals(1, result.length(), DELTA,
+                "Plane's normal is not a unit vector");
         // ensure the result is orthogonal to two not parallel vectors on the plane
         Vector v1 = (new Point(0,0,1)).subtract(new Point(0,1,0));
         Vector v2 = (new Point(0,0,1)).subtract(new Point(1,0,0));
@@ -78,11 +79,9 @@ class PlaneTest {
 
     @Test
     void testFindIntersections() {
-        Vector v001 = new Vector(0,0,1);
         Vector v111 = new Vector(1,1,1);
-        Vector v100 = new Vector(1,0,0);
         Point p001 = new Point(0,0,1);
-        Plane plane = new Plane(p001,v001);
+        Plane plane = new Plane(p001,Vector.Z);
         final var exp1 = List.of(new Point(1,1,1));
         final var exp2 = List.of(p001);
 
@@ -102,26 +101,26 @@ class PlaneTest {
         // =============== Boundary Values Tests ==================
         // **** Group: Ray is parallel to the plane
         // TC11:the ray included in the plane (0 point)
-        assertNull(plane.findIntersections(new Ray(new Point(0.5,0.5,1),v100)),
+        assertNull(plane.findIntersections(new Ray(new Point(0.5,0.5,1),Vector.X)),
                 "Ray include the plane");
 
         // TC12: the ray does not included in the plane (0 point)
-        assertNull(plane.findIntersections(new Ray(new Point(0,0,2),v100)),
+        assertNull(plane.findIntersections(new Ray(new Point(0,0,2),Vector.X)),
                 "Ray does not include the plane");
 
         // **** Group: Ray is orthogonal to the plane
         // TC13: Ray starts before the plane (1 point)
-        final var result2 = plane.findIntersections(new Ray(Point.ZERO, v001))
+        final var result2 = plane.findIntersections(new Ray(Point.ZERO, Vector.Z))
                 .stream().sorted(Comparator.comparingDouble(p ->p.distance(Point.ZERO))).toList();
         assertEquals(1, result2.size(), "Wrong number of points");
         assertEquals(exp2, result2, "Ray crosses plane");
 
         // TC14: Ray starts at plane (0 point)
-        assertNull(plane.findIntersections(new Ray(new Point(0.5,0.5,1),v001)),
+        assertNull(plane.findIntersections(new Ray(new Point(0.5,0.5,1),Vector.Z)),
                 "Ray orthogonal to the plane, starts at it");
 
         // TC15: Ray starts after the plane (0 point)
-        assertNull(plane.findIntersections(new Ray(new Point(0,0,2),v001)),
+        assertNull(plane.findIntersections(new Ray(new Point(0,0,2),Vector.Z)),
                 "Ray orthogonal to the plane, starts after it");
 
         // **** Group: The ray not orthogonal and not parallel to the plane

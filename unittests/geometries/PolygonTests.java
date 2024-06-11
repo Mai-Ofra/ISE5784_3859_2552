@@ -2,7 +2,6 @@ package geometries;
 
 import static org.junit.jupiter.api.Assertions.*;
 import org.junit.jupiter.api.Test;
-import geometries.*;
 import primitives.*;
 
 import java.util.List;
@@ -144,7 +143,10 @@ public class PolygonTests {
         List<Point> result = rectangle.findIntersections(
                 new Ray(new Point(0.25d, 3d, 0.25d), new Vector(0, -1, 0)));
         assertEquals(1, result.size(), "Wrong number of points");
-        assertEquals(new Point(0.25, 0, 0.25), result.getFirst(), "wrong point was found");
+        assertEquals(
+                new Point(0.25, 0, 0.25),
+                result.getFirst(),
+                "wrong point was found");
         
         // TC02: intersection with plane but outside the Polygon against edge (0 points)
         result = rectangle.findIntersections(
