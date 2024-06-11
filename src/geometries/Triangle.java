@@ -27,7 +27,7 @@ public class Triangle extends Polygon {
     }
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         List<Point> intersections = plane.findIntersections(ray);
         //no intersections
         if(intersections==null)
@@ -42,7 +42,7 @@ public class Triangle extends Polygon {
         double vxn2=alignZero(ray.getDirections().dotProduct(n2));
         double vxn3=alignZero(ray.getDirections().dotProduct(n3));
         if((vxn1<0&&vxn2<0&&vxn3<0)||(vxn1>0&&vxn2>0&&vxn3>0))
-            return intersections;
+            return  List.of(new GeoPoint(this, intersections.getFirst()));
         return null;
     }
 }

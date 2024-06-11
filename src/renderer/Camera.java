@@ -214,11 +214,12 @@ public class Camera implements Cloneable{
     /**
      * Renders the image by casting rays through each pixel and tracing them.
      */
-    public void renderImage()
+    public Camera renderImage()
     {
         for(int i=0; i<imageWriter.getNx();i++)
             for (int j=0;j<imageWriter.getNy();j++)
                 castRay(imageWriter.getNx(),imageWriter.getNy(),j,i);
+        return this;
     }
 
     /**
@@ -226,7 +227,7 @@ public class Camera implements Cloneable{
      * @param interval the interval between grid lines
      * @param color    the color of the grid lines
      */
-    public void printGrid(int interval, Color color)
+    public Camera printGrid(int interval, Color color)
     {
         for(int i=0; i<imageWriter.getNx();i+=interval)
             for (int j=0;j<imageWriter.getNy();j++)
@@ -236,6 +237,7 @@ public class Camera implements Cloneable{
             for (int j=0;j<imageWriter.getNx();j++)
                 imageWriter.writePixel(j,i,color);
         writeToImage();
+        return this;
     }
 
     /**

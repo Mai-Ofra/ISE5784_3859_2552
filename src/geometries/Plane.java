@@ -8,7 +8,7 @@ import static primitives.Util.*;
 /**
  * Class Plane present a geometric flat Infinite surface
  */
-public class Plane implements Geometry{
+public class Plane extends Geometry{
     private final Point p;
     private final Vector normal;
 
@@ -57,7 +57,7 @@ public class Plane implements Geometry{
     }
 
     @Override
-    public List<Point> findIntersections(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         //in case the ray starts at point that present the plane
         if(p.equals(ray.getHead()))
             return null;
@@ -72,6 +72,6 @@ public class Plane implements Geometry{
         if (t <= 0) {
             return null;
         }
-        return List.of(ray.getPoint(t));
+        return List.of(new GeoPoint(this,ray.getPoint(t)));
     }
 }
