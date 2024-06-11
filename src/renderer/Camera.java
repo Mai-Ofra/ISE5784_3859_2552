@@ -81,6 +81,16 @@ public class Camera implements Cloneable{
             return this;
         }
 
+        public Builder setImageWriter(ImageWriter imageWriter) {
+            camera.imageWriter=imageWriter;
+            return this;
+        }
+
+        public Builder setRayTracer(RayTracerBase rayTracer) {
+            camera.rayTracer=rayTracer;
+            return this;
+        }
+
     /**
      * Builds and returns the Camera instance.
      * @return the constructed Camera instance
@@ -108,6 +118,12 @@ public class Camera implements Cloneable{
             if (camera.p0 == null)
                 throw new MissingResourceException(MISSING_RENDER_DATA_ERROR,
                         "Missing p0 value", Camera.class.getName());
+            if (camera.imageWriter == null)
+                throw new MissingResourceException(MISSING_RENDER_DATA_ERROR,
+                        "Missing imageWriter value", Camera.class.getName());
+            if (camera.rayTracer == null)
+                throw new MissingResourceException(MISSING_RENDER_DATA_ERROR,
+                        "Missing rayTracer value", Camera.class.getName());
             //make sure all values are correct
             if (alignZero(camera.height) <= 0 || alignZero(camera.width) <= 0)
                 throw new IllegalArgumentException("Height and width must be greater than zero");
@@ -128,13 +144,15 @@ public class Camera implements Cloneable{
         }
     }
 
-    private Vector vTo = null;
-    private Vector vUp = null;
+    private Vector vTo;
+    private Vector vUp;
     private Vector vRight;
-    private Point p0 = null;
+    private Point p0;
     private double height = 0d;
     private double width = 0d;
     private double distance = 0d;
+    private ImageWriter imageWriter;
+    private RayTracerBase rayTracer;
 
     /**
      * private empty ctor
@@ -174,10 +192,37 @@ public class Camera implements Cloneable{
             pIJ=pIJ.add(vUp.scale(Yi));
         return new Ray(p0,pIJ.subtract(p0));
     }
-  /**-----------------Getters---------------------------------*/
-    public Vector getvTo() {
-        return vTo;
+
+    public void renderImage()
+    {
+        for(int i=0; i<imageWriter.getNx();i++)
+            for (int j=0;j<imageWriter.getNy();j++)
+                castRay(imageWriter.getNx(),imageWriter.getNy(),j,i);
     }
+
+    public void printGrid(int interval, Color color)
+    {
+        for(int i=0; i<imageWriter.getNx();i+=interval)
+            for (int j=0;j<imageWriter.getNy();j++)
+                imageWriter.writePixel(i,j,color);
+
+        for(int i=0; i<imageWriter.getNy();i+=interval)
+            for (int j=0;j<imageWriter.getNx();j++)
+                imageWriter.writePixel(j,i,color);
+        writeToImage();
+    }
+    public void writeToImage()
+    {
+        imageWriter.writeToImage();
+    }
+    private void castRay(int Nx,int Ny, int column, int row)
+    {
+        Ray ray = constructRay(Nx,Ny,column,row);
+        Color color=rayTracer.traceRay(ray);
+        imageWriter.writePixel(column,row,color);
+    }
+  /**-----------------Getters---------------------------------*/
+    public Vector getvTo() {return vTo;}
     public Vector getvUp() {
         return vUp;
     }

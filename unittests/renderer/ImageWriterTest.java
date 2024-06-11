@@ -15,11 +15,11 @@ class ImageWriterTest {
 
         for(int i=0; i<imageWriter.getNx();i+=50)
             for (int j=0;j<imageWriter.getNy();j++)
-                imageWriter.writePixel(i,j,new Color(java.awt.Color.black));
+                imageWriter.writePixel(i,j,Color.BLACK);
 
         for(int i=0; i<imageWriter.getNy();i+=50)
             for (int j=0;j<imageWriter.getNx();j++)
-                imageWriter.writePixel(j,i,new Color(java.awt.Color.black));
+                imageWriter.writePixel(j,i,Color.BLACK);
 
         imageWriter.writeToImage();
     }

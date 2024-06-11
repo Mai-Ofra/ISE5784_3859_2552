@@ -6,7 +6,9 @@ package primitives;
  * The class inherits from the Point class
  */
 public class Vector extends Point{
-
+    public static Vector X=new Vector(1,0,0);
+    public static Vector Y=new Vector(0,1,0);
+    public static Vector Z=new Vector(0,0,1);
     /**
      * parameter ctor
      * @param x the first coordinate of this vector
