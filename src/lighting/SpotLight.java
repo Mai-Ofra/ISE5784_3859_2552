@@ -15,19 +15,30 @@ public class SpotLight extends PointLight{
         this.direction=direction;
     }
 
+    @Override
+    public Color getIntensity(Point p) {
+        return intensity.
+                scale(Math.max(0,direction.dotProduct(super.getL(p)))).scale(denominator(p));
+    }
+
+    @Override
+    public Vector getL(Point p) {
+        return super.getL(p).normalize();
+    }
+
     /**-----------------Setters---------------------------------*/
     @Override
-    public SpotLight setKC(double KC) {
-        return (SpotLight) super.setKC(KC);
+    public SpotLight setKc(double kc) {
+        return (SpotLight) super.setKc(kc);
     }
 
     @Override
-    public SpotLight setKL(double KL) {
-        return (SpotLight)super.setKL(KL);
+    public SpotLight setKl(double kl) {
+        return (SpotLight)super.setKl(kl);
     }
 
     @Override
-    public SpotLight setKQ(double KQ) {
-        return (SpotLight)super.setKQ(KQ);
+    public SpotLight setKq(double kq) {
+        return (SpotLight)super.setKq(kq);
     }
 }

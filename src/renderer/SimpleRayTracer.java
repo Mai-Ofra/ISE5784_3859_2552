@@ -1,11 +1,11 @@
 package renderer;
 
 import geometries.Intersectable;
-import primitives.Color;
-import primitives.Point;
-import primitives.Ray;
+import lighting.LightSource;
+import primitives.*;
 import scene.Scene;
 
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -31,7 +31,7 @@ public class SimpleRayTracer extends RayTracerBase{
         List<Intersectable.GeoPoint> pointList = scene.geometries.findGeoIntersections(ray);
         return pointList == null
                 ? scene.background
-                : calcColor(ray.findClosestGeoPoint(pointList));
+                : calcColor(ray.findClosestGeoPoint(pointList), ray);
     }
 
     /**
@@ -39,8 +39,25 @@ public class SimpleRayTracer extends RayTracerBase{
      * @param geoPoint the point at which to calculate the color
      * @return the color at the given point
      */
-    private Color calcColor(Intersectable.GeoPoint geoPoint)
+    private Color calcColor(Intersectable.GeoPoint geoPoint, Ray ray)
     {
-        return scene.ambientLight.getIntensity().add(geoPoint.geometry.getEmission());
+        Double3 Kd = geoPoint.geometry.getMaterial().kd;
+        Double3 Ks = geoPoint.geometry.getMaterial().ks;
+        Vector normal = geoPoint.geometry.getNormal(geoPoint.point);
+        Vector minusV= ray.getDirections().scale(-1);
+        double nsh = geoPoint.geometry.getMaterial().Shininess;
+        Color pongAddition=Color.BLACK;
+        List<LightSource> lights= scene.lights;
+        for (LightSource light : lights) {
+            Vector l = light.getL(geoPoint.point);
+            Vector r = l.add(normal.scale(l.dotProduct(normal)).scale(-2));
+            double LxN = Math.abs(l.dotProduct(normal));
+            Double3 specular = Ks.scale(Math.pow(Math.max(0, minusV.dotProduct(r)), nsh));
+            Double3 diffuse = Kd.scale(LxN);
+            pongAddition.add(light.getIntensity(geoPoint.point)
+                    .scale(specular.add(diffuse)));
+        }
+        return scene.ambientLight.getIntensity()
+                .add(geoPoint.geometry.getEmission()).add(pongAddition);
     }
 }
