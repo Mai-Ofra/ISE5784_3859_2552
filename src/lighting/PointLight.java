@@ -2,6 +2,7 @@ package lighting;
 
 import primitives.Color;
 import primitives.Point;
+import primitives.Util;
 import primitives.Vector;
 
 public class PointLight extends Light implements LightSource{
@@ -30,7 +31,7 @@ public class PointLight extends Light implements LightSource{
 
     protected double denominator(Point p){
         double distance = p.distance(position);
-        return 1/(kc + kl *distance+ kq *distance*distance);
+        return Util.alignZero(1/(kc + kl *distance+ kq *distance*distance));
     }
     /**-----------------Setters---------------------------------*/
     public PointLight setKc(double kc) {

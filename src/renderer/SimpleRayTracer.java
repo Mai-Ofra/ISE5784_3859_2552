@@ -44,7 +44,7 @@ public class SimpleRayTracer extends RayTracerBase{
         Double3 Kd = geoPoint.geometry.getMaterial().kd;
         Double3 Ks = geoPoint.geometry.getMaterial().ks;
         Vector normal = geoPoint.geometry.getNormal(geoPoint.point);
-        Vector minusV= ray.getDirections().scale(-1);
+        Vector V= ray.getDirections();
         double nsh = geoPoint.geometry.getMaterial().Shininess;
         Color pongAddition=Color.BLACK;
         List<LightSource> lights= scene.lights;
@@ -52,11 +52,13 @@ public class SimpleRayTracer extends RayTracerBase{
             Vector l = light.getL(geoPoint.point);
             Vector r = l.add(normal.scale(l.dotProduct(normal)).scale(-2));
             double LxN = Math.abs(l.dotProduct(normal));
-            Double3 specular = Ks.scale(Math.pow(Math.max(0, minusV.dotProduct(r)), nsh));
-            Double3 diffuse = Kd.scale(LxN);
-            Color lightIntensity = light.getIntensity(geoPoint.point);
-            pongAddition.add((lightIntensity)
-                    .scale(specular.add(diffuse)));
+            if(l.dotProduct(normal)*V.dotProduct(normal)>=0) {
+                Double3 specular = Ks.scale(Math.pow(Math.max(0, V.scale(-1).dotProduct(r)), nsh));
+                Double3 diffuse = Kd.scale(LxN);
+                Color lightIntensity = light.getIntensity(geoPoint.point);
+                pongAddition = pongAddition.add((lightIntensity)
+                        .scale(specular.add(diffuse)));
+            }
             }
         return scene.ambientLight.getIntensity()
                 .add(geoPoint.geometry.getEmission()).add(pongAddition);
