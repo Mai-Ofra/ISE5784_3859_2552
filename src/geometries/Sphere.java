@@ -11,12 +11,13 @@ import static primitives.Util.*;
 /**
  * class to present 3D Sphere
  */
-public class Sphere extends RadialGeometry{
+public class Sphere extends RadialGeometry {
     private final Point center;
 
 
     /**
      * parameters ctor
+     *
      * @param center center point of the Sphere
      * @param radius radius of the Sphere (sent to super)
      */
@@ -34,7 +35,7 @@ public class Sphere extends RadialGeometry{
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
         // If the ray starts at the sphere's center
         if (ray.getHead().equals(center)) {
-            return List.of(new GeoPoint(this,center.add(ray.getDirections().scale(radius))));
+            return List.of(new GeoPoint(this, center.add(ray.getDirections().scale(radius))));
         }
 
         // Vector from ray head to sphere center
@@ -48,7 +49,7 @@ public class Sphere extends RadialGeometry{
         if (uLength == radius) {
             if (tm > 0)//if the angle smaller than 90 degrees
             {
-                return List.of(new GeoPoint(this,ray.getPoint(tm + tm)));
+                return List.of(new GeoPoint(this, ray.getPoint(tm + tm)));
             } else//The ray is tangent to the sphere or goes outside (no intersections)
             {
                 return null;
@@ -58,12 +59,12 @@ public class Sphere extends RadialGeometry{
         // If the ray's direction is aligned with vector u
         if (u.normalize().equals(ray.getDirections())) {
             if (tm < radius || isZero(tm - radius)) {
-                return List.of(new GeoPoint(this,center.add(ray.getDirections().scale(radius))));
+                return List.of(new GeoPoint(this, center.add(ray.getDirections().scale(radius))));
             } else {
                 return Stream.of(
-                        new GeoPoint(this,center.add(ray.getDirections().scale(radius))),
-                        new GeoPoint(this,center.add(ray.getDirections().scale(-radius)))).
-                        sorted(Comparator.comparingDouble(GeoPoint ->GeoPoint.point.distance(ray.getHead())))
+                                new GeoPoint(this, center.add(ray.getDirections().scale(radius))),
+                                new GeoPoint(this, center.add(ray.getDirections().scale(-radius)))).
+                        sorted(Comparator.comparingDouble(GeoPoint -> GeoPoint.point.distance(ray.getHead())))
                         .toList();
             }
         }
@@ -72,7 +73,7 @@ public class Sphere extends RadialGeometry{
             if (uLength > radius) {
                 return null;
             } else {
-                return List.of(new GeoPoint(this,center.add(ray.getDirections().scale(radius))));
+                return List.of(new GeoPoint(this, center.add(ray.getDirections().scale(radius))));
             }
         }
 
@@ -96,13 +97,13 @@ public class Sphere extends RadialGeometry{
 
         // If the ray's head is inside the sphere
         if (uLength < radius) {
-            return List.of(new GeoPoint(this,ray.getPoint(tm + th)));
+            return List.of(new GeoPoint(this, ray.getPoint(tm + th)));
         }
 
         // Calculate the intersection points
         Point p1 = ray.getPoint(tm - th);
         Point p2 = ray.getPoint(tm + th);
-        return Stream.of(new GeoPoint(this,p1), new GeoPoint(this,p2)).
-                sorted(Comparator.comparingDouble(GeoPoint ->GeoPoint.point.distance(ray.getHead()))).toList();
+        return Stream.of(new GeoPoint(this, p1), new GeoPoint(this, p2)).
+                sorted(Comparator.comparingDouble(GeoPoint -> GeoPoint.point.distance(ray.getHead()))).toList();
     }
 }

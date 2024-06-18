@@ -7,15 +7,7 @@ import java.util.Objects;
  * interface to present all shapes that are intersectable
  */
 public abstract class Intersectable {
-    /**
-     * method that return all the points that the ray intersect with
-     * @param ray The ray with which you are looking for intersection points on the shape
-     * @return list of all intersection points on the shape
-     */
-    public final List<Point> findIntersections(Ray ray) {
-        List<GeoPoint> geoList = findGeoIntersections(ray);
-        return geoList == null ? null
-                : geoList.stream().map(gp -> gp.point).toList();}
+
     public static class GeoPoint {
         public Geometry geometry;
         public Point point;
@@ -49,6 +41,17 @@ public abstract class Intersectable {
                     ", point=" + point;
         }
     }
+
+    /**
+     * method that return all the points that the ray intersect with
+     * @param ray The ray with which you are looking for intersection points on the shape
+     * @return list of all intersection points on the shape
+     */
+    public final List<Point> findIntersections(Ray ray) {
+        List<GeoPoint> geoList = findGeoIntersections(ray);
+        return geoList == null ? null
+                : geoList.stream().map(gp -> gp.point).toList();}
+
     public final List<GeoPoint> findGeoIntersections(Ray ray)
     {
         return findGeoIntersectionsHelper(ray);
