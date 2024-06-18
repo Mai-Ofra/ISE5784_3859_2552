@@ -55,7 +55,7 @@ public class SimpleRayTracer extends RayTracerBase{
             Double3 specular = Ks.scale(Math.pow(Math.max(0, minusV.dotProduct(r)), nsh));
             Double3 diffuse = Kd.scale(LxN);
             Color lightIntensity = light.getIntensity(geoPoint.point);
-            pongAddition.add((lightIntensity)
+            pongAddition = pongAddition.add((lightIntensity)
                     .scale(specular.add(diffuse)));
             }
         return scene.ambientLight.getIntensity()
