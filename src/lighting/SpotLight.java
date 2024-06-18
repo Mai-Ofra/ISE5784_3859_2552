@@ -2,6 +2,7 @@ package lighting;
 
 import primitives.Color;
 import primitives.Point;
+import primitives.Util;
 import primitives.Vector;
 
 public class SpotLight extends PointLight{
@@ -12,13 +13,13 @@ public class SpotLight extends PointLight{
      */
     public SpotLight(Color intensity, Point position,Vector direction) {
         super(intensity, position);
-        this.direction=direction;
+        this.direction=direction.normalize();
     }
 
     @Override
     public Color getIntensity(Point p) {
         return intensity.
-                scale(Math.max(0,direction.dotProduct(super.getL(p)))).scale(denominator(p));
+                scale(Math.max(0, Util.alignZero(direction.dotProduct(super.getL(p))))).scale(denominator(p));
     }
 
     @Override
