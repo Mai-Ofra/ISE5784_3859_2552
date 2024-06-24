@@ -5,8 +5,9 @@ import lighting.LightSource;
 import primitives.*;
 import scene.Scene;
 
-import java.util.LinkedList;
 import java.util.List;
+
+import static primitives.Util.alignZero;
 
 /**
  * Simple implementation of a ray tracer.
@@ -44,43 +45,42 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     private Color calcColor(Intersectable.GeoPoint geoPoint, Ray ray) {
         // Retrieve material properties
-        Double3 diffuseCoefficient = geoPoint.geometry.getMaterial().kd;
-        Double3 specularCoefficient = geoPoint.geometry.getMaterial().ks;
-        double shininess = geoPoint.geometry.getMaterial().Shininess;
+        Double3 Kd = geoPoint.geometry.getMaterial().kd;
+        Double3 Ks = geoPoint.geometry.getMaterial().ks;
+        double nsh = alignZero(geoPoint.geometry.getMaterial().Shininess);
 
         // Calculate normal and view vectors
-        Vector normalVector = geoPoint.geometry.getNormal(geoPoint.point);
-        Vector viewVector = ray.getDirections();
+        Vector n = geoPoint.geometry.getNormal(geoPoint.point);
+        Vector V = ray.getDirections();
 
-        // Initialize accumulated light addition with black color
-        Color accumulatedLight = Color.BLACK;
+        // Initialize pongAddition with black color (no color)
+        Color pongAddition = Color.BLACK;
 
         // Iterate through all light sources in the scene
-        List<LightSource> lightSources = scene.lights;
-        for (LightSource lightSource : lightSources) {
-            // Calculate light vector and reflection vector
-            Vector lightVector = lightSource.getL(geoPoint.point);
-            Vector reflectionVector = lightVector.add(normalVector.scale(lightVector.dotProduct(normalVector)).scale(-2));
+        List<LightSource> lights = scene.lights;
+        for (LightSource light : lights) {
 
-            // Calculate dot products
-            double lightDotNormal = Math.abs(lightVector.dotProduct(normalVector));
-            double viewDotNormal = viewVector.dotProduct(normalVector);
+            Vector l = light.getL(geoPoint.point);
+            Vector r = l.add(n.scale(l.dotProduct(n)).scale(-2));
+
+            double LxN = alignZero(Math.abs(l.dotProduct(n)));
+            double VxN = alignZero(V.dotProduct(n));
 
             // Check if light and view vectors are on the same side of the surface
-            if (lightVector.dotProduct(normalVector) * viewDotNormal >= 0) {
+            if (l.dotProduct(n) * VxN >= 0) {
                 // Calculate specular and diffuse components
-                Double3 specularComponent = specularCoefficient.scale(Math.pow(Math.max(0, viewVector.scale(-1).dotProduct(reflectionVector)), shininess));
-                Double3 diffuseComponent = diffuseCoefficient.scale(lightDotNormal);
+                Double3 specular = Ks.scale(Math.pow(Math.max(0, V.scale(-1).dotProduct(r)), nsh));
+                Double3 diffuse = Kd.scale(LxN);
 
-                // Get light intensity and add to accumulated light
-                Color lightIntensity = lightSource.getIntensity(geoPoint.point);
-                accumulatedLight = accumulatedLight.add(lightIntensity.scale(specularComponent.add(diffuseComponent)));
+                // Get light intensity and add to pongAddition
+                Color lightIntensity = light.getIntensity(geoPoint.point);
+                pongAddition = pongAddition.add(lightIntensity.scale(specular.add(diffuse)));
             }
         }
 
         // Return the final color including ambient light and emission
         return scene.ambientLight.getIntensity()
                 .add(geoPoint.geometry.getEmission())
-                .add(accumulatedLight);
+                .add(pongAddition);
     }
 }

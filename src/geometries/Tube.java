@@ -6,6 +6,7 @@ import primitives.Vector;
 
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -29,7 +30,7 @@ public class Tube extends RadialGeometry{
     public Vector getNormal(Point p) {
         //calculate the distance between the head of the tube, and the center
         // of the tube next to the point that was received
-        double t = ray.getDirections().dotProduct(p.subtract(ray.getHead()));
+        double t = alignZero(ray.getDirections().dotProduct(p.subtract(ray.getHead())));
         //Boundary Values, when (p-p0) is orthogonal to the ray of the tube
         if (isZero(t))
             return p.subtract(ray.getHead()).normalize();

@@ -2,6 +2,7 @@ package geometries;
 import primitives.*;
 import java.util.List;
 
+import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
 /**
@@ -28,7 +29,7 @@ public class Cylinder extends Tube {
         if(p.equals(ray.getHead()))//if so, can't calc t
             return ray.getDirections().scale(-1);
         Vector pMinusPO = p.subtract(ray.getHead());
-        double t = ray.getDirections().dotProduct(pMinusPO);
+        double t = alignZero(ray.getDirections().dotProduct(pMinusPO));
         if (isZero(t))//if so, the point is on the bottom base
             return ray.getDirections().scale(-1);
         if (t == height)//if so, the point is on the top base

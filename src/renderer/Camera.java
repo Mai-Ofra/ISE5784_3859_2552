@@ -1,11 +1,6 @@
 package renderer;
-
 import primitives.*;
-
 import java.util.MissingResourceException;
-
-import static primitives.Util.alignZero;
-import static primitives.Util.isZero;
 
 /**
  * Class to represent a 3D camera.
@@ -26,7 +21,6 @@ public class Camera implements Cloneable {
 
         /**
          * Constructor that initializes the builder with an existing Camera instance.
-         *
          * @param camera the Camera instance to initialize the builder with
          */
         public Builder(Camera camera) {
@@ -35,7 +29,6 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the location of the camera.
-         *
          * @param p the location point
          * @return the current Builder instance for chaining
          */
@@ -46,7 +39,6 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the direction vectors of the camera.
-         *
          * @param vTo the forward direction vector
          * @param vUp the up direction vector
          * @return the current Builder instance for chaining
@@ -76,7 +68,6 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the distance of the view plane from the camera.
-         *
          * @param distance the distance value
          * @return the current Builder instance for chaining
          * @throws IllegalArgumentException if the distance is not greater than zero
@@ -88,7 +79,6 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the ImageWriter for the camera.
-         *
          * @param imageWriter the ImageWriter instance
          * @return the current Builder instance for chaining
          */
@@ -99,7 +89,6 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the RayTracer for the camera.
-         *
          * @param rayTracer the RayTracerBase instance
          * @return the current Builder instance for chaining
          */
@@ -110,7 +99,6 @@ public class Camera implements Cloneable {
 
         /**
          * Builds and returns the Camera instance.
-         *
          * @return the constructed Camera instance
          * @throws MissingResourceException if any required field is missing
          * @throws IllegalArgumentException if the direction vectors are parallel
@@ -181,7 +169,6 @@ public class Camera implements Cloneable {
 
     /**
      * Gets a new Builder instance for Camera.
-     *
      * @return a new Builder instance
      */
     public static Builder getBuilder() {
@@ -190,7 +177,6 @@ public class Camera implements Cloneable {
 
     /**
      * Constructs a ray through a given pixel in the view plane.
-     *
      * @param nX the number of pixels in the x direction
      * @param nY the number of pixels in the y direction
      * @param j  the pixel's column index
@@ -201,7 +187,7 @@ public class Camera implements Cloneable {
         //the center point of the view plane
         Point pc = p0.add(vTo.scale(distance));
 
-        if (nY == 0 || nX == 0) {
+        if (isZero(nY) ||isZero( nX )) {
             throw new IllegalArgumentException("It is impossible to divide by 0");
         }
 
@@ -233,7 +219,6 @@ public class Camera implements Cloneable {
 
     /**
      * Prints a grid on the image with the given interval and color.
-     *
      * @param interval the interval between grid lines
      * @param color    the color of the grid lines
      */
@@ -258,7 +243,6 @@ public class Camera implements Cloneable {
 
     /**
      * Casts a ray through a specific pixel and writes the traced color to that pixel.
-     *
      * @param Nx     the number of pixels in the x direction
      * @param Ny     the number of pixels in the y direction
      * @param column the pixel's column index
