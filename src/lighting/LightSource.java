@@ -1,6 +1,6 @@
 package lighting;
 import primitives.*;
-///לא ממממממתתתוווועעעעעדדדדדד  אמן
+
 /**
  * the interface to present light sources
  */
@@ -12,6 +12,11 @@ public interface LightSource {
      */
     public Color getIntensity(Point p);
 
+    /**
+     * Returns the direction of the light at a given point.
+     * @param p the point at which the light direction is required
+     * @return the direction of the light at the specified point
+     */
     public Vector getL(Point p);
 
 }

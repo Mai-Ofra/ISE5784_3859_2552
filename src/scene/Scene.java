@@ -13,12 +13,14 @@ import java.util.List;
  */
 public class Scene {
     public String name;
-    public Color background = Color.BLACK ;
-    public AmbientLight ambientLight= AmbientLight.NONE;
+    public Color background = Color.BLACK;
+    public AmbientLight ambientLight = AmbientLight.NONE;
     public Geometries geometries = new Geometries();
     public List<LightSource> lights = new LinkedList<>();
+
     /**
      * Constructs a new {@code Scene} with the specified name.
+     *
      * @param name the name of the scene
      */
     public Scene(String name) {
@@ -26,9 +28,10 @@ public class Scene {
     }
 
 
-    /**-----------------Setters---------------------------------*/
+    /*-----------------Setters---------------------------------*/
     /**
      * Sets the background color of the scene.
+     *
      * @param background the new background color
      * @return the current {@code Scene} instance for chaining
      */
@@ -39,6 +42,7 @@ public class Scene {
 
     /**
      * Sets the ambient light of the scene.
+     *
      * @param ambientLight the new ambient light
      * @return the current {@code Scene} instance for chaining
      */
@@ -49,6 +53,7 @@ public class Scene {
 
     /**
      * Sets the geometries in the scene.
+     *
      * @param geometries the new collection of geometries
      * @return the current {@code Scene} instance for chaining
      */
@@ -57,6 +62,11 @@ public class Scene {
         return this;
     }
 
+    /**
+     * Sets the list of light sources in the scene.
+     * @param lights the list of light sources to set
+     * @return the current Scene object with updated light sources
+     */
     public Scene setLights(List<LightSource> lights) {
         this.lights = lights;
         return this;
