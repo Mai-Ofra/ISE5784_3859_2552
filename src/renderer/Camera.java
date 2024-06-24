@@ -1,6 +1,8 @@
 package renderer;
 import primitives.*;
 import java.util.MissingResourceException;
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
 
 /**
  * Class to represent a 3D camera.

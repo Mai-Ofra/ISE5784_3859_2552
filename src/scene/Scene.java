@@ -1,11 +1,18 @@
 package scene;
 
-import geometries.Geometries;
 import lighting.AmbientLight;
 import lighting.LightSource;
-import primitives.Color;
+
 import java.util.LinkedList;
 import java.util.List;
+
+import geometries.*;
+import primitives.*;
+import org.w3c.dom.*;
+
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.DocumentBuilder;
+import java.io.File;
 
 /**
  * The {@code Scene} class represents a 3D scene containing various geometric shapes,
@@ -29,6 +36,7 @@ public class Scene {
 
 
     /*-----------------Setters---------------------------------*/
+
     /**
      * Sets the background color of the scene.
      *
@@ -64,11 +72,137 @@ public class Scene {
 
     /**
      * Sets the list of light sources in the scene.
+     *
      * @param lights the list of light sources to set
      * @return the current Scene object with updated light sources
      */
     public Scene setLights(List<LightSource> lights) {
         this.lights = lights;
         return this;
+    }
+
+
+    public void readFromXML(String filePath) {
+        try {
+            // Initialize the XML parser
+            File xmlFile = new File(filePath);
+            DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+            Document doc = dBuilder.parse(xmlFile);
+            doc.getDocumentElement().normalize();
+
+            // Parse background color
+            Element sceneElement = (Element) doc.getElementsByTagName("scene").item(0);
+            Color backgroundColor = readColor(sceneElement, "background-color");
+            setBackground(backgroundColor);
+
+            // Parse ambient light
+            Element ambientLightElement = (Element) doc.getElementsByTagName("ambient-light").item(0);
+            Color ambientColor = readColor(ambientLightElement, "color");
+            double k = Double.parseDouble(ambientLightElement.getAttribute("k"));
+            AmbientLight ambientLight = new AmbientLight(ambientColor, k);
+            setAmbientLight(ambientLight);
+
+            // Parse geometries
+            NodeList geometryList = doc.getElementsByTagName("geometries").item(0).getChildNodes();
+            createNodeList(geometryList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void createNodeList(NodeList geometryList) {
+        try {
+            for (int i = 0; i < geometryList.getLength(); i++) {
+                if (geometryList.item(i).getNodeType() == Node.ELEMENT_NODE) {
+                    Element geometryElement = (Element) geometryList.item(i);
+                    switch (geometryElement.getTagName()) {
+                        case "geometries":
+                            createNodeList(geometryElement.getChildNodes());
+                            break;
+                        case "sphere":
+                            Point center = readPoint(geometryElement, "center");
+                            double radius = Double.parseDouble(geometryElement.getAttribute("radius"));
+                            String[] emissionColorAttribute = geometryElement.getAttribute("emission").split(" ");
+                            if (emissionColorAttribute[0] != "") {
+                                geometries.add(new Sphere(center, radius).setEmission(readColor(geometryElement, "emission")));
+                            } else
+                                geometries.add(new Sphere(center, radius));
+                            break;
+                        case "triangle":
+                            Point p0 = readPoint(geometryElement, "p0");
+                            Point p1 = readPoint(geometryElement, "p1");
+                            Point p2 = readPoint(geometryElement, "p2");
+                            emissionColorAttribute = geometryElement.getAttribute("emission").split(" ");
+                            if (emissionColorAttribute[0] != "") {
+                                geometries.add(new Triangle(p0, p1, p2).setEmission(readColor(geometryElement, "emission")));
+                            } else
+                                geometries.add(new Triangle(p0, p1, p2));
+                            break;
+                        case "plane":
+                            String[] pComponents = geometryElement.getAttribute("p").split(" ");
+                            String[] normalComponents = geometryElement.getAttribute("normal").split(" ");
+                            Point p = readPoint(geometryElement, "p");
+                            Vector normal = new Vector(
+                                    Double.parseDouble(normalComponents[0]),
+                                    Double.parseDouble(normalComponents[1]),
+                                    Double.parseDouble(normalComponents[2])
+                            );
+                            emissionColorAttribute = geometryElement.getAttribute("emission").split(" ");
+                            if (emissionColorAttribute[0] != "") {
+                                geometries.add(new Plane(p, normal).setEmission(readColor(geometryElement, "emission")));
+                            } else
+                                geometries.add(new Plane(p, normal));
+                            break;
+                        case "polygon":
+                            String[] verticesComponents = geometryElement.getAttribute("vertices").split(" ");
+                            emissionColorAttribute = geometryElement.getAttribute("emission").split(" ");
+                            if (emissionColorAttribute[0] != "") {
+                                geometries.add(new Polygon((readVertices(geometryElement, "vertices")).toArray(new Point[0])).setEmission(readColor(geometryElement, "emission")));
+                            } else
+                                geometries.add(new Polygon((readVertices(geometryElement, "vertices")).toArray(new Point[0]))
+                                );
+                            break;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private Color readColor(Element element, String attributeName) {
+        String[] colorComponents = element.getAttribute(attributeName).split(" ");
+        if (colorComponents.length == 3 && !colorComponents[0].isEmpty()) {
+            return new Color(
+                    Integer.parseInt(colorComponents[0]),
+                    Integer.parseInt(colorComponents[1]),
+                    Integer.parseInt(colorComponents[2])
+            );
+        }
+        return null;
+    }
+
+    private List<Point> readVertices(Element element, String attributeName) {
+        String[] verticesComponents = element.getAttribute(attributeName).split(" ");
+        List<Point> vertices = new LinkedList<>();
+        for (int j = 0; j < verticesComponents.length; j += 3) {
+            vertices.add(new Point(
+                    Double.parseDouble(verticesComponents[j]),
+                    Double.parseDouble(verticesComponents[j + 1]),
+                    Double.parseDouble(verticesComponents[j + 2])
+            ));
+        }
+        return vertices;
+    }
+
+    private Point readPoint(Element element, String attributeName) {
+        String[] pointComponents = element.getAttribute(attributeName).split(" ");
+        return new Point(
+                Double.parseDouble(pointComponents[0]),
+                Double.parseDouble(pointComponents[1]),
+                Double.parseDouble(pointComponents[2])
+        );
     }
 }

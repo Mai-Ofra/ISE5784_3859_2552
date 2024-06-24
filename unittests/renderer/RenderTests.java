@@ -74,19 +74,54 @@ public class RenderTests {
                 .writeToImage();
     }
 
-//    /** Test for XML based scene - for bonus */
-//    @Test
-//    public void basicRenderXml() {
-//        // enter XML file name and parse from XML file into scene object
-//        File file = new File(System.getProperty("user.dir") + "/XMLFiles/renderTestTwoColors.xml");
-//        Scene scene1 = new Scene(file);
-//        // NB: unit tests is not the correct place to put XML parsing code
-//
-//        camera
-//                .setImageWriter(new ImageWriter("xml render test", 1000, 1000))
-//                .build()
-//                .renderImage()
-//                .printGrid(100, new Color(YELLOW))
-//                .writeToImage();
-//    }
+    /** Test for XML based scene - for bonus */
+    @Test
+    public void basicRenderXml() {
+        // enter XML file name and parse from XML file into scene object
+        File file = new File(System.getProperty("user.dir") + "/XMLFiles/renderTestTwoColors.xml");
+        Scene scene1 = new Scene("Test xml");
+        scene.readFromXML(file.getPath());
+        // NB: unit tests is not the correct place to put XML parsing code
+
+        camera
+                .setImageWriter(new ImageWriter("xml render test", 1000, 1000))
+                .build()
+                .renderImage()
+                .printGrid(100, new Color(YELLOW))
+                .writeToImage();
+    }
+    @Test
+    public void xmlExample1() {
+        // enter XML file name and parse from XML file into scene object
+        File file = new File(System.getProperty("user.dir") + "/XMLFiles/XmlExample1.xml");
+        scene.readFromXML(file.getPath());
+        // NB: unit tests is not the correct place to put XML parsing code
+
+        camera
+                .setImageWriter(new ImageWriter("xmlExample1", 1000, 1000))
+                .build()
+                .renderImage()
+                .writeToImage();
+    }
+    @Test
+    public void checkXml()
+    {
+        scene.geometries.add(new Sphere(new Point(0, 0, -100), 50d),
+                new Triangle(new Point(-100, 0, -100), new Point(0, 100, -100), new Point(-100, 100, -100)), // up
+                // left
+                new Triangle(new Point(-100, 0, -100), new Point(0, -100, -100),
+                        new Point(-100, -100, -100)), // down
+                // left
+                new Triangle(new Point(100, 0, -100), new Point(0, -100, -100), new Point(100, -100, -100))); // down
+        scene.setAmbientLight(new AmbientLight(new Color(255, 191, 191), 1.0))
+                .setBackground(new Color(75, 127, 190));
+
+        // right
+        camera
+                .setImageWriter(new ImageWriter("checkXml", 1000, 1000))
+                .build()
+                .renderImage()
+                .printGrid(100, new Color(YELLOW))
+                .writeToImage();
+    }
 }

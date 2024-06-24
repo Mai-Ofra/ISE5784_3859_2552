@@ -1,0 +1,13 @@
+<scene background-color="192 192 192">
+    <ambient-light color="0 0 224" k="0.2"/>
+    <geometries>
+        <sphere center="0 0 -20" radius="4"/>
+        <triangle p0="-5 0 -15" p1="-3 4 -15" p2="-7 4 -15"/>
+        <polygon vertices="10 5 -18 12 1 -18 11 -10 -18 5 -5 -18"/>
+        <polygon vertices="-20 3 -18 -18 4 -18 -19 7 -18 -22 4 -18"/>
+        <geometries>
+            <sphere center="3 3 -15" radius="2" emission="255 0 0"/>
+            <triangle p0="-3 -3 -12" p1="-1 1 -12" p2="-5 1 -12" emission="255 0 0"/>
+        </geometries>
+    </geometries>
+</scene>
