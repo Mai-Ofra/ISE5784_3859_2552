@@ -81,7 +81,11 @@ public class Scene {
         return this;
     }
 
-
+    /**
+     * Reads scene configuration from an XML file and initializes the scene accordingly.
+     * Parses background color, ambient light, and geometries from the XML structure.
+     * @param filePath The path to the XML file containing scene configuration.
+     */
     public void readFromXML(String filePath) {
         try {
             // Initialize the XML parser
@@ -110,8 +114,12 @@ public class Scene {
             e.printStackTrace();
         }
     }
-
+    /**
+     * Recursively parses the geometry elements from the XML
+     * @param geometryList The NodeList containing geometry elements to be parsed.
+     */
     public void createNodeList(NodeList geometryList) {
+        Color emission;
         try {
             for (int i = 0; i < geometryList.getLength(); i++) {
                 if (geometryList.item(i).getNodeType() == Node.ELEMENT_NODE) {
@@ -122,10 +130,11 @@ public class Scene {
                             break;
                         case "sphere":
                             Point center = readPoint(geometryElement, "center");
-                            double radius = Double.parseDouble(geometryElement.getAttribute("radius"));
-                            String[] emissionColorAttribute = geometryElement.getAttribute("emission").split(" ");
-                            if (emissionColorAttribute[0] != "") {
-                                geometries.add(new Sphere(center, radius).setEmission(readColor(geometryElement, "emission")));
+                            double radius =
+                                    Double.parseDouble(geometryElement.getAttribute("radius"));
+                            emission = readColor(geometryElement, "emission");
+                            if (emission != null) {
+                                geometries.add(new Sphere(center, radius).setEmission(emission));
                             } else
                                 geometries.add(new Sphere(center, radius));
                             break;
@@ -133,34 +142,35 @@ public class Scene {
                             Point p0 = readPoint(geometryElement, "p0");
                             Point p1 = readPoint(geometryElement, "p1");
                             Point p2 = readPoint(geometryElement, "p2");
-                            emissionColorAttribute = geometryElement.getAttribute("emission").split(" ");
-                            if (emissionColorAttribute[0] != "") {
-                                geometries.add(new Triangle(p0, p1, p2).setEmission(readColor(geometryElement, "emission")));
+                            emission = readColor(geometryElement, "emission");
+                            if (emission != null) {
+                                geometries.add(new Triangle(p0, p1, p2).setEmission(emission));
                             } else
                                 geometries.add(new Triangle(p0, p1, p2));
                             break;
                         case "plane":
-                            String[] pComponents = geometryElement.getAttribute("p").split(" ");
-                            String[] normalComponents = geometryElement.getAttribute("normal").split(" ");
+                            String[] normalComponents =
+                                    geometryElement.getAttribute("normal").split(" ");
                             Point p = readPoint(geometryElement, "p");
                             Vector normal = new Vector(
                                     Double.parseDouble(normalComponents[0]),
                                     Double.parseDouble(normalComponents[1]),
                                     Double.parseDouble(normalComponents[2])
                             );
-                            emissionColorAttribute = geometryElement.getAttribute("emission").split(" ");
-                            if (emissionColorAttribute[0] != "") {
-                                geometries.add(new Plane(p, normal).setEmission(readColor(geometryElement, "emission")));
+                            emission = readColor(geometryElement, "emission");
+                            if (emission != null) {
+                                geometries.add(new Plane(p, normal).setEmission(emission));
                             } else
                                 geometries.add(new Plane(p, normal));
                             break;
                         case "polygon":
-                            String[] verticesComponents = geometryElement.getAttribute("vertices").split(" ");
-                            emissionColorAttribute = geometryElement.getAttribute("emission").split(" ");
-                            if (emissionColorAttribute[0] != "") {
-                                geometries.add(new Polygon((readVertices(geometryElement, "vertices")).toArray(new Point[0])).setEmission(readColor(geometryElement, "emission")));
+                            emission = readColor(geometryElement, "emission");
+                            List<Point> vertices =readVertices(geometryElement, "vertices");
+                            if (emission != null) {
+                                geometries
+                                        .add(new Polygon(vertices.toArray(new Point[0])).setEmission(emission));
                             } else
-                                geometries.add(new Polygon((readVertices(geometryElement, "vertices")).toArray(new Point[0]))
+                                geometries.add(new Polygon(vertices .toArray(new Point[0]))
                                 );
                             break;
                     }
@@ -169,9 +179,14 @@ public class Scene {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
+    /**
+     * Parses and retrieves a Color object from the specified attribute of the given XML element.
+     * @param element       The XML element from which to read the color attribute.
+     * @param attributeName The name of the attribute containing the color components.
+     * @return A Color object parsed from the attribute, or null if parsing fails.
+     */
     private Color readColor(Element element, String attributeName) {
         String[] colorComponents = element.getAttribute(attributeName).split(" ");
         if (colorComponents.length == 3 && !colorComponents[0].isEmpty()) {
@@ -184,6 +199,13 @@ public class Scene {
         return null;
     }
 
+    /**
+     * Parses and retrieves a list of Point objects representing vertices from the specified attribute
+     * of the given XML element.
+     * @param element       The XML element from which to read the vertices attribute.
+     * @param attributeName The name of the attribute containing the vertices coordinates.
+     * @return A list of Point objects representing the vertices of a polygon or similar geometry.
+     */
     private List<Point> readVertices(Element element, String attributeName) {
         String[] verticesComponents = element.getAttribute(attributeName).split(" ");
         List<Point> vertices = new LinkedList<>();
@@ -197,6 +219,12 @@ public class Scene {
         return vertices;
     }
 
+    /**
+     * Parses and retrieves a Point object from the specified attribute of the given XML element.
+     * @param element       The XML element from which to read the point attribute.
+     * @param attributeName The name of the attribute containing the point coordinates.
+     * @return A Point object parsed from the attribute.
+     */
     private Point readPoint(Element element, String attributeName) {
         String[] pointComponents = element.getAttribute(attributeName).split(" ");
         return new Point(
