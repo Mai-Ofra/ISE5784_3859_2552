@@ -1,12 +1,13 @@
 package lighting;
 
-import primitives.Color;
-import primitives.Point;
-import primitives.Util;
-import primitives.Vector;
+import primitives.*;
 
+/**
+ * SpotLight represents a light source that radiates light from a specific point
+ * in a particular direction, creating a cone of light.
+ */
 public class SpotLight extends PointLight{
-    private Vector direction;
+    private final Vector direction;
 
     /**
      * parameter ctor
@@ -16,12 +17,24 @@ public class SpotLight extends PointLight{
         this.direction=direction.normalize();
     }
 
+    /**
+     * Calculates the intensity of the light at a given point,
+     * considering directionality and attenuation.
+     * @param p the point at which the light intensity is to be calculated
+     * @return the color intensity of the light at the specified point
+     */
     @Override
     public Color getIntensity(Point p) {
-        return intensity.
-                scale(Math.max(0, Util.alignZero(direction.dotProduct(super.getL(p))))).scale(denominator(p));
+        double dirDotL =Util.alignZero(direction.dotProduct(super.getL(p)));
+        return intensity.scale(Math.max(0,dirDotL)).scale(denominator(p));
     }
 
+    /**
+     * Returns the direction from the light source to a given point.
+     * @param p the point at which the light direction is required
+     * @return the normalized vector representing the direction
+     * from the light source to the point
+     */
     @Override
     public Vector getL(Point p) {
         return super.getL(p).normalize();

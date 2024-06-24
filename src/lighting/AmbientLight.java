@@ -16,6 +16,7 @@ public class AmbientLight extends  Light {
     public AmbientLight(Color IA, Double3 KA) {
         super(IA.scale(KA));
     }
+
     /**
      * Constructs an ambient light with the given intensity and scale factor.
      * using the father ctor
