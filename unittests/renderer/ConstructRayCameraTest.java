@@ -22,19 +22,21 @@ class ConstructRayCameraTest {
 
     /**
      * Helper method to test the number of intersections between rays from the camera
-     * and a given geometric shape.
-     * @param shape     the geometric shape to test
-     * @param camera    the camera from which rays are constructed
-     * @param expected  the expected number of intersections
-     * @param testType  description of the test case
+     * and a given geometric geometry.
+     *
+     * @param expected the expected number of intersections
+     * @param geometry the geometric geometry to test
+     * @param camera   the camera from which rays are constructed
+     * @param testType description of the test case
      */
-    void testIntersection(Geometry shape, Camera camera, int expected, String testType )
+    void assertIntersection(int expected, Geometry geometry, Camera camera, String testType, int Nx, int Ny )
     {
         int counter=0;
-        for (int i = 0; i < 3; i++)
-            for (int j = 0; j < 3; j++) {
-                List<Point> Intersections = shape.findIntersections(
-                        camera.constructRay(3,3,i,j));
+
+        for (int i = 0; i < Nx; i++)
+            for (int j = 0; j < Ny; j++) {
+                List<Point> Intersections = geometry.findIntersections(
+                        camera.constructRay(Nx,Ny,i,j));
                 counter+= Intersections != null ? Intersections.size() : 0;
             }
         assertEquals(expected,counter,"wrong number of intersections in"+ testType);
@@ -57,19 +59,19 @@ class ConstructRayCameraTest {
         Sphere sphere5=new Sphere(new Point(0,0,1),0.5);
 
         //TC01: two intersection points
-        testIntersection(sphere1,camera000,2,"Sphere TC01");
+        assertIntersection(2, sphere1,camera000, "Sphere TC01",3,3);
 
         //TC02: 18 intersection points
-        testIntersection(sphere2,camera1,18,"Sphere TC02");
+        assertIntersection(18, sphere2,camera1, "Sphere TC02",3,3);
 
         //TC03: 10 intersection points
-        testIntersection(sphere3,camera1,10,"Sphere TC03");
+        assertIntersection(10, sphere3,camera1, "Sphere TC03",3,3);
 
         //TC04: 9 intersection points
-        testIntersection(sphere4,camera1,9,"Sphere TC04");
+        assertIntersection(9, sphere4,camera1, "Sphere TC04",3,3);
 
         //TC05: 0 intersection points
-        testIntersection(sphere5,camera1,0,"Sphere TC05");
+        assertIntersection(0, sphere5,camera1, "Sphere TC05",3,3);
     }
     /**
      * Test cases for ray-triangle intersections.
@@ -86,10 +88,10 @@ class ConstructRayCameraTest {
                 new Point(-1,-1,-2));
 
         //TC01: one intersection point
-        testIntersection(triangle1,camera000,1,"Triangle TC01");
+        assertIntersection(1, triangle1,camera000, "Triangle TC01",3,3);
 
         //TC02: two intersection points
-        testIntersection(triangle2,camera000,2, "Triangle TC02");
+        assertIntersection(2, triangle2,camera000, "Triangle TC02",3,3);
     }
     /**
      * Test cases for ray-plane intersections.
@@ -107,13 +109,13 @@ class ConstructRayCameraTest {
                 new Point(-3,2,0));
 
         //TC01: 9 intersection points
-        testIntersection(plane1,camera000,9,"Plane TC01");
+        assertIntersection(9, plane1,camera000, "Plane TC01",3,3);
 
         //TC02: 9 intersection points
-        testIntersection(plane2,camera000,9,"Plane TC02");
+        assertIntersection(9, plane2,camera000, "Plane TC02",3,3);
 
         //TC03: 6 intersection points
-        testIntersection(plane3,camera000,6,"Plane TC03");
+        assertIntersection(6, plane3,camera000, "Plane TC03",3,3);
 
     }
 }

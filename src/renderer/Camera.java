@@ -1,6 +1,9 @@
 package renderer;
+
 import primitives.*;
+
 import java.util.MissingResourceException;
+
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
@@ -23,6 +26,7 @@ public class Camera implements Cloneable {
 
         /**
          * Constructor that initializes the builder with an existing Camera instance.
+         *
          * @param camera the Camera instance to initialize the builder with
          */
         public Builder(Camera camera) {
@@ -31,6 +35,7 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the location of the camera.
+         *
          * @param p the location point
          * @return the current Builder instance for chaining
          */
@@ -41,6 +46,7 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the direction vectors of the camera.
+         *
          * @param vTo the forward direction vector
          * @param vUp the up direction vector
          * @return the current Builder instance for chaining
@@ -70,6 +76,7 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the distance of the view plane from the camera.
+         *
          * @param distance the distance value
          * @return the current Builder instance for chaining
          * @throws IllegalArgumentException if the distance is not greater than zero
@@ -81,6 +88,7 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the ImageWriter for the camera.
+         *
          * @param imageWriter the ImageWriter instance
          * @return the current Builder instance for chaining
          */
@@ -91,6 +99,7 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the RayTracer for the camera.
+         *
          * @param rayTracer the RayTracerBase instance
          * @return the current Builder instance for chaining
          */
@@ -101,6 +110,7 @@ public class Camera implements Cloneable {
 
         /**
          * Builds and returns the Camera instance.
+         *
          * @return the constructed Camera instance
          * @throws MissingResourceException if any required field is missing
          * @throws IllegalArgumentException if the direction vectors are parallel
@@ -171,6 +181,7 @@ public class Camera implements Cloneable {
 
     /**
      * Gets a new Builder instance for Camera.
+     *
      * @return a new Builder instance
      */
     public static Builder getBuilder() {
@@ -179,6 +190,7 @@ public class Camera implements Cloneable {
 
     /**
      * Constructs a ray through a given pixel in the view plane.
+     *
      * @param nX the number of pixels in the x direction
      * @param nY the number of pixels in the y direction
      * @param j  the pixel's column index
@@ -189,7 +201,7 @@ public class Camera implements Cloneable {
         //the center point of the view plane
         Point pc = p0.add(vTo.scale(distance));
 
-        if (isZero(nY) ||isZero( nX )) {
+        if (isZero(nY) || isZero(nX)) {
             throw new IllegalArgumentException("It is impossible to divide by 0");
         }
 
@@ -213,24 +225,30 @@ public class Camera implements Cloneable {
      * Renders the image by casting rays through each pixel and tracing them.
      */
     public Camera renderImage() {
-        for (int i = 0; i < imageWriter.getNx(); i++)
-            for (int j = 0; j < imageWriter.getNy(); j++)
-                castRay(imageWriter.getNx(), imageWriter.getNy(), j, i);
+        int Nx = imageWriter.getNx();
+        int Ny = imageWriter.getNy();
+
+        for (int i = 0; i < Nx; i++)
+            for (int j = 0; j < Ny; j++)
+                castRay(Nx, Ny, j, i);
         return this;
     }
 
     /**
      * Prints a grid on the image with the given interval and color.
+     *
      * @param interval the interval between grid lines
      * @param color    the color of the grid lines
      */
     public Camera printGrid(int interval, Color color) {
-        for (int i = 0; i < imageWriter.getNx(); i += interval)
-            for (int j = 0; j < imageWriter.getNy(); j++)
+        int Nx = imageWriter.getNx();
+        int Ny = imageWriter.getNy();
+        for (int i = 0; i < Nx; i += interval)
+            for (int j = 0; j < Ny; j++)
                 imageWriter.writePixel(i, j, color);
 
-        for (int i = 0; i < imageWriter.getNy(); i += interval)
-            for (int j = 0; j < imageWriter.getNx(); j++)
+        for (int i = 0; i < Ny; i += interval)
+            for (int j = 0; j < Nx; j++)
                 imageWriter.writePixel(j, i, color);
         writeToImage();
         return this;
@@ -245,15 +263,16 @@ public class Camera implements Cloneable {
 
     /**
      * Casts a ray through a specific pixel and writes the traced color to that pixel.
-     * @param Nx     the number of pixels in the x direction
-     * @param Ny     the number of pixels in the y direction
-     * @param column the pixel's column index
-     * @param row    the pixel's row index
+     *
+     * @param Nx the number of pixels in the x direction
+     * @param Ny the number of pixels in the y direction
+     * @param i  the pixel's column index
+     * @param j  the pixel's row index
      */
-    private void castRay(int Nx, int Ny, int column, int row) {
-        Ray ray = constructRay(Nx, Ny, column, row);
+    private void castRay(int Nx, int Ny, int i, int j) {
+        Ray ray = constructRay(Nx, Ny, i, j);
         Color color = rayTracer.traceRay(ray);
-        imageWriter.writePixel(column, row, color);
+        imageWriter.writePixel(i, j, color);
     }
 
     /**
