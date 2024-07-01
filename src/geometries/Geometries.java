@@ -4,6 +4,9 @@ import primitives.Ray;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+
+import static primitives.Util.alignZero;
+
 /**
  * The {@code Geometries} class represents a collection of geometric shapes
  * that can be intersected by a ray.
@@ -42,14 +45,16 @@ public class Geometries extends Intersectable{
      * @return a list of intersection points, or {@code null} if there are no intersections
      */
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) {
         List<GeoPoint> intersections = null;
         for (Intersectable geometry : geometries) {
             List<GeoPoint> geoIntersections = geometry.findGeoIntersections(ray);
             if (geoIntersections != null) {
                 if (intersections == null)
                     intersections = new LinkedList<>();
-                intersections.addAll(geoIntersections);
+                for (GeoPoint geoPoint : geoIntersections)
+                    if(alignZero(geoPoint.point.distance(ray.getHead())-maxDistance)<0)
+                        intersections.add(geoPoint);
             }
         }
         return intersections;
