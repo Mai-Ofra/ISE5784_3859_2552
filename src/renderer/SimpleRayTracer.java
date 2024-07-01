@@ -14,6 +14,8 @@ import static primitives.Util.isZero;
  * Simple implementation of a ray tracer.
  */
 public class SimpleRayTracer extends RayTracerBase {
+    private static final double DELTA = 0.1;
+
 
     /**
      * Constructor that initializes the simple ray tracer with a scene.
@@ -66,7 +68,7 @@ public class SimpleRayTracer extends RayTracerBase {
             Vector l = light.getL(geoPoint.point);
             double nl = alignZero(n.dotProduct(l));
 
-            if (nl * nv > 0) {
+            if (nl * nv > 0&& unshaded(geoPoint,l,n)) {
                 Color lightIntensity = light.getIntensity(geoPoint.point);
                 color = color.add(lightIntensity.scale(
                         calcDiffusive(mat, nl).add(calcSpecular(mat, n, l, nl, v))));
@@ -97,5 +99,20 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     private Double3 calcDiffusive(Material mat, double nl) {
         return mat.kd.scale(Math.abs(nl));
+    }
+
+    /**
+     * Determines whether a given point on a surface is unshaded from a particular light source.
+     * @param geoPoint The geometric point on the intersect object.
+     * @param l The vector from the light source to the point.
+     * @param n The normal vector at the point of intersection.
+     * @return true if the point is unshaded, otherwise false.
+     */
+    private boolean unshaded(Intersectable.GeoPoint geoPoint, Vector l, Vector n)
+    {
+        Vector lightDirection = l.scale(-1);
+        Ray ray = new Ray(geoPoint.point, lightDirection);
+        List<Intersectable.GeoPoint> intersections = scene.geometries.findGeoIntersections(ray);
+        return intersections==null || intersections.isEmpty();
     }
 }
