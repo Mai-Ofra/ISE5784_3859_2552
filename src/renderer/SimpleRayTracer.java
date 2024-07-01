@@ -108,10 +108,10 @@ public class SimpleRayTracer extends RayTracerBase {
      * @param n The normal vector at the point of intersection.
      * @return true if the point is unshaded, otherwise false.
      */
-    private boolean unshaded(Intersectable.GeoPoint geoPoint, LightSource lightSource, Vector l, Vector n, double nl){
+    private boolean unshaded(Intersectable.GeoPoint geoPoint, LightSource i, Vector l, Vector n, double nl){
         Vector lightDirection=l.scale(-1);
-        Vector delta=n.scale(nl<0?DELTA:-DELTA);
-        Point point=geoPoint.point.add(delta);
+        Vector epsVector=n.scale(nl<0?DELTA:-DELTA);
+        Point point=geoPoint.point.add(epsVector);
         Ray ray=new Ray(point,lightDirection);
         List<Point> intersections=scene.geometries.findIntersections(ray);
         return intersections==null || intersections.isEmpty();
