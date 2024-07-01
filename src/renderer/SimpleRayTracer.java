@@ -68,7 +68,7 @@ public class SimpleRayTracer extends RayTracerBase {
             Vector l = light.getL(geoPoint.point);
             double nl = alignZero(n.dotProduct(l));
 
-            if (nl * nv > 0&& unshaded(geoPoint,l,n)) {
+            if (nl * nv > 0&& unshaded(geoPoint,light,l,n,nl)) {
                 Color lightIntensity = light.getIntensity(geoPoint.point);
                 color = color.add(lightIntensity.scale(
                         calcDiffusive(mat, nl).add(calcSpecular(mat, n, l, nl, v))));
@@ -103,16 +103,24 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Determines whether a given point on a surface is unshaded from a particular light source.
-     * @param geoPoint The geometric point on the intersect object.
+   //  * @param geoPoint The geometric point on the intersect object.
      * @param l The vector from the light source to the point.
      * @param n The normal vector at the point of intersection.
      * @return true if the point is unshaded, otherwise false.
      */
-    private boolean unshaded(Intersectable.GeoPoint geoPoint, Vector l, Vector n)
-    {
-        Vector lightDirection = l.scale(-1);
-        Ray ray = new Ray(geoPoint.point, lightDirection);
-        List<Intersectable.GeoPoint> intersections = scene.geometries.findGeoIntersections(ray);
+    private boolean unshaded(Intersectable.GeoPoint geoPoint, LightSource lightSource, Vector l, Vector n, double nl){
+        Vector lightDirection=l.scale(-1);
+        Vector delta=n.scale(nl<0?DELTA:-DELTA);
+        Point point=geoPoint.point.add(delta);
+        Ray ray=new Ray(point,lightDirection);
+        List<Point> intersections=scene.geometries.findIntersections(ray);
         return intersections==null || intersections.isEmpty();
+//        if (intersections!=null){
+//            for (Point nwePoint:intersections){
+//                if(nwePoint.distance(ray.getHead())<ls. .getDistance(nwePoint))
+//                    return false;
+//            }
+//        }
+        //return true;
     }
 }
