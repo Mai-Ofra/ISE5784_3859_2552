@@ -19,6 +19,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Constructor that initializes the simple ray tracer with a scene.
+     *
      * @param scene the scene to be used for ray tracing
      */
     public SimpleRayTracer(Scene scene) {
@@ -27,6 +28,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Traces a ray and determines its color.
+     *
      * @param ray the ray to be traced
      * @return the color of the ray
      */
@@ -40,8 +42,9 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Calculates the color at a given point.
+     *
      * @param geoPoint the point at which to calculate the color
-     * @param ray the ray that intersects the point
+     * @param ray      the ray that intersects the point
      * @return the color at the given point
      */
     private Color calcColor(Intersectable.GeoPoint geoPoint, Ray ray) {
@@ -51,8 +54,9 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Calculates the local effects of lighting at a given point.
+     *
      * @param geoPoint the point at which to calculate the local effects
-     * @param ray the ray that intersects the point
+     * @param ray      the ray that intersects the point
      * @return the color resulting from the local effects
      */
     private Color calcLocalEffects(Intersectable.GeoPoint geoPoint, Ray ray) {
@@ -68,7 +72,7 @@ public class SimpleRayTracer extends RayTracerBase {
             Vector l = light.getL(geoPoint.point);
             double nl = alignZero(n.dotProduct(l));
 
-            if (nl * nv > 0&& unshaded(geoPoint,light,l,n,nl)) {
+            if (nl * nv > 0 && unshaded(geoPoint, light, l, n, nl)) {
                 Color lightIntensity = light.getIntensity(geoPoint.point);
                 color = color.add(lightIntensity.scale(
                         calcDiffusive(mat, nl).add(calcSpecular(mat, n, l, nl, v))));
@@ -79,11 +83,12 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Calculates the specular reflection component of lighting.
+     *
      * @param mat the material properties of the intersected geometry
-     * @param n the normal vector at the intersection point
-     * @param l the direction vector from the light source to the intersection point
-     * @param nl the dot product of the normal vector and the light direction vector
-     * @param v the direction vector from the viewer to the intersection point
+     * @param n   the normal vector at the intersection point
+     * @param l   the direction vector from the light source to the intersection point
+     * @param nl  the dot product of the normal vector and the light direction vector
+     * @param v   the direction vector from the viewer to the intersection point
      * @return the specular reflection component
      */
     private Double3 calcSpecular(Material mat, Vector n, Vector l, double nl, Vector v) {
@@ -93,8 +98,9 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Calculates the diffuse reflection component of lighting.
+     *
      * @param mat the material properties of the intersected geometry
-     * @param nl the dot product of the normal vector and the light direction vector
+     * @param nl  the dot product of the normal vector and the light direction vector
      * @return the diffuse reflection component
      */
     private Double3 calcDiffusive(Material mat, double nl) {
@@ -103,24 +109,19 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Determines whether a given point on a surface is unshaded from a particular light source.
-   //  * @param geoPoint The geometric point on the intersect object.
+     * //  * @param geoPoint The geometric point on the intersect object.
+     *
      * @param l The vector from the light source to the point.
      * @param n The normal vector at the point of intersection.
      * @return true if the point is unshaded, otherwise false.
      */
-    private boolean unshaded(Intersectable.GeoPoint geoPoint, LightSource i, Vector l, Vector n, double nl){
-        Vector lightDirection=l.scale(-1);
-        Vector epsVector=n.scale(nl<0?DELTA:-DELTA);
-        Point point=geoPoint.point.add(epsVector);
-        Ray ray=new Ray(point,lightDirection);
-        List<Point> intersections=scene.geometries.findIntersections(ray);
-        return intersections==null || intersections.isEmpty();
-//        if (intersections!=null){
-//            for (Point nwePoint:intersections){
-//                if(nwePoint.distance(ray.getHead())<ls. .getDistance(nwePoint))
-//                    return false;
-//            }
-//        }
-        //return true;
+    private boolean unshaded(Intersectable.GeoPoint geoPoint, LightSource lightSource, Vector l, Vector n, double nl) {
+        Vector lightDirection = l.scale(-1);
+        Vector delta = n.scale(nl < 0 ? DELTA : -DELTA);
+        Point point = geoPoint.point.add(delta);
+        Ray ray = new Ray(point, lightDirection);
+        List<Intersectable.GeoPoint> intersections = scene.geometries.findGeoIntersections(ray, lightSource.getDistance(geoPoint.point));
+
+        return intersections == null || intersections.isEmpty();
     }
 }

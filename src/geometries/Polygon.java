@@ -93,7 +93,7 @@ public class Polygon extends Geometry {
    public Vector getNormal(Point point) { return plane.getNormal(); }
 
    @Override
-   protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray) {
+   protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) {
       //first check if has intersection with the plane
       List<Point> intersections = plane.findIntersections(ray);
       if (intersections == null)
@@ -111,8 +111,10 @@ public class Polygon extends Geometry {
          scalars[i] = rayDir.dotProduct(edgeVectors[i].crossProduct(edgeVectors[i + 1]));
       scalars[n - 1] = rayDir.dotProduct(edgeVectors[n - 1].crossProduct(edgeVectors[0]));
       for (int i = 0; i < n - 1; ++i)
-         if (alignZero(scalars[i] * scalars[i + 1]) <= 0)
+         if (alignZero(scalars[i] * scalars[i + 1]) < 0)
             return null;
-      return List.of(new GeoPoint(this, intersections.getFirst()));
+      if(alignZero(ray.getHead().distance(intersections.getFirst())-maxDistance)<0)
+         return List.of(new GeoPoint(this, intersections.getFirst()));
+      return null;
    }
 }

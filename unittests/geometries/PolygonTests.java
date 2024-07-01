@@ -175,4 +175,25 @@ public class PolygonTests {
         assertNull(result, "Wrong number of points");
 
     }
+
+
+    @Test
+    void testFindGeoIntersectionsWithDistance() {
+        Polygon rectangle = new Polygon(new Point(1, 0, 0), new Point(-2, 0, -2), new Point(0, 0, 2),
+                new Point(2, 0, 2));
+        Ray ray = new Ray(new Point(0, 2, 0), new Vector(0, -1, 0));
+        // ================= Equivalence Partitions Tests ===========================
+        // TC01: the rectangle is not too far
+        List<Intersectable.GeoPoint> result = rectangle.findGeoIntersections(ray, 3);
+        assertEquals(1, result.size());
+        // TC02: the rectangle is too far
+        result = rectangle.findGeoIntersections(ray, 1);
+        assertNull(result);
+        // ================= BVA Tests ===========================
+        // TC03: the intersection is exactly at the max distance (0 points)
+        result = rectangle.findGeoIntersections(ray, 2);
+        assertNull(result);
+
+    }
+
 }
