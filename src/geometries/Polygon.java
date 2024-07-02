@@ -111,7 +111,7 @@ public class Polygon extends Geometry {
          scalars[i] = rayDir.dotProduct(edgeVectors[i].crossProduct(edgeVectors[i + 1]));
       scalars[n - 1] = rayDir.dotProduct(edgeVectors[n - 1].crossProduct(edgeVectors[0]));
       for (int i = 0; i < n - 1; ++i)
-         if (alignZero(scalars[i] * scalars[i + 1]) < 0)
+         if (alignZero(scalars[i] * scalars[i + 1]) <= 0)
             return null;
       if(alignZero(ray.getHead().distance(intersections.getFirst())-maxDistance)<0)
          return List.of(new GeoPoint(this, intersections.getFirst()));

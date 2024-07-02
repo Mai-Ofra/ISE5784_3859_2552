@@ -74,7 +74,7 @@ public class Plane extends Geometry {
             return null;
         double t = alignZero(normal.dotProduct(u) / denominator);
         // If t is negative, the intersection is behind the ray's start point.
-        if (t < 0) {
+        if (t <= 0) {
             return null;
         }
         if (alignZero(t - maxDistance)<0)
