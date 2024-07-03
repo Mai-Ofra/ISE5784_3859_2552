@@ -95,9 +95,7 @@ public class PolygonTests {
 
    }
 
-    /**
-     * Test method for {@link geometries.Polygon#getNormal(primitives.Point)}.
-     */
+    /**Test method for {@link geometries.Polygon#getNormal(primitives.Point)}. */
     @Test
     public void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
@@ -127,9 +125,7 @@ public class PolygonTests {
                     "Polygon's normal is not orthogonal to one of the edges");
     }
 
-    /**
-     * Test method for {@link geometries.Polygon#findIntersections(Ray)}.
-     */
+    /**Test method for {@link geometries.Polygon#findIntersections(Ray)}.*/
     @Test
     void testFindIntersections() {
         Polygon rectangle = new Polygon(
@@ -173,10 +169,9 @@ public class PolygonTests {
         result = rectangle.findIntersections(
                 new Ray(new Point(4, 1, 2), new Vector(-1, -1, -1)));
         assertNull(result, "Wrong number of points");
-
     }
 
-
+    /**Test method for {@link geometries.Polygon#findGeoIntersections(Ray, double)}.*/
     @Test
     void testFindGeoIntersectionsWithDistance() {
         Polygon polygon = new Polygon(
@@ -200,7 +195,5 @@ public class PolygonTests {
         // TC03: the intersection is exactly at the max distance (0 points)
         result = polygon.findGeoIntersections(ray, 2);
         assertNull(result);
-
     }
-
 }

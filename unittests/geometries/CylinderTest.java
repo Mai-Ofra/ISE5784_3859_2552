@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Ofra & Mai
  */
 class CylinderTest {
+
     /** Test method for {@link Cylinder#Cylinder(double, Ray, double)}  */
     @Test
     void testConstructor() {
@@ -71,7 +72,4 @@ class CylinderTest {
                 "get normal give wrong normal");
     }
 
-    @Test
-    void testFindIntersections() {
-   }
 }

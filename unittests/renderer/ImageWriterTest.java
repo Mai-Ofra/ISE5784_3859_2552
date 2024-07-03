@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * Tests the ImageWriter class.
  */
 class ImageWriterTest {
+    /**{@link ImageWriter#writeToImage()}.*/
     @Test
     void testWriteToImage() {
         ImageWriter imageWriter = new ImageWriter("grid", 800, 500);

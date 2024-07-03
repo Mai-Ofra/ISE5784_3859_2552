@@ -11,6 +11,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Mai
  */
 class TubeTest {
+
     /** Test method for {@link geometries.Tube#Tube(double, Ray)}. */
     @Test
     void testConstructor() {
@@ -41,9 +42,5 @@ class TubeTest {
                 new Vector(0,-4,0).normalize(),
                 t.getNormal(Point.ZERO),
                 "get normal doesnt work correctly");
-    }
-
-    @Test
-    void testFindIntersections() {
     }
 }

@@ -7,6 +7,8 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RayTest {
+
+
     @Test
     void testConstructor() {
         // TC01: check if the direction vector is normalized
@@ -15,6 +17,7 @@ class RayTest {
                 "vector directions not normalized");
     }
 
+    /** Test method for {@link primitives.Ray#getPoint(double)}. */
     @Test
     void testGetPoint() {
         // ============ Equivalence Partitions Test ==============
@@ -34,6 +37,7 @@ class RayTest {
 
     }
 
+    /** Test method for {@link primitives.Ray#findClosestPoint(List)}. */
     @Test
     void testFindClosestPoint() {
         Ray ray = new Ray(new Point(1,1,1),new Vector(0,1,2));

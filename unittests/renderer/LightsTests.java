@@ -15,17 +15,16 @@ import scene.Scene;
  */
 public class LightsTests {
    /**
-    * First scene for some of tests
+    * First scene for some of the tests
     */
    private final Scene scene1 = new Scene("Test scene");
    /**
-    * Second scene for some of tests
+    * Second scene for some of the tests
     */
    private final Scene scene2 = new Scene("Test scene")
            .setAmbientLight(new AmbientLight(new Color(WHITE), new Double3(0.15)));
-
    /**
-    * First camera builder for some of tests
+    * First camera builder for some of the tests
     */
    private final Camera.Builder camera1 = Camera.getBuilder()
            .setRayTracer(new SimpleRayTracer(scene1))
@@ -33,14 +32,13 @@ public class LightsTests {
            /**/.setDirection(Vector.Z.scale(-1), Vector.Y)
            .setViewPlaneSize(150, 150).setViewPlaneDistance(1000);
    /**
-    * Second camera builder for some of tests
+    * Second camera builder for some of the tests
     */
    private final Camera.Builder camera2 = Camera.getBuilder()
            .setRayTracer(new SimpleRayTracer(scene2))
            .setLocation(new Point(0, 0, 1000))
            /**/.setDirection(Vector.Z.scale(-1), Vector.Y)
            .setViewPlaneSize(200, 200).setViewPlaneDistance(1000);
-
    /**
     * Shininess value for most of the geometries in the tests
     */
@@ -188,7 +186,7 @@ public class LightsTests {
       scene2.geometries.add(triangle1, triangle2);
       scene2.lights.add(new DirectionalLight(trianglesLightColor, trianglesLightDirection));
 
-      camera2.setImageWriter(new ImageWriter("lightTrianglesDirectional", 500, 500)) //
+      camera2.setImageWriter(new ImageWriter("lightTrianglesDirectional", 500, 500))
               .build()
               .renderImage()
               .writeToImage();
@@ -203,10 +201,10 @@ public class LightsTests {
       scene2.lights.add(new PointLight(trianglesLightColor, trianglesLightPosition)
               .setKl(0.001).setKq(0.0002));
 
-      camera2.setImageWriter(new ImageWriter("lightTrianglesPoint", 500, 500)) //
-              .build() //
-              .renderImage() //
-              .writeToImage(); //
+      camera2.setImageWriter(new ImageWriter("lightTrianglesPoint", 500, 500))
+              .build()
+              .renderImage()
+              .writeToImage();
    }
 
    /**

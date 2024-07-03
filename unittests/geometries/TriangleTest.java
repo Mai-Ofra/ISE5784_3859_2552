@@ -20,6 +20,7 @@ class TriangleTest {
      */
     private final double DELTA = 0.000001;
 
+    /**Test method for {@link geometries.Triangle#getNormal(Point)}.*/
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
@@ -45,6 +46,7 @@ class TriangleTest {
                     "Triangle's normal is not orthogonal to one of the edges");
     }
 
+    /**Test method for {@link geometries.Triangle#findIntersections(Ray)}.*/
     @Test
     void testFindIntersections() {
         Point p010 = new Point(0,1,0);
@@ -90,7 +92,7 @@ class TriangleTest {
 
     }
 
-
+    /**Test method for {@link geometries.Triangle#findGeoIntersections(Ray, double)}.*/
     @Test
     void testFindGeoIntersectionsWithDistance() {
         Triangle triangle = new Triangle(
@@ -112,6 +114,5 @@ class TriangleTest {
         // TC03: the intersection is exactly at the max distance (0 points)
         result = triangle.findGeoIntersections(ray, 2);
         assertNull(result);
-
     }
 }

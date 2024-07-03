@@ -18,9 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class SphereTest {
     private final Point p100 = new Point(1, 0, 0);
 
-    /**
-     * Test method for {@link geometries.Sphere#getNormal(Point)}.
-     */
+    /**Test method for {@link geometries.Sphere#getNormal(Point)}.*/
     @Test
     void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
@@ -32,9 +30,7 @@ class SphereTest {
                 "ctor must throw error when radius is negative");
     }
 
-    /**
-     * Test method for {@link geometries.Sphere#getNormal(Point)}.
-     */
+    /**Test method for {@link geometries.Sphere#getNormal(Point)}.*/
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
@@ -46,9 +42,7 @@ class SphereTest {
                 "the normal to the sphere is not correct");
     }
 
-    /**
-     * Test method for {@link geometries.Sphere#findIntersections(primitives.Ray)}.
-     */
+    /**Test method for {@link geometries.Sphere#findIntersections(primitives.Ray)}.*/
     @Test
     void testFindIntersections() {
         Sphere sphere = new Sphere(p100, 1d);
@@ -155,6 +149,8 @@ class SphereTest {
                 "Ray's line out of sphere");
 
     }
+
+    /**Test method for {@link geometries.Sphere#findGeoIntersections(Ray, double)}.*/
     @Test
     void testFindGeoIntersectionsWithDistance() {
         Sphere sphere = new Sphere(new Point(10, 0, 0), 8);
@@ -201,6 +197,5 @@ class SphereTest {
         // TC08: the intersection is exactly at the max distance (0 points)
         result = sphere.findGeoIntersections(rayFromInside, 14);
         assertNull(result);
-
     }
 }
