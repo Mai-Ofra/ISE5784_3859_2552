@@ -14,6 +14,8 @@ import static primitives.Util.*;
  * Defined by point and direction fields
  */
 public class Ray {
+    private static final double DELTA = 0.1;
+
     private final Point  head;
     private final Vector directions;
 
@@ -25,6 +27,15 @@ public class Ray {
     public Ray(Point head, Vector directions) {
         this.head = head;
         this.directions = directions.normalize();
+    }
+
+    public Ray(Point point, Vector direction, Vector n) {
+        // Compute the offset vector based on the orientation of the normal
+        double nl = direction.dotProduct(n);
+        Vector offset = n.scale(nl > 0 ? DELTA : -DELTA);
+        this.head = point.add(offset);
+        this.directions = direction.normalize();
+
     }
 
     @Override

@@ -48,16 +48,17 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the color at the given point
      */
     private Color calcColor(Intersectable.GeoPoint geoPoint, Ray ray) {
-        return calcColor(geoPoint, ray, MAX_CALC_COLOR_LEVEL, MIN_CALC_COLOR_K)
+        return calcColor(geoPoint, ray, MAX_CALC_COLOR_LEVEL, Double3.ONE)
                 .add(scene.ambientLight.getIntensity());
     }
 
     private Color calcColor(Intersectable.GeoPoint geopoint, Ray ray, int level, Double3 k)
     {
+        if(alignZero(geopoint.geometry.getNormal(geopoint.point).dotProduct(ray.getDirections()))==0)
+            return scene.background;
         Color color = calcLocalEffects(geopoint, ray);
         return 1 == level ? color :
                 color.add(calcGlobalEffects(geopoint, ray, level, k));
-
     }
 
     /**
@@ -89,25 +90,37 @@ public class SimpleRayTracer extends RayTracerBase {
         return color;
     }
 
-    private Color calcGlobalEffects(Intersectable.GeoPoint gp, Ray ray, int level, Double3 k)
+    private Color calcGlobalEffects(Intersectable.GeoPoint geoPoint, Ray ray, int level, Double3 k)
     {
-        Material material = gp.geometry.getMaterial();
-        return calcGLobalEffect(constructRefractedRay(gp, ray),level, material.kr, k)
-                .add(calcGLobalEffect(constructReflectedRay(gp, ray), material.kt,level, k));
+        Material material = geoPoint.geometry.getMaterial();
+        return calcGlobalEffect(constructRefractedRay(geoPoint, ray),level, material.kr, k)
+                .add(calcGlobalEffect(constructReflectedRay(geoPoint, ray),level, material.kt, k));
     }
 
-    private Color calcGLobalEffect(Ray ray, int level, Double3 k, Double3 kx)
+    private Color calcGlobalEffect(Ray ray, int level, Double3 k, Double3 kx)
     {
         Double3 kkx = k.product(kx);
         if (kkx.lowerThan(MIN_CALC_COLOR_K))
             return Color.BLACK;
-        Intersectable.GeoPoint gp = findClosestIntersection(ray);
-        return (gp == null ? scene.background :calcColor(gp, ray, level - 1, kkx)).scale(kx);
+        Intersectable.GeoPoint geoPoint = findClosestIntersection(ray);
+        return (geoPoint == null ? scene.background :calcColor(geoPoint, ray, level - 1, kkx)).scale(kx);
     }
 
-    private Ray constructRefractedRay(Intersectable.GeoPoint gp, Ray ray) {
+    private Ray constructRefractedRay(Intersectable.GeoPoint geoPoint, Ray ray) {
+        Vector n = geoPoint.geometry.getNormal(geoPoint.point);
+        double dotProduct = alignZero(ray.getDirections().dotProduct(n));
+        Point point = dotProduct == 0 ?
+                geoPoint.point : geoPoint.point.add(n.scale(dotProduct < 0 ? -DELTA : DELTA));
+        return new Ray(point,ray.getDirections(),n);
+    }
 
-
+    private Ray constructReflectedRay(Intersectable.GeoPoint geoPoint, Ray ray) {
+        Vector v =ray.getDirections();
+        Vector n = geoPoint.geometry.getNormal(geoPoint.point);
+        double nv = alignZero(n.dotProduct(v));
+        Point point = nv == 0 ?
+                geoPoint.point : geoPoint.point.add(n.scale(nv < 0 ? -DELTA : DELTA));
+        return new Ray( point, v.subtract(n.scale(2 * nv)));
     }
 
     private Intersectable.GeoPoint findClosestIntersection(Ray ray) {
