@@ -36,10 +36,8 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     @Override
     public Color traceRay(Ray ray) {
-        List<Intersectable.GeoPoint> pointList = scene.geometries.findGeoIntersections(ray);
-        return pointList == null
-                ? scene.background
-                : calcColor(ray.findClosestGeoPoint(pointList), ray);
+        Intersectable.GeoPoint closestPoint = findClosestIntersection(ray);
+        return closestPoint==null? scene.background : calcColor(closestPoint, ray);
     }
 
     /**
@@ -54,8 +52,11 @@ public class SimpleRayTracer extends RayTracerBase {
                 .add(scene.ambientLight.getIntensity());
     }
 
-    private Color calcColor(Intersectable.GeoPoint geopoint, Ray ray, int level, double k)
+    private Color calcColor(Intersectable.GeoPoint geopoint, Ray ray, int level, Double3 k)
     {
+        Color color = calcLocalEffects(geopoint, ray);
+        return 1 == level ? color :
+                color.add(calcGlobalEffects(geopoint, ray, level, k));
 
     }
 
@@ -86,6 +87,33 @@ public class SimpleRayTracer extends RayTracerBase {
             }
         }
         return color;
+    }
+
+    private Color calcGlobalEffects(Intersectable.GeoPoint gp, Ray ray, int level, Double3 k)
+    {
+        Material material = gp.geometry.getMaterial();
+        return calcGLobalEffect(constructRefractedRay(gp, ray),level, material.kr, k)
+                .add(calcGLobalEffect(constructReflectedRay(gp, ray), material.kt,level, k));
+    }
+
+    private Color calcGLobalEffect(Ray ray, int level, Double3 k, Double3 kx)
+    {
+        Double3 kkx = k.product(kx);
+        if (kkx.lowerThan(MIN_CALC_COLOR_K))
+            return Color.BLACK;
+        Intersectable.GeoPoint gp = findClosestIntersection(ray);
+        return (gp == null ? scene.background :calcColor(gp, ray, level - 1, kkx)).scale(kx);
+    }
+
+    private Ray constructRefractedRay(Intersectable.GeoPoint gp, Ray ray) {
+
+
+    }
+
+    private Intersectable.GeoPoint findClosestIntersection(Ray ray) {
+        List<Intersectable.GeoPoint> intersections = scene.geometries.findGeoIntersections(ray);
+        return (intersections == null || intersections.size() == 0) ?
+                null : ray.findClosestGeoPoint(intersections);
     }
 
     /**
