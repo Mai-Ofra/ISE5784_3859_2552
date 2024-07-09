@@ -58,6 +58,7 @@ class VectorTest {
         assertEquals(new Vector(-1, -2, -3), v1.add(v2),
                 "Vector + Vector does not work correctly");
    }
+
     /** Test method for {@link primitives.Vector#scale(double)}. */
     @Test
     void testScale() {
@@ -67,6 +68,7 @@ class VectorTest {
                 v1.scale(2),
                 "multiply vector with scalar does not work correctly");
     }
+
     /** Test method for {@link primitives.Vector#dotProduct(Vector)}. */
     @Test
     void testDotProduct() {
@@ -118,6 +120,7 @@ class VectorTest {
         assertTrue(isZero(vr.dotProduct(v2)) && isZero(vr.dotProduct(v4)),
                 "crossProduct() result is not orthogonal to its operands");
     }
+
     /** Test method for {@link Vector#lengthSquared()}. */
     @Test
     void testLengthSquared() {
@@ -125,7 +128,8 @@ class VectorTest {
         // TC01: simple check squared length
         assertEquals(9,v4.lengthSquared(),DELTA,"lengthSquared() wrong value");
       }
-    /** Test method for {@link Vector#length()}. */
+
+      /** Test method for {@link Vector#length()}. */
     @Test
     void testLength() {
         // ============ Equivalence Partitions Tests ==============

@@ -95,9 +95,7 @@ public class PolygonTests {
 
    }
 
-    /**
-     * Test method for {@link geometries.Polygon#getNormal(primitives.Point)}.
-     */
+    /**Test method for {@link geometries.Polygon#getNormal(primitives.Point)}. */
     @Test
     public void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
@@ -127,9 +125,7 @@ public class PolygonTests {
                     "Polygon's normal is not orthogonal to one of the edges");
     }
 
-    /**
-     * Test method for {@link geometries.Polygon#findIntersections(Ray)}.
-     */
+    /**Test method for {@link geometries.Polygon#findIntersections(Ray)}.*/
     @Test
     void testFindIntersections() {
         Polygon rectangle = new Polygon(
@@ -173,27 +169,31 @@ public class PolygonTests {
         result = rectangle.findIntersections(
                 new Ray(new Point(4, 1, 2), new Vector(-1, -1, -1)));
         assertNull(result, "Wrong number of points");
-
     }
 
-
+    /**Test method for {@link geometries.Polygon#findGeoIntersections(Ray, double)}.*/
     @Test
     void testFindGeoIntersectionsWithDistance() {
-        Polygon rectangle = new Polygon(new Point(1, 0, 0), new Point(-2, 0, -2), new Point(0, 0, 2),
+        Polygon polygon = new Polygon(
+                new Point(1, 0, 0),
+                new Point(-2, 0, -2),
+                new Point(0, 0, 2),
                 new Point(2, 0, 2));
-        Ray ray = new Ray(new Point(0, 2, 0), new Vector(0, -1, 0));
+        Ray ray = new Ray(new Point(0, 2, 1), new Vector(0, -1, 0));
+
         // ================= Equivalence Partitions Tests ===========================
+
         // TC01: the rectangle is not too far
-        List<Intersectable.GeoPoint> result = rectangle.findGeoIntersections(ray, 3);
+        List<Intersectable.GeoPoint> result = polygon.findGeoIntersections(ray, 3);
         assertEquals(1, result.size());
+
         // TC02: the rectangle is too far
-        result = rectangle.findGeoIntersections(ray, 1);
+        result = polygon.findGeoIntersections(ray, 1);
         assertNull(result);
+
         // ================= BVA Tests ===========================
         // TC03: the intersection is exactly at the max distance (0 points)
-        result = rectangle.findGeoIntersections(ray, 2);
+        result = polygon.findGeoIntersections(ray, 2);
         assertNull(result);
-
     }
-
 }

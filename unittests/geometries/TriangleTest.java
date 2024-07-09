@@ -20,6 +20,7 @@ class TriangleTest {
      */
     private final double DELTA = 0.000001;
 
+    /**Test method for {@link geometries.Triangle#getNormal(Point)}.*/
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
@@ -45,6 +46,7 @@ class TriangleTest {
                     "Triangle's normal is not orthogonal to one of the edges");
     }
 
+    /**Test method for {@link geometries.Triangle#findIntersections(Ray)}.*/
     @Test
     void testFindIntersections() {
         Point p010 = new Point(0,1,0);
@@ -88,5 +90,29 @@ class TriangleTest {
                         new Ray(p010,new Point(1,1,2).subtract(p010))),
                 "Ray does not intersect the triangle");
 
+    }
+
+    /**Test method for {@link geometries.Triangle#findGeoIntersections(Ray, double)}.*/
+    @Test
+    void testFindGeoIntersectionsWithDistance() {
+        Triangle triangle = new Triangle(
+                Point.ZERO,
+                new Point(0, 0, 2),
+                new Point(0, 2, 0));
+        Ray ray = new Ray(new Point(-2, 0.5, 0.5), new Vector(1, 0, 0));
+
+        // ================= Equivalence Partitions Tests ===========================
+        // TC01: the triangle is not too far
+        List<Intersectable.GeoPoint> result = triangle.findGeoIntersections(ray, 3);
+        assertEquals(1, result.size());
+
+        // TC02: the triangle is too far
+        result = triangle.findGeoIntersections(ray, 1);
+        assertNull(result);
+
+        // ================= BVA Tests ===========================
+        // TC03: the intersection is exactly at the max distance (0 points)
+        result = triangle.findGeoIntersections(ray, 2);
+        assertNull(result);
     }
 }

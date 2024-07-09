@@ -127,8 +127,10 @@ public class Sphere extends RadialGeometry {
         // Calculate the intersection points
         Point p1 = ray.getPoint(tm - th);
         Point p2 = ray.getPoint(tm + th);
-        List<GeoPoint> points = new java.util.ArrayList<>(Stream.of(new GeoPoint(this, p1), new GeoPoint(this, p2)).
-                sorted(Comparator.comparingDouble(GeoPoint -> GeoPoint.point.distance(ray.getHead()))).toList());
+        List<GeoPoint> points =
+                new java.util.ArrayList<>(
+                        Stream.of(new GeoPoint(this, p1), new GeoPoint(this, p2))
+                        .sorted(Comparator.comparingDouble(GeoPoint -> GeoPoint.point.distance(ray.getHead()))).toList());
 
         points.removeIf(p -> alignZero(ray.getHead().distance(p.point) - maxDistance)>= 0);
         if (points.isEmpty())

@@ -21,9 +21,9 @@ class PlaneTest {
      * assertEquals
      */
     private final double DELTA = 0.000001;
+
     /** Test method for {@link Plane#Plane(Point, Point, Point)} &
      * {@link Plane#Plane(Point, Vector)}  */
-
     @Test
     void testConstructor() {
         // ============ Equivalence Partitions Tests ==============
@@ -55,6 +55,7 @@ class PlaneTest {
                 "ctor need to throw exception when two of the points are the same");
 
     }
+
     /** Test method for {@link Plane#getNormal(Point)}  */
     @Test
     void testGetNormal() {
@@ -77,6 +78,7 @@ class PlaneTest {
                 "getNormal result is not orthogonal to the plane");
     }
 
+    /** Test method for {@link Plane#findIntersections(Ray)}  */
     @Test
     void testFindIntersections() {
         Vector v111 = new Vector(1,1,1);
@@ -133,7 +135,7 @@ class PlaneTest {
                 "Ray start at the point that presents the plane ");
     }
 
-
+    /** Test method for {@link Plane#findGeoIntersections(Ray, double)}  */
     @Test
     void testFindGeoIntersectionsWithDistance() {
         Plane plane = new Plane(

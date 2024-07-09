@@ -8,9 +8,7 @@ import scene.Scene;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Test class for {@link renderer.Camera#constructRay(int, int, int, int)}
- */
+/**Test class for {@link renderer.Camera#constructRay(int, int, int, int)}*/
 class ConstructRayCameraTest {
     private final Camera.Builder cameraBuilder = Camera.getBuilder()
             .setRayTracer(new SimpleRayTracer(new Scene("Test")))
@@ -41,6 +39,7 @@ class ConstructRayCameraTest {
             }
         assertEquals(expected,counter,"wrong number of intersections in"+ testType);
     }
+
     // Camera instances
     Camera camera000=cameraBuilder.build();
     Camera camera1=cameraBuilder
@@ -73,6 +72,7 @@ class ConstructRayCameraTest {
         //TC05: 0 intersection points
         assertIntersection(0, sphere5,camera1, "Sphere TC05",3,3);
     }
+
     /**
      * Test cases for ray-triangle intersections.
      */
@@ -93,6 +93,7 @@ class ConstructRayCameraTest {
         //TC02: two intersection points
         assertIntersection(2, triangle2,camera000, "Triangle TC02",3,3);
     }
+
     /**
      * Test cases for ray-plane intersections.
      */
@@ -116,6 +117,5 @@ class ConstructRayCameraTest {
 
         //TC03: 6 intersection points
         assertIntersection(6, plane3,camera000, "Plane TC03",3,3);
-
     }
 }

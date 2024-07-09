@@ -12,5 +12,4 @@ public abstract class RadialGeometry extends Geometry{
             throw  new IllegalArgumentException("The radius must be bigger than 0");
         this.radius = radius;
     }
-    
 }

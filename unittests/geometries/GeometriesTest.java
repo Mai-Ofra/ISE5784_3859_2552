@@ -7,9 +7,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class GeometriesTest {
 
-    /**
-     * Test method for {@link Geometries#findIntersections(Ray)}.
-     */
+    /**Test method for {@link Geometries#findIntersections(Ray)}.*/
     @Test
     void findIntersections() {
         // ============ Equivalence Partitions Tests ==============
