@@ -16,6 +16,8 @@ import static primitives.Util.isZero;
 public class SimpleRayTracer extends RayTracerBase {
     private static final double DELTA = 0.1;
 
+    private static final int MAX_CALC_COLOR_LEVEL = 10;
+    private static final double MIN_CALC_COLOR_K = 0.001;
 
     /**
      * Constructor that initializes the simple ray tracer with a scene.
@@ -48,8 +50,13 @@ public class SimpleRayTracer extends RayTracerBase {
      * @return the color at the given point
      */
     private Color calcColor(Intersectable.GeoPoint geoPoint, Ray ray) {
-        return scene.ambientLight.getIntensity()
-                .add(calcLocalEffects(geoPoint, ray));
+        return calcColor(geoPoint, ray, MAX_CALC_COLOR_LEVEL, MIN_CALC_COLOR_K)
+                .add(scene.ambientLight.getIntensity());
+    }
+
+    private Color calcColor(Intersectable.GeoPoint geopoint, Ray ray, int level, double k)
+    {
+
     }
 
     /**
