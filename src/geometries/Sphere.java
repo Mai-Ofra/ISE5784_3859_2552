@@ -35,7 +35,7 @@ public class Sphere extends RadialGeometry {
     protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) {
         // If the ray starts at the sphere's center
         if (ray.getHead().equals(center)) {
-            Point p = center.add(ray.getDirections().scale(radius));
+            Point p = center.add(ray.getDirection().scale(radius));
             if(alignZero(ray.getHead().distance(p)-maxDistance)<0)
                 return List.of(new GeoPoint(this,p ));
             return null;
@@ -45,7 +45,7 @@ public class Sphere extends RadialGeometry {
         Vector u = center.subtract(ray.getHead());
 
         double uLength = alignZero(u.length());
-        double tm = alignZero(ray.getDirections().dotProduct(u));
+        double tm = alignZero(ray.getDirection().dotProduct(u));
 
 
         // If the ray starts at the sphere's surface and goes inside
@@ -64,17 +64,17 @@ public class Sphere extends RadialGeometry {
         }
 
         // If the ray's direction is aligned with vector u
-        if (u.normalize().equals(ray.getDirections())) {
+        if (u.normalize().equals(ray.getDirection())) {
             if (tm < radius || isZero(tm - radius)) {
-                Point p = center.add(ray.getDirections().scale(radius));
+                Point p = center.add(ray.getDirection().scale(radius));
                 if(alignZero(ray.getHead().distance(p)-maxDistance)<0)
                     return List.of(new GeoPoint(this,p));
                 else
                     return null;
             } else {
                 List<GeoPoint> points = new java.util.ArrayList<>(Stream.of(
-                                new GeoPoint(this, center.add(ray.getDirections().scale(radius))),
-                                new GeoPoint(this, center.add(ray.getDirections().scale(-radius)))).
+                                new GeoPoint(this, center.add(ray.getDirection().scale(radius))),
+                                new GeoPoint(this, center.add(ray.getDirection().scale(-radius)))).
                         sorted(Comparator.comparingDouble(GeoPoint -> GeoPoint.point.distance(ray.getHead())))
                         .toList());
 
@@ -85,11 +85,11 @@ public class Sphere extends RadialGeometry {
             }
         }
         // If the ray's direction is opposite to vector u
-        else if (u.normalize().equals(ray.getDirections().scale(-1))) {
+        else if (u.normalize().equals(ray.getDirection().scale(-1))) {
             if (uLength > radius) {
                 return null;
             } else {
-                Point p = center.add(ray.getDirections().scale(radius));
+                Point p = center.add(ray.getDirection().scale(radius));
                 if(alignZero(ray.getHead().distance(p)-maxDistance)<0)
                     return List.of(new GeoPoint(this,p));
                 else

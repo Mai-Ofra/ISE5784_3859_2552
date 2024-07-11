@@ -17,24 +17,22 @@ public class Ray {
     private static final double DELTA = 0.1;
 
     private final Point  head;
-    private final Vector directions;
+    private final Vector direction;
 
     /**
      * parameter ctor
      * @param head the beginning point of the ray
-     * @param directions the direction vector of the ray
+     * @param direction the direction vector of the ray
      */
-    public Ray(Point head, Vector directions) {
+    public Ray(Point head, Vector direction) {
         this.head = head;
-        this.directions = directions.normalize();
+        this.direction = direction.normalize();
     }
 
     public Ray(Point point, Vector direction, Vector n) {
-        // Compute the offset vector based on the orientation of the normal
-        double nl = direction.dotProduct(n);
-        Vector offset = n.scale(nl > 0 ? DELTA : -DELTA);
-        this.head = point.add(offset);
-        this.directions = direction.normalize();
+        this.direction = direction.normalize();
+        double dotProduct = alignZero(this.direction.dotProduct(n));
+        this.head = dotProduct == 0 ? point : point.add(n.scale(dotProduct < 0 ? -DELTA : DELTA));
 
     }
 
@@ -42,26 +40,26 @@ public class Ray {
     public boolean equals(Object obj) {
         if (this == obj) return true;
       return (obj instanceof Ray ray)
-       && this.head.equals(ray.head) && this.directions.equals(ray.directions);
+       && this.head.equals(ray.head) && this.direction.equals(ray.direction);
     }
     @Override
     public int hashCode() {
-        return Objects.hash(head, directions);
+        return Objects.hash(head, direction);
     }
 
     @Override
     public String toString() {
         return "Ray: " +
                 "head=" + head +
-                ", directions=" + directions;
+                ", directions=" + direction;
     }
 
     /**
      * getter of directions of the ray
      * @return the direction of the ray
      */
-    public Vector getDirections() {
-        return directions;
+    public Vector getDirection() {
+        return direction;
     }
 
     /**
@@ -81,7 +79,7 @@ public class Ray {
     public Point getPoint(double t) {
         if(isZero(t))
             return head;
-        return head.add(directions.scale(t));
+        return head.add(direction.scale(t));
     }
 
     /**

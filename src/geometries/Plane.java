@@ -68,7 +68,7 @@ public class Plane extends Geometry {
             return null;
 
         Vector u = p.subtract(ray.getHead());
-        double denominator = alignZero(normal.dotProduct(ray.getDirections()));
+        double denominator = alignZero(normal.dotProduct(ray.getDirection()));
         //in case the ray direction is parallel to the plane
         if (isZero(denominator))
             return null;

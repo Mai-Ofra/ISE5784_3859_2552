@@ -27,13 +27,13 @@ public class Cylinder extends Tube {
     @Override
     public Vector getNormal(Point p) {
         if(p.equals(ray.getHead()))//if so, can't calc t
-            return ray.getDirections().scale(-1);
+            return ray.getDirection().scale(-1);
         Vector pMinusPO = p.subtract(ray.getHead());
-        double t = alignZero(ray.getDirections().dotProduct(pMinusPO));
+        double t = alignZero(ray.getDirection().dotProduct(pMinusPO));
         if (isZero(t))//if so, the point is on the bottom base
-            return ray.getDirections().scale(-1);
+            return ray.getDirection().scale(-1);
         if (t == height)//if so, the point is on the top base
-            return ray.getDirections();
+            return ray.getDirection();
         //else, on the sides of the cylinder
         Point center = ray.getPoint(t);
         //calculate the normal

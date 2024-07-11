@@ -99,7 +99,7 @@ public class Polygon extends Geometry {
       if (intersections == null)
          return null;
       Point rayP0 = ray.getHead();
-      Vector rayDir = ray.getDirections();
+      Vector rayDir = ray.getDirection();
       int n = vertices.size();
       Vector[] edgeVectors = new Vector[n];
       //calc all the vectors from p0 to all the edges
