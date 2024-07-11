@@ -39,8 +39,8 @@ public class Material {
         return this;
     }
 
-    public Material setKt(double ks) {
-        this.ks = new Double3(ks);
+    public Material setKt(double kt) {
+        this.kt = new Double3(kt);
         return this;
     }
 
@@ -49,8 +49,8 @@ public class Material {
         return this;
     }
 
-    public Material setKr(double ks) {
-        this.ks = new Double3(ks);
+    public Material setKr(double kr) {
+        this.kr = new Double3(kr);
         return this;
     }
 }

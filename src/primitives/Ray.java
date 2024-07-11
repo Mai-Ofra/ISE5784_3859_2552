@@ -32,8 +32,7 @@ public class Ray {
     public Ray(Point point, Vector direction, Vector n) {
         this.direction = direction.normalize();
         double dotProduct = alignZero(this.direction.dotProduct(n));
-        this.head = dotProduct == 0 ? point : point.add(n.scale(dotProduct < 0 ? -DELTA : DELTA));
-
+        this.head = dotProduct == 0 ? point : point.add(n.scale(dotProduct < 0 ? -DELTA :DELTA));
     }
 
     @Override
