@@ -43,8 +43,6 @@ public class UnderTheSea {
                 .setEmission(new Color(3, 3, 3))
                 .setMaterial(new Material().setKr(0.5).setShininess(100).setKs(0.9).setKd(0.1));
 
-
-
         // Bubbles (spheres)
         Geometry bubble1 = new Sphere(new Point(-1,-4,4), 0.5)
                 .setEmission(new Color(205,234,0))//yellow
