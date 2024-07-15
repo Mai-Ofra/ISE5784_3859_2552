@@ -163,7 +163,7 @@ public class SimpleRayTracer extends RayTracerBase {
      * @param ray The ray to check for intersections.
      * @return The closest intersection point, or null if no intersections are found.
      */
-    private Intersectable.GeoPoint findClosestIntersection(Ray ray) {
+    protected Intersectable.GeoPoint findClosestIntersection(Ray ray) {
         List<Intersectable.GeoPoint> intersections = scene.geometries.findGeoIntersections(ray);
         return (intersections == null || intersections.isEmpty()) ?
                 null : ray.findClosestGeoPoint(intersections);

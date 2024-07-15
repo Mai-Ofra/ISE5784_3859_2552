@@ -3,6 +3,7 @@ package renderer;
 import primitives.*;
 
 import java.util.MissingResourceException;
+import java.util.Random;
 
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
@@ -11,6 +12,7 @@ import static primitives.Util.isZero;
  * Class to represent a 3D camera.
  */
 public class Camera implements Cloneable {
+    Random rand = new Random();
     /**
      * Builder class for Camera to support the Builder design pattern.
      */
@@ -97,6 +99,26 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        public Builder setMultySamples(int numSamples,int interval) {
+            int powerOfTwo = numSamples - 1;
+            while (powerOfTwo > 0 && powerOfTwo % 2 == 0) {
+                powerOfTwo = powerOfTwo / 2;
+            }
+            if (powerOfTwo == 0) {
+                camera.numSamples = numSamples;
+            } else {
+                int newNumSamples = 2;
+                while (newNumSamples < numSamples - 1) {
+                    newNumSamples *= 2;
+                }
+                camera.numSamples = (newNumSamples + 1);
+            }
+            if(interval<numSamples)
+                throw new IllegalArgumentException("internal must be bigger than num of samples");
+            camera.interval=interval;
+            return this;
+        }
+
         /**
          * Sets the RayTracer for the camera.
          *
@@ -171,6 +193,8 @@ public class Camera implements Cloneable {
     private double distance = 0d;
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
+    private int numSamples = 1;
+    private int interval = 1;
 
     /**
      * private empty ctor
@@ -270,9 +294,43 @@ public class Camera implements Cloneable {
      * @param j  the pixel's row index
      */
     private void castRay(int Nx, int Ny, int i, int j) {
-        Ray ray = constructRay(Nx, Ny, i, j);
-        Color color = rayTracer.traceRay(ray);
-        imageWriter.writePixel(i, j, color);
+        Color color;
+        Ray ray;
+        ray = constructRay(Nx, Ny, i, j);
+        color = rayTracer.traceRay(ray);
+        if (numSamples == 1 || interval == 1) {
+            imageWriter.writePixel(i, j, color);
+        } else {
+            Point center=new Point(i,j,0);
+            Point positionRay;
+            color=color.scale((numSamples*numSamples)/3);
+            int count=(numSamples*numSamples)/3;
+            int left = Math.max(i - interval/2, 0);
+            int right = Math.min(i +interval/2, Nx);
+            int top = Math.max(j - interval/2, 0);
+            int bottom = Math.min(j + interval/2, Ny);
+            for (int k = left; k < right; k+=interval/numSamples)
+                for (int l = top; l < bottom; l+= interval/numSamples) {
+                    int randomK = rand.nextInt( Math.max(k-interval/numSamples/2,0), Math.min(k+interval/numSamples/2,right));
+                    int randomL = rand.nextInt(Math.max(l-interval/numSamples/2,0), Math.min(l+interval/numSamples/2,bottom));
+                    positionRay=new Point(randomK,randomL,0);
+                    ray = constructRay(Nx, Ny, randomK,randomL);
+                   double distance =positionRay.distance(center);
+                    if(distance<= (double) interval /6)
+                    {
+                        color=color.add(rayTracer.traceRay(ray).scale(3));
+                        count+=3;
+                    } else if (distance<=interval/3) {
+                        color=color.add(rayTracer.traceRay(ray).scale(2));
+                        count+=2;
+                    } else
+                        if (distance<= (double) interval /2) {
+                        color=color.add(rayTracer.traceRay(ray));
+                        count++;
+                    }
+                }
+            imageWriter.writePixel(i, j, color.scale(1.0/count));
+        }
     }
 
     /**
