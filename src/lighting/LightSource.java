@@ -1,10 +1,13 @@
 package lighting;
+import geometries.Intersectable;
 import primitives.*;
+import scene.Scene;
 
 /**
  * the interface to present light sources
  */
 public interface LightSource {
+
     /**
      * calc the color in a given point
      * @param p the point we want to calc its color
@@ -20,4 +23,5 @@ public interface LightSource {
     public Vector getL(Point p);
 
     double getDistance(Point newPoint);
+    Double3 getKtr(Intersectable.GeoPoint geoPoint,int numSamples, Vector l, Vector n, Scene scene);
 }

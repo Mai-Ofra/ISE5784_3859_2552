@@ -99,7 +99,7 @@ public class Camera implements Cloneable {
             return this;
         }
 
-        public Builder setMultySamples(int numSamples,int interval) {
+        public Builder setMultySamples(int numSamples) {
             int powerOfTwo = numSamples - 1;
             while (powerOfTwo > 0 && powerOfTwo % 2 == 0) {
                 powerOfTwo = powerOfTwo / 2;
@@ -113,9 +113,6 @@ public class Camera implements Cloneable {
                 }
                 camera.numSamples = (newNumSamples + 1);
             }
-            if(interval<numSamples)
-                throw new IllegalArgumentException("internal must be bigger than num of samples");
-            camera.interval=interval;
             return this;
         }
 
@@ -194,7 +191,7 @@ public class Camera implements Cloneable {
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
     private int numSamples = 1;
-    private int interval = 1;
+    private double interval = 1;
 
     /**
      * private empty ctor
@@ -298,36 +295,24 @@ public class Camera implements Cloneable {
         Ray ray;
         ray = constructRay(Nx, Ny, i, j);
         color = rayTracer.traceRay(ray);
+        interval=Math.min(Nx,Ny)*0.003;
         if (numSamples == 1 || interval == 1) {
             imageWriter.writePixel(i, j, color);
         } else {
-            Point center=new Point(i,j,0);
-            Point positionRay;
-            color=color.scale((numSamples*numSamples)/3);
-            int count=(numSamples*numSamples)/3;
-            int left = Math.max(i - interval/2, 0);
-            int right = Math.min(i +interval/2, Nx);
-            int top = Math.max(j - interval/2, 0);
-            int bottom = Math.min(j + interval/2, Ny);
-            for (int k = left; k < right; k+=interval/numSamples)
-                for (int l = top; l < bottom; l+= interval/numSamples) {
-                    int randomK = rand.nextInt( Math.max(k-interval/numSamples/2,0), Math.min(k+interval/numSamples/2,right));
-                    int randomL = rand.nextInt(Math.max(l-interval/numSamples/2,0), Math.min(l+interval/numSamples/2,bottom));
-                    positionRay=new Point(randomK,randomL,0);
-                    ray = constructRay(Nx, Ny, randomK,randomL);
-                   double distance =positionRay.distance(center);
-                    if(distance<= (double) interval /6)
-                    {
-                        color=color.add(rayTracer.traceRay(ray).scale(3));
-                        count+=3;
-                    } else if (distance<=interval/3) {
-                        color=color.add(rayTracer.traceRay(ray).scale(2));
-                        count+=2;
-                    } else
-                        if (distance<= (double) interval /2) {
-                        color=color.add(rayTracer.traceRay(ray));
-                        count++;
-                    }
+            int count=1;
+            double left = Math.max(i - interval/2, 0);
+            double right = Math.min(i +interval/2, Nx);
+            double top = Math.max(j - interval/2, 0);
+            double bottom = Math.min(j + interval/2, Ny);
+            for (double k = left; k < right; k+=interval/numSamples)
+                for (double l = (int)top; l < bottom; l+= interval/numSamples) {
+                    double stam1= Math.max(k-interval/numSamples/2,0);
+                    double stam2=Math.min(k+interval/numSamples/2,right);
+                    double randomK = rand.nextDouble(stam1,stam2);
+                    double randomL = rand.nextDouble(Math.max(l-interval/numSamples/2,0), Math.min(l+interval/numSamples/2,bottom));
+                    ray = constructRay(Nx, Ny, (int)randomK,(int)randomL);
+                    color=color.add(rayTracer.traceRay(ray));
+                    count++;
                 }
             imageWriter.writePixel(i, j, color.scale(1.0/count));
         }
