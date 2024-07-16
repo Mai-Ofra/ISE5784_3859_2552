@@ -56,7 +56,7 @@ public class ThreeBubblesSoft {
                 .setViewPlaneDistance(1000)
                 .setViewPlaneSize(500, 500)
                 .setImageWriter(new ImageWriter("ThreeBubblesSoft", 1000, 1000))
-                .setRayTracer(new SimpleRayTracer(scene)).setMultySamples(9,50);
+                .setRayTracer(new SimpleRayTracer(scene)).setMultySamples(9,10);
 
         // Render the image
         camera.build()

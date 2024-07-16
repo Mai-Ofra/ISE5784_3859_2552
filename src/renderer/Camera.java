@@ -311,19 +311,19 @@ public class Camera implements Cloneable {
             int bottom = Math.min(j + interval/2, Ny);
             for (int k = left; k < right; k+=interval/numSamples)
                 for (int l = top; l < bottom; l+= interval/numSamples) {
-                    int randomK = rand.nextInt( Math.max(k-interval/numSamples/2,0), Math.min(k+interval/numSamples/2,right));
-                    int randomL = rand.nextInt(Math.max(l-interval/numSamples/2,0), Math.min(l+interval/numSamples/2,bottom));
-                    positionRay=new Point(randomK,randomL,0);
-                    ray = constructRay(Nx, Ny, randomK,randomL);
+//                    int randomK = rand.nextInt( Math.max(k-interval/numSamples/2,0), Math.min(k+interval/numSamples/2,right)+1);
+//                    int randomL = rand.nextInt(Math.max(l-interval/numSamples/2,0), Math.min(l+interval/numSamples/2,bottom)+1);
+                      positionRay=new Point(k,l,0);
+                    ray = constructRay(Nx, Ny, k,l);
                    double distance =positionRay.distance(center);
-                    if(distance<= (double) interval /6)
-                    {
-                        color=color.add(rayTracer.traceRay(ray).scale(3));
-                        count+=3;
-                    } else if (distance<=interval/3) {
-                        color=color.add(rayTracer.traceRay(ray).scale(2));
-                        count+=2;
-                    } else
+//                    if(distance<= (double) interval /6)
+//                    {
+//                        color=color.add(rayTracer.traceRay(ray).scale(3));
+//                        count+=3;
+//                    } else if (distance<=interval/3) {
+//                        color=color.add(rayTracer.traceRay(ray).scale(2));
+//                        count+=2;
+//                    } else
                         if (distance<= (double) interval /2) {
                         color=color.add(rayTracer.traceRay(ray));
                         count++;
