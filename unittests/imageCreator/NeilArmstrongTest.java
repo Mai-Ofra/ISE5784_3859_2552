@@ -152,7 +152,7 @@ class NeilArmstrongTest {
         double x, z;
         double num = 2;
         for (int k = 0; k < 8; k++)
-            for (int i = 0; i < 54; i++) {
+            for (int i = 0; i < 35; i++) {
                 x = rand.nextDouble(-1, 6);
                 z = rand.nextDouble(2, 6);
                 scene.geometries.add(new Sphere(
@@ -164,22 +164,22 @@ class NeilArmstrongTest {
         //wall of stars2 (spheres)
         double y;
         for (int k = 0; k < 8; k++)
-            for (int i = 0; i < 54; i++) {
+            for (int i = 0; i < 5; i++) {
                 y = rand.nextDouble(-16, -3);
                 z = rand.nextDouble(2, 20);
                 scene.geometries.add(new Sphere(
-                        new Point(-2.5, y + k, z + k), 0.025 * num)
+                        new Point(-2.5, y + k, z + k), 0.055 * num)
                         .setEmission(new Color(250, 250, 250)));
                 num = num < 2 ? num += 0.5 : 0.5;
             }
 
         //wall of stars3 (spheres)
         for (int k = 0; k < 8; k++)
-            for (int i = 0; i < 54; i++) {
+            for (int i = 0; i < 5; i++) {
                 x = rand.nextDouble(-1, 6);
                 z = rand.nextDouble(2, 20);
                 scene.geometries.add(new Sphere(
-                        new Point(x + k, -17, z + k), 0.025 * num)
+                        new Point(x + k, -17, z + k), 0.055 * num)
                         .setEmission(new Color(250, 250, 250)));
                 num = num < 2 ? num += 0.5 : 0.5;
             }
