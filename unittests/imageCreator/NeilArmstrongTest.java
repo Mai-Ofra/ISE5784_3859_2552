@@ -5,6 +5,7 @@ import geometries.Polygon;
 import geometries.Sphere;
 import geometries.Triangle;
 import lighting.DirectionalLight;
+import lighting.PointLight;
 import lighting.SpotLight;
 import org.junit.jupiter.api.Test;
 import primitives.*;
@@ -36,6 +37,10 @@ class NeilArmstrongTest {
         Geometry helmet2 = new Sphere(new Point(4.57, -5.35, 3.13), 1.2)
                 .setEmission(new Color(3, 3, 3))
                 .setMaterial(new Material().setKr(0.5).setShininess(100).setKs(0.9).setKd(0.1));
+
+        Geometry sun = new Sphere(new Point(0, 10, 2), 0.8)
+                .setEmission(new Color(255,154,63)).setMaterial(new Material().setKt(0.9));
+
 
 
         // planets (spheres)
@@ -148,46 +153,46 @@ class NeilArmstrongTest {
                 .setEmission(STAR_COLOR)
                 .setMaterial(new Material().setKd(KD).setKs(KS).setShininess(SHININESS));
 
-        //wall of stars1 (spheres)
-        double x, z;
-        double num = 2;
-        for (int k = 0; k < 8; k++)
-            for (int i = 0; i < 35; i++) {
-                x = rand.nextDouble(-1, 6);
-                z = rand.nextDouble(2, 6);
-                scene.geometries.add(new Sphere(
-                        new Point(x + k, 0, z + k), 0.012 * num)
-                        .setEmission(new Color(250, 250, 250)));
-                num = num < 2 ? num += 0.5 : 0.5;
-            }
-
-        //wall of stars2 (spheres)
-        double y;
-        for (int k = 0; k < 8; k++)
-            for (int i = 0; i < 5; i++) {
-                y = rand.nextDouble(-16, -3);
-                z = rand.nextDouble(2, 20);
-                scene.geometries.add(new Sphere(
-                        new Point(-2.5, y + k, z + k), 0.035 * num)
-                        .setEmission(new Color(250, 250, 250)));
-                num = num < 2 ? num += 0.5 : 0.5;
-            }
-
-        //wall of stars3 (spheres)
-        for (int k = 0; k < 8; k++)
-            for (int i = 0; i < 5; i++) {
-                x = rand.nextDouble(-1, 6);
-                z = rand.nextDouble(2, 20);
-                scene.geometries.add(new Sphere(
-                        new Point(x + k, -17, z + k), 0.035 * num)
-                        .setEmission(new Color(250, 250, 250)));
-                num = num < 2 ? num += 0.5 : 0.5;
-            }
+//        //wall of stars1 (spheres)
+//        double x, z;
+//        double num = 2;
+//        for (int k = 0; k < 8; k++)
+//            for (int i = 0; i < 35; i++) {
+//                x = rand.nextDouble(-1, 6);
+//                z = rand.nextDouble(2, 6);
+//                scene.geometries.add(new Sphere(
+//                        new Point(x + k, 0, z + k), 0.012 * num)
+//                        .setEmission(new Color(250, 250, 250)));
+//                num = num < 2 ? num += 0.5 : 0.5;
+//            }
+//
+//        //wall of stars2 (spheres)
+//        double y;
+//        for (int k = 0; k < 8; k++)
+//            for (int i = 0; i < 5; i++) {
+//                y = rand.nextDouble(-16, -3);
+//                z = rand.nextDouble(2, 20);
+//                scene.geometries.add(new Sphere(
+//                        new Point(-2.5, y + k, z + k), 0.035 * num)
+//                        .setEmission(new Color(250, 250, 250)));
+//                num = num < 2 ? num += 0.5 : 0.5;
+//            }
+//
+//        //wall of stars3 (spheres)
+//        for (int k = 0; k < 8; k++)
+//            for (int i = 0; i < 5; i++) {
+//                x = rand.nextDouble(-1, 6);
+//                z = rand.nextDouble(2, 20);
+//                scene.geometries.add(new Sphere(
+//                        new Point(x + k, -17, z + k), 0.035 * num)
+//                        .setEmission(new Color(250, 250, 250)));
+//                num = num < 2 ? num += 0.5 : 0.5;
+//            }
 
 
         // Add geometries to the scene
         scene.geometries.add(helmet1, helmet2, planet1, planet2, planet3,
-                planet4, planet5, planet6, planet7, planetFloor);
+                planet4, planet5, planet6, planet7, planetFloor,sun);
         // Add stars to the scene
         scene.geometries.add(triangle11, triangle12, triangle13, triangle14);
         scene.geometries.add(triangle21, triangle22, triangle23, triangle24);
@@ -198,10 +203,15 @@ class NeilArmstrongTest {
                 new Color(255, 208, 66),
                 new Vector(0, -1, -0.5)
         ));
+
         scene.lights.add(new SpotLight(
                 new Color(0, 2, 204),
                 new Point(12, -1, 10),
                 new Vector(-1, -1, -0.5)
+        ));
+        scene.lights.add(new PointLight(
+                new Color(0, 2, 204),
+                new Point(0, 10, 2)
         ));
         //Add color to the scene
         scene.background = new Color(0, 6, 80);
@@ -213,12 +223,11 @@ class NeilArmstrongTest {
                 .setViewPlaneDistance(1000)
                 .setViewPlaneSize(500, 500)
                 .setImageWriter(new ImageWriter("Neil Armstrong scene", 1000, 1000))
-                .setRayTracer(new SimpleRayTracer(scene)).setMultySamples(3);
+                .setRayTracer(new SimpleRayTracer(scene));
         // Render the image
         camera.build()
                 .setThreadsCount(4)
                 .renderImage()
                 .writeToImage();
-
     }
 }
