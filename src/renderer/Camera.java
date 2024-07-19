@@ -2,6 +2,7 @@ package renderer;
 
 import primitives.*;
 
+import java.util.LinkedList;
 import java.util.MissingResourceException;
 import java.util.Random;
 
@@ -13,6 +14,7 @@ import static primitives.Util.isZero;
  */
 public class Camera implements Cloneable {
     Random rand = new Random();
+    private PixelManager pixelManager;
     /**
      * Builder class for Camera to support the Builder design pattern.
      */
@@ -192,6 +194,7 @@ public class Camera implements Cloneable {
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
     private int numSamples = 1;
+    private int threadsCount=0;
 
     /**
      * private empty ctor
@@ -247,9 +250,28 @@ public class Camera implements Cloneable {
         int Nx = imageWriter.getNx();
         int Ny = imageWriter.getNy();
 
-        for (int i = 0; i < Nx; i++)
-            for (int j = 0; j < Ny; j++)
-                castRay(Nx, Ny, j, i);
+        pixelManager = new PixelManager(Nx, Ny,10);
+        if (threadsCount == 0)
+        {
+            for (int i = 0; i < Nx; i++)
+                for (int j = 0; j < Ny; j++)
+                    castRay(Nx, Ny, j, i);
+        }
+        else { // see further... option 2
+            var threads = new LinkedList<Thread>(); // list of threads
+            while (threadsCount-- > 0) // add appropriate number of threads
+                threads.add(new Thread(() -> { // add a thread with its code
+                    PixelManager.Pixel pixel; // current pixel(row,col)
+                    // allocate pixel(row,col) in loop until there are no more pixels
+                    while ((pixel = pixelManager.nextPixel()) != null)
+                        // cast ray through pixel (and color it – inside castRay)
+                        castRay(Nx, Ny, pixel.col(), pixel.row());
+                }));
+            // start all the threads
+            for (var thread : threads) thread.start();
+            // wait until all the threads have finished
+            try { for (var thread : threads) thread.join(); } catch (InterruptedException ignore) {}
+        }
         return this;
     }
 
@@ -294,6 +316,7 @@ public class Camera implements Cloneable {
         double interval = Math.min(Nx, Ny) * 0.003;
         if (numSamples == 1 || interval == 1) {
             imageWriter.writePixel(i, j, color);
+            pixelManager.pixelDone();
         } else {
             int count=1;
             double left = Math.max(i - interval /2, 0);
@@ -311,6 +334,7 @@ public class Camera implements Cloneable {
                     count++;
                 }
             imageWriter.writePixel(i, j, color.scale(1.0/count));
+            pixelManager.pixelDone();
         }
     }
 
@@ -343,5 +367,10 @@ public class Camera implements Cloneable {
 
     public double getDistance() {
         return distance;
+    }
+
+    public Camera setThreadsCount(int threadsCount) {
+        this.threadsCount = threadsCount;
+        return this;
     }
 }
