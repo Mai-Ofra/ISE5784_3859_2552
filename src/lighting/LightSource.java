@@ -1,7 +1,5 @@
 package lighting;
-import geometries.Intersectable;
 import primitives.*;
-import scene.Scene;
 
 /**
  * the interface to present light sources
@@ -13,15 +11,19 @@ public interface LightSource {
      * @param p the point we want to calc its color
      * @return the color of the point
      */
-    public Color getIntensity(Point p);
+    Color getIntensity(Point p);
 
     /**
      * Returns the direction of the light at a given point.
      * @param p the point at which the light direction is required
      * @return the direction of the light at the specified point
      */
-    public Vector getL(Point p);
+    Vector getL(Point p);
 
+    /**
+     * Calculates the distance from this light to a point.
+     * @param newPoint The point to which the distance is to be calculated.
+     * @return The distance between this light and the point.
+     */
     double getDistance(Point newPoint);
-
 }

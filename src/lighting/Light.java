@@ -7,7 +7,6 @@ import primitives.Color;
  */
 abstract class Light {
     protected Color intensity;
-    protected static final double MIN_CALC_COLOR_K = 0.001;
     /**
      * parameter ctor
      * @param intensity the light intensity

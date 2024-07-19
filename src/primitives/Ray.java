@@ -15,7 +15,6 @@ import static primitives.Util.*;
  */
 public class Ray {
     private static final double DELTA = 0.1;
-
     private final Point head;
     private final Vector direction;
 
@@ -40,7 +39,7 @@ public class Ray {
     public Ray(Point point, Vector direction, Vector n) {
         this.direction = direction.normalize();
         double dotProduct = alignZero(this.direction.dotProduct(n));
-        this.head = dotProduct == 0 ? point : point.add(n.scale(dotProduct < 0 ? -DELTA : DELTA));
+        this.head = isZero(dotProduct) ? point : point.add(n.scale(dotProduct < 0 ? -DELTA : DELTA));
     }
 
     @Override
@@ -92,12 +91,10 @@ public class Ray {
             return head;
         try {
             return head.add(direction.scale(t));
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return head;
         }
-        }
-
+    }
 
 
     /**

@@ -1,7 +1,5 @@
 package primitives;
 
-import java.util.List;
-
 import static primitives.Util.isZero;
 
 /**
@@ -107,21 +105,5 @@ public class Vector extends Point{
      */
     public Vector normalize() {
         return new Vector(xyz.reduce(length()));
-    }
-    public List<Vector> getOrthogonal(Point p) {
-        double d = this.xyz.d1*p.xyz.d1+this.xyz.d2*p.xyz.d2+this.xyz.d3*p.xyz.d3;
-        if(isZero(xyz.d1) && isZero(xyz.d2))
-            return List.of(Vector.X,Vector.Y);
-        if(isZero(xyz.d1) && isZero(xyz.d3))
-            return List.of(Vector.X,Vector.Z);
-        if(isZero(xyz.d2) && isZero(xyz.d3))
-            return List.of(Vector.Y,Vector.Z);
-
-        Point p1 = new Point(0,0,(isZero(xyz.d3)?0:d/xyz.d3));
-        Point p2 = new Point(0,(isZero(xyz.d2)?0:d/xyz.d2),0);
-        Point p3 = new Point((isZero(xyz.d1)?0:d/xyz.d1),0,0);
-        Vector orthogonal1 = p1.subtract(p2).normalize();
-        Vector orthogonal2 = p2.subtract(p3).normalize();
-        return List.of(orthogonal1,orthogonal2);
     }
 }

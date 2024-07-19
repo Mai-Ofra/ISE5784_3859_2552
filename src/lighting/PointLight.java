@@ -1,16 +1,6 @@
 package lighting;
 
-import geometries.Intersectable;
-import geometries.Plane;
-import geometries.Triangle;
 import primitives.*;
-import scene.Scene;
-
-import java.util.List;
-import java.util.Random;
-
-import static primitives.Util.isZero;
-
 
 /**
  * PointLight represents a light source that radiates light uniformly in all directions
@@ -31,24 +21,11 @@ public class PointLight extends Light implements LightSource {
         this.position = position;
     }
 
-    /**
-     * Calculates the intensity of the light at a given point, considering attenuation.
-     *
-     * @param p the point at which the light intensity is to be calculated
-     * @return the color intensity of the light at the specified point
-     */
     @Override
     public Color getIntensity(Point p) {
         return intensity.scale(denominator(p));
     }
 
-    /**
-     * Returns the direction from the light source to a given point.
-     *
-     * @param p the point at which the light direction is required
-     * @return the normalized vector representing the direction
-     * from the light source to the point
-     */
     @Override
     public Vector getL(Point p) {
         return p.subtract(position).normalize();

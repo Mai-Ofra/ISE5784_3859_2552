@@ -17,24 +17,12 @@ public class SpotLight extends PointLight{
         this.direction=direction.normalize();
     }
 
-    /**
-     * Calculates the intensity of the light at a given point,
-     * considering directionality and attenuation.
-     * @param p the point at which the light intensity is to be calculated
-     * @return the color intensity of the light at the specified point
-     */
     @Override
     public Color getIntensity(Point p) {
         double dirDotL =Util.alignZero(direction.dotProduct(super.getL(p)));
         return intensity.scale(Math.max(0,dirDotL)).scale(denominator(p));
     }
 
-    /**
-     * Returns the direction from the light source to a given point.
-     * @param p the point at which the light direction is required
-     * @return the normalized vector representing the direction
-     * from the light source to the point
-     */
     @Override
     public Vector getL(Point p) {
         return super.getL(p).normalize();

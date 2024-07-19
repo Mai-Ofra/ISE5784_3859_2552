@@ -10,11 +10,11 @@ public class AmbientLight extends  Light {
     /**
      * Constructs an ambient light with the given intensity and scale factor.
      * using the father ctor
-     * @param IA the intensity of the ambient light
+     * @param intensity the intensity of the ambient light
      * @param KA the scale factor for the intensity
      */
-    public AmbientLight(Color IA, Double3 KA) {
-        super(IA.scale(KA));
+    public AmbientLight(Color intensity, Double3 KA) {
+        super(intensity.scale(KA));
     }
 
     /**

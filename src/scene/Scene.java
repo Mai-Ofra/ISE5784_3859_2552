@@ -2,14 +2,11 @@ package scene;
 
 import lighting.AmbientLight;
 import lighting.LightSource;
-
 import java.util.LinkedList;
 import java.util.List;
-
 import geometries.*;
 import primitives.*;
 import org.w3c.dom.*;
-
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
 import java.io.File;
@@ -114,6 +111,7 @@ public class Scene {
             e.printStackTrace();
         }
     }
+
     /**
      * Recursively parses the geometry elements from the XML
      * @param geometryList The NodeList containing geometry elements to be parsed.

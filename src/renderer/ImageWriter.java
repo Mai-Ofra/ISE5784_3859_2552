@@ -51,7 +51,6 @@ public class ImageWriter {
 
     /**
      * Image Writer constructor accepting image name and View Plane parameters,
-     *
      * @param imageName the name of png file
      * @param nX        amount of pixels by Width
      * @param nY        amount of pixels by height
@@ -64,7 +63,7 @@ public class ImageWriter {
         image = new BufferedImage(nX, nY, BufferedImage.TYPE_INT_RGB);
     }
 
-    // ***************** Getters/Setters ********************** //
+    /** ***************** Getters/Setters ********************** //
 
     /**
      * View Plane Y axis resolution
@@ -84,7 +83,7 @@ public class ImageWriter {
         return nX;
     }
 
-    // ***************** Operations ******************** //
+    /** ***************** Operations********************** //
 
     /**
      * Function writeToImage produces unoptimized png file of the image according
@@ -105,8 +104,8 @@ public class ImageWriter {
      * The function writePixel writes a color of a specific pixel into pixel color
      * matrix
      *
-     * @param xIndex X axis index of the pixel
-     * @param yIndex Y axis index of the pixel
+     * @param xIndex X-axis index of the pixel
+     * @param yIndex Y-axis index of the pixel
      * @param color  final color of the pixel
      */
     public void writePixel(int xIndex, int yIndex, Color color) {
