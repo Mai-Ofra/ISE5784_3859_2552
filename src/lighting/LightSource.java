@@ -23,5 +23,5 @@ public interface LightSource {
     public Vector getL(Point p);
 
     double getDistance(Point newPoint);
-    Double3 getKtr(Intersectable.GeoPoint geoPoint,int numSamples, Vector l, Vector n, Scene scene);
+
 }

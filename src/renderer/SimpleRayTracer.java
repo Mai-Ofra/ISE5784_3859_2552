@@ -1,6 +1,7 @@
 package renderer;
 
 import geometries.Intersectable;
+import geometries.Triangle;
 import lighting.DirectionalLight;
 import lighting.LightSource;
 import primitives.*;
@@ -17,7 +18,8 @@ import static primitives.Util.isZero;
 public class SimpleRayTracer extends RayTracerBase {
     private static final int MAX_CALC_COLOR_LEVEL = 10;
     private static final double MIN_CALC_COLOR_K = 0.001;
-    private int numSamples=0;
+
+
     /**
      * Constructor that initializes the simple ray tracer with a scene.
      *
@@ -27,9 +29,6 @@ public class SimpleRayTracer extends RayTracerBase {
         super(scene);
     }
 
-    public void setNumSamples(int numSamples) {
-        this.numSamples = numSamples;
-    }
 
     /**
      * Traces a ray and determines its color.
@@ -212,21 +211,20 @@ public class SimpleRayTracer extends RayTracerBase {
      */
     private Double3 transparency(Intersectable.GeoPoint geoPoint, LightSource lightSource, Vector l, Vector n) {
 
-            Vector lightDirection = l.scale(-1);
-            Ray ray = new Ray(geoPoint.point, lightDirection, n);
-            List<Intersectable.GeoPoint> intersections = scene.geometries
-                    .findGeoIntersections(ray, lightSource.getDistance(geoPoint.point));
-            if (intersections == null || intersections.isEmpty())
-                return Double3.ONE;
-            Double3 Ktr = Double3.ONE;
-            for (Intersectable.GeoPoint intersect : intersections) {
-                Ktr = Ktr.product(intersect.geometry.getMaterial().kt);
-                // Check if ktr is close to 0
-                if (Ktr.lowerThan(MIN_CALC_COLOR_K)) {
-                    return Double3.ZERO;
-                }
+        Vector lightDirection = l.scale(-1);
+        Ray ray = new Ray(geoPoint.point, lightDirection, n);
+        List<Intersectable.GeoPoint> intersections = scene.geometries
+                .findGeoIntersections(ray, lightSource.getDistance(geoPoint.point));
+        if (intersections == null || intersections.isEmpty())
+            return Double3.ONE;
+        Double3 Ktr = Double3.ONE;
+        for (Intersectable.GeoPoint intersect : intersections) {
+            Ktr = Ktr.product(intersect.geometry.getMaterial().kt);
+            // Check if ktr is close to 0
+            if (Ktr.lowerThan(MIN_CALC_COLOR_K)) {
+                return Double3.ZERO;
             }
-            return Ktr;
-
+        }
+        return Ktr;
     }
 }

@@ -21,7 +21,7 @@ public class ShadowTests {
       .setDirection(Vector.Z.scale(-1), Vector.Y)
       .setLocation(new Point(0, 0, 1000)).setViewPlaneDistance(1000)
       .setViewPlaneSize(200, 200)
-      .setRayTracer(new SimpleRayTracer(scene));
+      .setRayTracer(new SimpleRayTracer(scene));//
 
    /** The sphere in the tests */
    private final Intersectable  sphere     = new Sphere(new Point(0, 0, -200), 60d)
@@ -37,10 +37,10 @@ public class ShadowTests {
    private void sphereTriangleHelper(String pictName, Triangle triangle, Point spotLocation) {
       scene.geometries.add(sphere,
               triangle.setEmission(new Color(BLUE)).setMaterial(trMaterial));
-      scene.lights.add(new SpotLight(new Color(400, 240, 0),
+      scene.lights.add(new SpotLight(new Color(150, 240, 0),
               spotLocation, new Vector(1, 1, -3))
                           .setKl(1E-5).setKq(1.5E-7));
-      camera.setImageWriter(new ImageWriter(pictName, 400, 400))
+      camera.setImageWriter(new ImageWriter(pictName, 800, 800))
          .build()
          .renderImage()
          .writeToImage();

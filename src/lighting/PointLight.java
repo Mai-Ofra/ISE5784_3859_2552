@@ -2,11 +2,14 @@ package lighting;
 
 import geometries.Intersectable;
 import geometries.Plane;
+import geometries.Triangle;
 import primitives.*;
 import scene.Scene;
 
 import java.util.List;
 import java.util.Random;
+
+import static primitives.Util.isZero;
 
 
 /**
@@ -18,8 +21,7 @@ public class PointLight extends Light implements LightSource {
     private double kc = 1;
     private double kl = 0;
     private double kq = 0;
-    Random rand = new Random();
-    private double radius;
+
 
     /**
      * Parameter ctor
@@ -27,7 +29,6 @@ public class PointLight extends Light implements LightSource {
     public PointLight(Color intensity, Point position) {
         super(intensity);
         this.position = position;
-        this.radius=intensity.getColor().getRGB();
     }
 
     /**
@@ -57,27 +58,6 @@ public class PointLight extends Light implements LightSource {
     public double getDistance(Point newPoint) {
         return position.distance(newPoint);
     }
-
-    @Override
-    public Double3 getKtr(Intersectable.GeoPoint geoPoint, int numSamples, Vector l, Vector n, Scene scene) {
-//        Vector lightDirection = l.scale(-1);
-//        Plane plane = new Plane(this.position,lightDirection);
-//        Ray ray;
-//        for (int i = 0; i < numSamples; i++) {
-//            double x = rand.nextDouble(-5,5);
-//            double y = rand.nextDouble(5,-5);
-//            double z = rand.nextDouble(5,-5);
-//            ray = new Ray(geoPoint.point,lightDirection.add(new Vector(x,y,z)));
-//            List<Point> intersection = plane.findIntersections(ray);
-//            if(intersection!=null&& !intersection.isEmpty())
-//            {
-//                Point point=intersection.getFirst();
-//                if(point.distance(this.position)<)
-//            }
-//
-//
-return null;
-        }
 
 
     /**

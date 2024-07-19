@@ -90,8 +90,15 @@ public class Ray {
     public Point getPoint(double t) {
         if (isZero(t))
             return head;
-        return head.add(direction.scale(t));
-    }
+        try {
+            return head.add(direction.scale(t));
+        }
+        catch (Exception e) {
+            return head;
+        }
+        }
+
+
 
     /**
      * Finds the closest point to the head point from a list of points.

@@ -48,22 +48,4 @@ public class DirectionalLight extends Light implements LightSource{
         return Double.POSITIVE_INFINITY;
     }
 
-    @Override
-    public Double3 getKtr(Intersectable.GeoPoint geoPoint, int numSamples, Vector l, Vector n, Scene scene) {
-        Vector lightDirection = l.scale(-1);
-        Ray ray = new Ray(geoPoint.point, lightDirection, n);
-        List<Intersectable.GeoPoint> intersections = scene.geometries
-                .findGeoIntersections(ray, this.getDistance(geoPoint.point));
-        if (intersections == null || intersections.isEmpty())
-            return Double3.ONE;
-        Double3 Ktr = Double3.ONE;
-        for (Intersectable.GeoPoint intersect : intersections) {
-            Ktr = Ktr.product(intersect.geometry.getMaterial().kt);
-            // Check if ktr is close to 0
-            if (Ktr.lowerThan(MIN_CALC_COLOR_K)) {
-                return Double3.ZERO;
-            }
-        }
-        return Ktr;
-    }
 }
