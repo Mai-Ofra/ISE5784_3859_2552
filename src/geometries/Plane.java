@@ -13,6 +13,7 @@ public class Plane extends Geometry {
     private final Point p;
     private final Vector normal;
 
+
     /**
      * parameter ctor
      *
