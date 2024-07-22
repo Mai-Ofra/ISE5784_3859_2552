@@ -18,7 +18,7 @@ public class RenderTests {
     private final Scene          scene  = new Scene("Test scene");
     /** Camera builder of the tests */
     private final Camera.Builder camera = Camera.getBuilder()
-            .setRayTracer(new SimpleRayTracer(scene))
+            .setRayTracer(new SimpleRayTracer(scene)).setAntiAliasing(9)
             .setLocation(Point.ZERO)
             .setDirection(new Vector(0, 0, -1), Vector.Y)
             .setViewPlaneDistance(100)
@@ -115,7 +115,7 @@ public class RenderTests {
         scene.readFromXML(file.getPath());
         camera
                 .setImageWriter(new ImageWriter("xmlExample", 1000, 1000))
-                .build()
+                .build().setThreadsCount(4)
                 .renderImage()
                 .writeToImage();
     }

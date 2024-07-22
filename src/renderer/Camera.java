@@ -1,5 +1,6 @@
 package renderer;
 
+import geometries.Intersectable;
 import primitives.*;
 import primitives.Vector;
 
@@ -126,6 +127,11 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        public Builder setAdaptive(boolean isAdaptive) {
+            camera.isAdaptive = isAdaptive;
+            return this;
+        }
+
         /**
          * Sets the RayTracer for the camera.
          *
@@ -202,6 +208,8 @@ public class Camera implements Cloneable {
     private RayTracerBase rayTracer;
     private int numSamples = 1;
     private int threadsCount = 0;
+    private boolean isAdaptive = false;
+
     /**
      * private empty ctor
      */
@@ -228,6 +236,12 @@ public class Camera implements Cloneable {
      * @return the constructed Ray
      */
     public Ray constructRay(int nX, int nY, double j, double i) {
+        Point pIJ = findCenterPixel(nX,nY,j,i);
+        return new Ray(p0, pIJ.subtract(p0));
+    }
+
+    private Point findCenterPixel(int nX, int nY, double j, double i)
+    {
         //the center point of the view plane
         Point pc = p0.add(vTo.scale(distance));
 
@@ -248,7 +262,7 @@ public class Camera implements Cloneable {
             pIJ = pIJ.add(vRight.scale(Xj));
         if (!isZero(Yi))
             pIJ = pIJ.add(vUp.scale(Yi));
-        return new Ray(p0, pIJ.subtract(p0));
+        return  pIJ;
     }
 
     /**
@@ -314,6 +328,7 @@ public class Camera implements Cloneable {
     /**
      * Casts a ray through a specific pixel and writes the traced color to that pixel.
      * If Anti-Aliasing on, call jittered
+     *
      * @param Nx the number of pixels in the x direction
      * @param Ny the number of pixels in the y direction
      * @param i  the pixel's column index
@@ -321,26 +336,50 @@ public class Camera implements Cloneable {
      */
     private void castRay(int Nx, int Ny, int i, int j) {
         if (numSamples == 1) {
-            imageWriter.writePixel(i, j, rayTracer.traceRay(constructRay(Nx, Ny, i, j)));
-            pixelManager.pixelDone();
+                imageWriter.writePixel(i, j, rayTracer.traceRay(constructRay(Nx, Ny, i, j)));
         } else {
-            imageWriter.writePixel(i, j, jittered(i,j,Nx,Ny));
+            if (isAdaptive) {
+                double interval = Math.min(Nx, Ny) * 0.003;
+                int adaptiveDepth = calcDepth();
+                List<Color> colors = AdaptiveAntiAliasing(
+                        findCenterPixel(Nx,Ny,i,j),
+                        rayTracer.traceRay(constructRay(Nx, Ny, i, j)),
+                        interval,
+                        interval,
+                        adaptiveDepth
+                );
+                Color sumColor=Color.BLACK;
+                for (Color color : colors) {
+                    sumColor = sumColor.add(color);
+                }
+                imageWriter.writePixel(i, j, sumColor.scale(1.0/colors.size()));
+            } else {
+            imageWriter.writePixel(i, j, jittered(i, j, Nx, Ny));
+            }
         }
         pixelManager.pixelDone();
     }
 
+    private int calcDepth() {
+        int sum = 5;
+        int adaptiveDepth=1;
+        while(sum<numSamples*numSamples) {
+            sum = sum * 4 + 1;
+            adaptiveDepth++;
+        }
+            return adaptiveDepth;
+    }
 
 
-
-    public Color jittered(int i, int j,int Nx, int Ny) {
-       double interval = Math.min(Nx,Ny)*0.003;
+    public Color jittered(int i, int j, int Nx, int Ny) {
+        double interval = Math.min(Nx, Ny) * 0.003;
         Ray ray = constructRay(Nx, Ny, i, j);
         Color color = rayTracer.traceRay(ray);
         int count = 1;
-        double left = Math.max(i - interval /2, 0);
-        double right = Math.min(i + interval /2, Nx);
-        double top = Math.max(j - interval /2, 0);
-        double bottom = Math.min(j + interval /2, Ny);
+        double left = Math.max(i - interval / 2, 0);
+        double right = Math.min(i + interval / 2, Nx);
+        double top = Math.max(j - interval / 2, 0);
+        double bottom = Math.min(j + interval / 2, Ny);
         for (double k = left; k < right; k += interval / numSamples)
             for (double l = top; l < bottom; l += interval / numSamples) {
                 double randomK = rand.nextDouble(Math.max(k - interval / numSamples / 2, left), Math.min(k + interval / numSamples / 2, right));
@@ -350,6 +389,36 @@ public class Camera implements Cloneable {
                 count++;
             }
         return color.scale(1.0 / count);
+    }
+
+    private List<Color> AdaptiveAntiAliasing(Point center,Color centerColor, double w, double h,int AdaptiveDepth) {
+        List<Color> colors=new ArrayList<>();
+        if (AdaptiveDepth == 0) {
+            colors.add(centerColor);
+            return colors;
+        }
+        List<Point> centerPoints = findCenters(center,w,h);
+        for (int i = 0; i < 4; i++) {
+            Color pointColor=rayTracer.traceRay(new Ray(this.p0, centerPoints.get(i).subtract(this.p0)));
+            if (!pointColor.equals(centerColor)) {
+                colors.addAll(AdaptiveAntiAliasing(centerPoints.get(i),pointColor, w / 2, h / 2, AdaptiveDepth - 1));
+            }
+          else {
+                colors.add(pointColor);
+            }
+        }
+        return colors;
+    }
+
+    private List<Point> findCenters(Point center, double w, double h) {
+        List<Point> points = new ArrayList<>();
+        double cornerW = w / 4;
+        double cornerH = h / 4;
+        points.add(center.add(vRight.scale(cornerW)));
+        points.add(center.add(vRight.scale(-cornerW)));
+        points.add(center.add(vUp.scale(cornerH)));
+        points.add(center.add(vUp.scale(-cornerH)));
+        return points;
     }
 
     /**
@@ -382,6 +451,7 @@ public class Camera implements Cloneable {
     public double getDistance() {
         return distance;
     }
+
     public Camera setThreadsCount(int threadsCount) {
         this.threadsCount = threadsCount;
         return this;
