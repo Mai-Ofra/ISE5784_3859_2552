@@ -1,10 +1,9 @@
 package renderer;
 
 import primitives.*;
+import primitives.Vector;
 
-import java.util.LinkedList;
-import java.util.MissingResourceException;
-import java.util.Random;
+import java.util.*;
 
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
@@ -15,6 +14,7 @@ import static primitives.Util.isZero;
 public class Camera implements Cloneable {
     Random rand = new Random();
     private PixelManager pixelManager;
+
     /**
      * Builder class for Camera to support the Builder design pattern.
      */
@@ -50,6 +50,7 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the direction vectors of the camera.
+         *
          * @param vTo the forward direction vector
          * @param vUp the up direction vector
          * @return the current Builder instance for chaining
@@ -65,6 +66,7 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the size of the view plane.
+         *
          * @param width  the width of the view plane
          * @param height the height of the view plane
          * @return the current Builder instance for chaining
@@ -78,6 +80,7 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the distance of the view plane from the camera.
+         *
          * @param distance the distance value
          * @return the current Builder instance for chaining
          * @throws IllegalArgumentException if the distance is not greater than zero
@@ -89,6 +92,7 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the ImageWriter for the camera.
+         *
          * @param imageWriter the ImageWriter instance
          * @return the current Builder instance for chaining
          */
@@ -101,10 +105,11 @@ public class Camera implements Cloneable {
          * Sets the number of samples for the camera, ensuring it is a power of two plus one.
          * If the provided number is already a power of two, it is used directly.
          * Otherwise, the closest power of two greater than the provided number minus one is used, plus one.
+         *
          * @param numSamples The number of samples to set.
          * @return The current instance of the Builder, for method chaining.
          */
-        public Builder setMultySamples(int numSamples) {
+        public Builder setAntiAliasing(int numSamples) {
             int powerOfTwo = numSamples - 1;
             while (powerOfTwo > 0 && powerOfTwo % 2 == 0) {
                 powerOfTwo = powerOfTwo / 2;
@@ -123,6 +128,7 @@ public class Camera implements Cloneable {
 
         /**
          * Sets the RayTracer for the camera.
+         *
          * @param rayTracer the RayTracerBase instance
          * @return the current Builder instance for chaining
          */
@@ -133,6 +139,7 @@ public class Camera implements Cloneable {
 
         /**
          * Builds and returns the Camera instance.
+         *
          * @return the constructed Camera instance
          * @throws MissingResourceException if any required field is missing
          * @throws IllegalArgumentException if the direction vectors are parallel
@@ -194,8 +201,7 @@ public class Camera implements Cloneable {
     private ImageWriter imageWriter;
     private RayTracerBase rayTracer;
     private int numSamples = 1;
-    private int threadsCount=0;
-
+    private int threadsCount = 0;
     /**
      * private empty ctor
      */
@@ -205,6 +211,7 @@ public class Camera implements Cloneable {
 
     /**
      * Gets a new Builder instance for Camera.
+     *
      * @return a new Builder instance
      */
     public static Builder getBuilder() {
@@ -213,13 +220,14 @@ public class Camera implements Cloneable {
 
     /**
      * Constructs a ray through a given pixel in the view plane.
+     *
      * @param nX the number of pixels in the x direction
      * @param nY the number of pixels in the y direction
      * @param j  the pixel's column index
      * @param i  the pixel's row index
      * @return the constructed Ray
      */
-    public Ray constructRay(int nX, int nY, int j, int i) {
+    public Ray constructRay(int nX, int nY, double j, double i) {
         //the center point of the view plane
         Point pc = p0.add(vTo.scale(distance));
 
@@ -250,14 +258,12 @@ public class Camera implements Cloneable {
         int Nx = imageWriter.getNx();
         int Ny = imageWriter.getNy();
 
-        pixelManager = new PixelManager(Nx, Ny,10);
-        if (threadsCount == 0)
-        {
+        pixelManager = new PixelManager(Nx, Ny, 10);
+        if (threadsCount == 0) {
             for (int i = 0; i < Nx; i++)
                 for (int j = 0; j < Ny; j++)
                     castRay(Nx, Ny, j, i);
-        }
-        else { // see further... option 2
+        } else { // see further... option 2
             var threads = new LinkedList<Thread>(); // list of threads
             while (threadsCount-- > 0) // add appropriate number of threads
                 threads.add(new Thread(() -> { // add a thread with its code
@@ -270,13 +276,17 @@ public class Camera implements Cloneable {
             // start all the threads
             for (var thread : threads) thread.start();
             // wait until all the threads have finished
-            try { for (var thread : threads) thread.join(); } catch (InterruptedException ignore) {}
+            try {
+                for (var thread : threads) thread.join();
+            } catch (InterruptedException ignore) {
+            }
         }
         return this;
     }
 
     /**
      * Prints a grid on the image with the given interval and color.
+     *
      * @param interval the interval between grid lines
      * @param color    the color of the grid lines
      */
@@ -303,39 +313,43 @@ public class Camera implements Cloneable {
 
     /**
      * Casts a ray through a specific pixel and writes the traced color to that pixel.
+     * If Anti-Aliasing on, call jittered
      * @param Nx the number of pixels in the x direction
      * @param Ny the number of pixels in the y direction
      * @param i  the pixel's column index
      * @param j  the pixel's row index
      */
     private void castRay(int Nx, int Ny, int i, int j) {
-        Color color;
-        Ray ray;
-        ray = constructRay(Nx, Ny, i, j);
-        color = rayTracer.traceRay(ray);
-        double interval = Math.min(Nx, Ny) * 0.003;
-        if (numSamples == 1 || interval == 1) {
-            imageWriter.writePixel(i, j, color);
+        if (numSamples == 1) {
+            imageWriter.writePixel(i, j, rayTracer.traceRay(constructRay(Nx, Ny, i, j)));
             pixelManager.pixelDone();
         } else {
-            int count=1;
-            double left = Math.max(i - interval /2, 0);
-            double right = Math.min(i + interval /2, Nx);
-            double top = Math.max(j - interval /2, 0);
-            double bottom = Math.min(j + interval /2, Ny);
-            for (double k = left; k < right; k+= interval /numSamples)
-                for (double l = (int)top; l < bottom; l+= interval /numSamples) {
-                    double stam1= Math.max(k- interval /numSamples/2,0);
-                    double stam2=Math.min(k+ interval /numSamples/2,right);
-                    double randomK = rand.nextDouble(stam1,stam2);
-                    double randomL = rand.nextDouble(Math.max(l- interval /numSamples/2,0), Math.min(l+ interval /numSamples/2,bottom));
-                    ray = constructRay(Nx, Ny, (int)randomK,(int)randomL);
-                    color=color.add(rayTracer.traceRay(ray));
-                    count++;
-                }
-            imageWriter.writePixel(i, j, color.scale(1.0/count));
-            pixelManager.pixelDone();
+            imageWriter.writePixel(i, j, jittered(i,j,Nx,Ny));
         }
+        pixelManager.pixelDone();
+    }
+
+
+
+
+    public Color jittered(int i, int j,int Nx, int Ny) {
+       double interval = Math.min(Nx,Ny)*0.003;
+        Ray ray = constructRay(Nx, Ny, i, j);
+        Color color = rayTracer.traceRay(ray);
+        int count = 1;
+        double left = Math.max(i - interval /2, 0);
+        double right = Math.min(i + interval /2, Nx);
+        double top = Math.max(j - interval /2, 0);
+        double bottom = Math.min(j + interval /2, Ny);
+        for (double k = left; k < right; k += interval / numSamples)
+            for (double l = top; l < bottom; l += interval / numSamples) {
+                double randomK = rand.nextDouble(Math.max(k - interval / numSamples / 2, left), Math.min(k + interval / numSamples / 2, right));
+                double randomL = rand.nextDouble(Math.max(l - interval / numSamples / 2, top), Math.min(l + interval / numSamples / 2, bottom));
+                ray = constructRay(Nx, Ny, randomK, randomL);
+                color = color.add(rayTracer.traceRay(ray));
+                count++;
+            }
+        return color.scale(1.0 / count);
     }
 
     /**
@@ -368,7 +382,6 @@ public class Camera implements Cloneable {
     public double getDistance() {
         return distance;
     }
-
     public Camera setThreadsCount(int threadsCount) {
         this.threadsCount = threadsCount;
         return this;
