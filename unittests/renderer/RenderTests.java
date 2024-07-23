@@ -115,6 +115,8 @@ public class RenderTests {
         scene.readFromXML(file.getPath());
         camera
                 .setImageWriter(new ImageWriter("xmlExample", 1000, 1000))
+                .setThreadsCount(4)
+                .setAntiAliasing(9)
                 .build()
                 .renderImage()
                 .writeToImage();
