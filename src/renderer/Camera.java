@@ -346,44 +346,44 @@ public class Camera implements Cloneable {
             if (isAdaptive) {
                 if (adaptiveDepth == 0)
                     adaptiveDepth = findAdaptiveDepth();
-                List<Color> colors = adaptiveAntiAliasing(
+                SpecialList colors = adaptiveAntiAliasing(
                         findCenterPixel(Nx, Ny, i, j),
                         rayTracer.traceRay(constructRay(Nx, Ny, i, j)),
                         Math.min(Nx, Ny) * 0.003,
-                        adaptiveDepth
-                        , 0
+                        adaptiveDepth,
+                        new SpecialList()
                 );
-                Color sumColors = Color.BLACK;
-                for (Color color : colors)
-                    sumColors = sumColors.add(color);
-                imageWriter.writePixel(i, j, sumColors.scale(1.0 / colors.size()));
+                //               Color sumColors = Color.BLACK;
+//                for (Color color : colors.colors)
+//                    sumColors = sumColors.add(color);
+                imageWriter.writePixel(i, j, colors.Sumcolors.scale(1.0 / colors.size));
             } else
                 imageWriter.writePixel(i, j, jittered(i, j, Nx, Ny));
         }
         pixelManager.pixelDone();
     }
-
-    int count;
-
-    private List<Color> adaptiveAntiAliasing(Point centerPoint, Color centerColor, double interval, int adaptiveDepth, int size) {
-        if (adaptiveDepth == 0 || size >= numSamples * numSamples) {
-            //count++;
-            return List.of(centerColor);
+    private SpecialList adaptiveAntiAliasing(Point centerPoint, Color centerColor, double interval, int adaptiveDepth,SpecialList colors) {
+        if(colors.size>= numSamples * numSamples)
+            return colors;
+        if (adaptiveDepth == 0) {
+            colors.Sumcolors=colors.Sumcolors.add(centerColor);
+            colors.size++;
+            return colors;
         }
         List<Point> centerPoints = findCenters(centerPoint, interval / 4);
-        List<Color> colors = new ArrayList<>();
         Color pointColor;
         for (Point point : centerPoints) {
             pointColor = rayTracer.traceRay(new Ray(p0, point.subtract(p0)));
             if (!pointColor.equals(centerColor))
-                colors.addAll(adaptiveAntiAliasing(point, pointColor, interval / 2, adaptiveDepth - 1, size + colors.size()));
+                colors=adaptiveAntiAliasing(point, pointColor, interval / 2, adaptiveDepth - 1, colors);
             else {
-                int numPotential = calcPotentialRays(adaptiveDepth);
-                for (int i = 0; i < numPotential; i++)
-                    colors.add(pointColor);
-//                System.out.println("im here");
-                //count += numPotential;
+                int numPotential = (int)Math.pow(4,adaptiveDepth-1);
+                //calcPotentialRays(adaptiveDepth-1);
+                colors.Sumcolors=colors.Sumcolors.add(centerColor.scale(numPotential));
+                colors.size+=numPotential;
             }
+            if(colors.size>= numSamples * numSamples)
+                return colors;
         }
         return colors;
     }
