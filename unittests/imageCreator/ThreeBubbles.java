@@ -59,8 +59,7 @@ public class ThreeBubbles {
                 .setViewPlaneSize(500, 500)
                 .setThreadsCount(4)
                 .setImageWriter(new ImageWriter("ThreeBubblesblah", 1000, 1000))
-                .setRayTracer(new SimpleRayTracer(scene)).setAntiAliasing(9).setAdaptive(true);
-
+                .setRayTracer(new SimpleRayTracer(scene)).setAntiAliasing(17);//.setAdaptive(true)
         // Render the image
         camera.build()
                 .renderImage()

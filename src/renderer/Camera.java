@@ -373,13 +373,13 @@ public class Camera implements Cloneable {
             pointColor = rayTracer.traceRay(new Ray(p0, point.subtract(p0)));
             if (!pointColor.equals(centerColor))
                 colors.addAll(adaptiveAntiAliasing(point, pointColor, interval / 2, adaptiveDepth - 1,size+colors.size()));
-            else
-            {
-                int potential=calcPotentialRays(adaptiveDepth-1);
-                for (int i = 0; i < potential; i++) {
-                    colors.add(pointColor);
-                }
-            }
+//            else
+//            {
+//                int potential=calcPotentialRays(adaptiveDepth-1);
+//                for (int i = 0; i < potential; i++) {
+//                    colors.add(pointColor);
+//                }
+//            }
         }
         return colors;
     }
