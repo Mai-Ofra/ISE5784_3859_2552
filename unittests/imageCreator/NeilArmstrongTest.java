@@ -223,7 +223,7 @@ class NeilArmstrongTest {
                 .setViewPlaneDistance(1000)
                 .setViewPlaneSize(500, 500)
                 .setImageWriter(new ImageWriter("Neil Armstrong scene", 1000, 1000))
-                .setRayTracer(new SimpleRayTracer(scene)).setThreadsCount(4);
+                .setRayTracer(new SimpleRayTracer(scene)).setThreadsCount(4).setAntiAliasing(9).setAdaptive(true);
         // Render the image
         camera.build()
 

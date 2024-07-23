@@ -346,17 +346,16 @@ public class Camera implements Cloneable {
             if (isAdaptive) {
                 if (adaptiveDepth == 0)
                     adaptiveDepth = findAdaptiveDepth();
-
                 List<Color> colors = adaptiveAntiAliasing(
                         findCenterPixel(Nx, Ny, i, j),
                         rayTracer.traceRay(constructRay(Nx, Ny, i, j)),
                         Math.min(Nx, Ny) * 0.003,
                         adaptiveDepth
-
+                        , 0
                 );
                 Color sumColors = Color.BLACK;
                 for (Color color : colors)
-                    sumColors=sumColors.add(color);
+                    sumColors = sumColors.add(color);
                 imageWriter.writePixel(i, j, sumColors.scale(1.0 / colors.size()));
             } else
                 imageWriter.writePixel(i, j, jittered(i, j, Nx, Ny));
@@ -364,20 +363,38 @@ public class Camera implements Cloneable {
         pixelManager.pixelDone();
     }
 
-    private List<Color> adaptiveAntiAliasing(Point centerPoint, Color centerColor, double interval, int adaptiveDepth) {
-        if (adaptiveDepth == 0)
+    int count;
+
+    private List<Color> adaptiveAntiAliasing(Point centerPoint, Color centerColor, double interval, int adaptiveDepth, int size) {
+        if (adaptiveDepth == 0 || size >= numSamples * numSamples) {
+            //count++;
             return List.of(centerColor);
+        }
         List<Point> centerPoints = findCenters(centerPoint, interval / 4);
         List<Color> colors = new ArrayList<>();
         Color pointColor;
         for (Point point : centerPoints) {
             pointColor = rayTracer.traceRay(new Ray(p0, point.subtract(p0)));
             if (!pointColor.equals(centerColor))
-                colors.addAll(adaptiveAntiAliasing(point, pointColor, interval / 2, adaptiveDepth - 1));
-            else
-                colors.add(pointColor);
+                colors.addAll(adaptiveAntiAliasing(point, pointColor, interval / 2, adaptiveDepth - 1, size + colors.size()));
+            else {
+                int numPotential = calcPotentialRays(adaptiveDepth);
+                for (int i = 0; i < numPotential; i++)
+                    colors.add(pointColor);
+//                System.out.println("im here");
+                //count += numPotential;
+            }
         }
         return colors;
+    }
+
+    private int calcPotentialRays(int adaptiveDepth) {
+        int sum = 4;
+        while (adaptiveDepth > 1) {
+            sum *= 4;
+            adaptiveDepth--;
+        }
+        return sum;
     }
 
     private List<Point> findCenters(Point centerPoint, double interval) {
