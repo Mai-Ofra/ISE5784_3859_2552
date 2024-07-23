@@ -346,13 +346,12 @@ public class Camera implements Cloneable {
             if (isAdaptive) {
                 if (adaptiveDepth == 0)
                     adaptiveDepth = findAdaptiveDepth();
-
                 List<Color> colors = adaptiveAntiAliasing(
                         findCenterPixel(Nx, Ny, i, j),
                         rayTracer.traceRay(constructRay(Nx, Ny, i, j)),
                         Math.min(Nx, Ny) * 0.003,
-                        adaptiveDepth
-
+                        adaptiveDepth,
+                        0
                 );
                 Color sumColors = Color.BLACK;
                 for (Color color : colors)
@@ -364,8 +363,8 @@ public class Camera implements Cloneable {
         pixelManager.pixelDone();
     }
 
-    private List<Color> adaptiveAntiAliasing(Point centerPoint, Color centerColor, double interval, int adaptiveDepth) {
-        if (adaptiveDepth == 0)
+    private List<Color> adaptiveAntiAliasing(Point centerPoint, Color centerColor, double interval, int adaptiveDepth,int size) {
+        if (adaptiveDepth == 0||size>=numSamples*numSamples)
             return List.of(centerColor);
         List<Point> centerPoints = findCenters(centerPoint, interval / 4);
         List<Color> colors = new ArrayList<>();
@@ -373,11 +372,25 @@ public class Camera implements Cloneable {
         for (Point point : centerPoints) {
             pointColor = rayTracer.traceRay(new Ray(p0, point.subtract(p0)));
             if (!pointColor.equals(centerColor))
-                colors.addAll(adaptiveAntiAliasing(point, pointColor, interval / 2, adaptiveDepth - 1));
+                colors.addAll(adaptiveAntiAliasing(point, pointColor, interval / 2, adaptiveDepth - 1,size+colors.size()));
             else
-                colors.add(pointColor);
+            {
+                int potential=calcPotentialRays(adaptiveDepth-1);
+                for (int i = 0; i < potential; i++) {
+                    colors.add(pointColor);
+                }
+            }
         }
         return colors;
+    }
+
+    private int calcPotentialRays(int adaptiveDepth) {
+        int sum = 4;
+        while (adaptiveDepth > 1) {
+            sum *= 4;
+            adaptiveDepth--;
+        }
+        return sum;
     }
 
     private List<Point> findCenters(Point centerPoint, double interval) {

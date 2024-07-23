@@ -3,6 +3,7 @@ package imageCreator;
 import geometries.Geometry;
 import geometries.Polygon;
 import geometries.Sphere;
+import lighting.DirectionalLight;
 import lighting.SpotLight;
 import org.junit.jupiter.api.Test;
 import primitives.*;
@@ -46,8 +47,8 @@ public class ThreeBubbles {
         // Add geometries to the scene
         scene.geometries.add(bubble1,bubble2,bubble3,mirror,floor);
         //add light
-        scene.lights.add(new SpotLight(new Color(130,130,130), new Point(-3,-12,30), new Vector(1, 0, -3)));
-       // scene.lights.add(new DirectionalLight(new Color(150,150,150), new Vector(0.7, 0, -1)));
+        //scene.lights.add(new SpotLight(new Color(130,130,130), new Point(-3,-12,30), new Vector(1, 0, -3)));
+        scene.lights.add(new DirectionalLight(new Color(150,150,150), new Vector(0.7, 0, -1)));
         scene.background=new Color(200,200,200);
 
         // Set up the camera

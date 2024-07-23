@@ -134,31 +134,6 @@ public class Color {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Color color)) return false;
-        return Objects.equals(rgb, color.rgb);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(rgb);
-    }
-//    @Override
-//    public boolean equals(Object o) {
-//        if (this == o) return true;
-//        if (!(o instanceof Color color)) return false;
-//        return Math.abs(color.rgb.d1-rgb.d1)<0.00000009 &&
-//                Math.abs(color.rgb.d2-rgb.d2)<0.00000009 &&
-//                Math.abs(color.rgb.d3-rgb.d3)<0.00000009;
-//    }
-//
-//    @Override
-//    public int hashCode() {
-//        return Objects.hashCode(rgb);
-//    }
-
-    @Override
     public String toString() {
         return "rgb:" + rgb;
     }
