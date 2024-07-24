@@ -1,5 +1,9 @@
 package geometries;
-import primitives.*;
+
+import primitives.Point;
+import primitives.Ray;
+import primitives.Vector;
+
 import java.util.List;
 
 import static primitives.Util.alignZero;
@@ -13,20 +17,21 @@ public class Cylinder extends Tube {
 
     /**
      * parameter ctor
+     *
      * @param radius of Cylinder (sent to super ctor)
-     * @param ray of Cylinder (sent to super ctor)
+     * @param ray    of Cylinder (sent to super ctor)
      * @param height of Cylinder
      */
-    public Cylinder(double radius, Ray ray,double height) {
-        super(radius,ray);
-        if(height<0 || isZero(height))
+    public Cylinder(double radius, Ray ray, double height) {
+        super(radius, ray);
+        if (height < 0 || isZero(height))
             throw new IllegalArgumentException("height of cylinder must be bigger than 0");
         this.height = height;
     }
 
     @Override
     public Vector getNormal(Point p) {
-        if(p.equals(ray.getHead()))//if so, can't calc t
+        if (p.equals(ray.getHead()))//if so, can't calc t
             return ray.getDirection().scale(-1);
         Vector pMinusPO = p.subtract(ray.getHead());
         double t = alignZero(ray.getDirection().dotProduct(pMinusPO));
@@ -41,7 +46,7 @@ public class Cylinder extends Tube {
     }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         return null;
     }
 }

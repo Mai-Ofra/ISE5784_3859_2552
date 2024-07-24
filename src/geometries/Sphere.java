@@ -1,12 +1,15 @@
 package geometries;
 
-import primitives.*;
+import primitives.Point;
+import primitives.Ray;
+import primitives.Vector;
 
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static primitives.Util.*;
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
 
 /**
  * class to present 3D Sphere
@@ -32,12 +35,12 @@ public class Sphere extends RadialGeometry {
     }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         // If the ray starts at the sphere's center
         if (ray.getHead().equals(center)) {
             Point p = center.add(ray.getDirection().scale(radius));
-            if(alignZero(ray.getHead().distance(p)-maxDistance)<0)
-                return List.of(new GeoPoint(this,p ));
+            if (alignZero(ray.getHead().distance(p) - maxDistance) < 0)
+                return List.of(new GeoPoint(this, p));
             return null;
         }
 
@@ -53,8 +56,8 @@ public class Sphere extends RadialGeometry {
             if (tm > 0)//if the angle smaller than 90 degrees
             {
                 Point p = ray.getPoint(tm + tm);
-                if(alignZero(ray.getHead().distance(p)-maxDistance)<0)
-                    return List.of(new GeoPoint(this,p));
+                if (alignZero(ray.getHead().distance(p) - maxDistance) < 0)
+                    return List.of(new GeoPoint(this, p));
                 else
                     return null;
             } else//The ray is tangent to the sphere or goes outside (no intersections)
@@ -67,8 +70,8 @@ public class Sphere extends RadialGeometry {
         if (u.normalize().equals(ray.getDirection())) {
             if (tm < radius || isZero(tm - radius)) {
                 Point p = center.add(ray.getDirection().scale(radius));
-                if(alignZero(ray.getHead().distance(p)-maxDistance)<0)
-                    return List.of(new GeoPoint(this,p));
+                if (alignZero(ray.getHead().distance(p) - maxDistance) < 0)
+                    return List.of(new GeoPoint(this, p));
                 else
                     return null;
             } else {
@@ -78,7 +81,7 @@ public class Sphere extends RadialGeometry {
                         sorted(Comparator.comparingDouble(GeoPoint -> GeoPoint.point.distance(ray.getHead())))
                         .toList());
 
-                points.removeIf(p -> alignZero(ray.getHead().distance(p.point) - maxDistance)>=0);
+                points.removeIf(p -> alignZero(ray.getHead().distance(p.point) - maxDistance) >= 0);
                 if (points.isEmpty())
                     return null;
                 return points;
@@ -90,8 +93,8 @@ public class Sphere extends RadialGeometry {
                 return null;
             } else {
                 Point p = center.add(ray.getDirection().scale(radius));
-                if(alignZero(ray.getHead().distance(p)-maxDistance)<0)
-                    return List.of(new GeoPoint(this,p));
+                if (alignZero(ray.getHead().distance(p) - maxDistance) < 0)
+                    return List.of(new GeoPoint(this, p));
                 else
                     return null;
             }
@@ -118,8 +121,8 @@ public class Sphere extends RadialGeometry {
         // If the ray's head is inside the sphere
         if (uLength < radius) {
             Point p = ray.getPoint(tm + th);
-            if(alignZero(ray.getHead().distance(p)-maxDistance)<0)
-                return List.of(new GeoPoint(this,p));
+            if (alignZero(ray.getHead().distance(p) - maxDistance) < 0)
+                return List.of(new GeoPoint(this, p));
             else
                 return null;
         }
@@ -130,11 +133,11 @@ public class Sphere extends RadialGeometry {
         List<GeoPoint> points =
                 new java.util.ArrayList<>(
                         Stream.of(new GeoPoint(this, p1), new GeoPoint(this, p2))
-                        .sorted(Comparator.comparingDouble(GeoPoint -> GeoPoint.point.distance(ray.getHead()))).toList());
+                                .sorted(Comparator.comparingDouble(GeoPoint -> GeoPoint.point.distance(ray.getHead()))).toList());
 
-        points.removeIf(p -> alignZero(ray.getHead().distance(p.point) - maxDistance)>= 0);
+        points.removeIf(p -> alignZero(ray.getHead().distance(p.point) - maxDistance) >= 0);
         if (points.isEmpty())
-                return null;
+            return null;
         return points;
     }
 }

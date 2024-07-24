@@ -12,16 +12,16 @@ import static primitives.Util.isZero;
 /**
  * class to present 3D Tube
  */
-public class Tube extends RadialGeometry{
+public class Tube extends RadialGeometry {
     protected Ray ray;
 
     /**
      * parameters ctor
+     *
      * @param radius of Tube
-     * @param ray of Tube
+     * @param ray    of Tube
      */
-    public Tube(double radius, Ray ray)
-    {
+    public Tube(double radius, Ray ray) {
         super(radius);
         this.ray = ray;
     }
@@ -41,7 +41,7 @@ public class Tube extends RadialGeometry{
     }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         return null;
     }
 }

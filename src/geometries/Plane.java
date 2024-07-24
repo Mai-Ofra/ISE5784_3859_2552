@@ -1,10 +1,13 @@
 package geometries;
 
-import primitives.*;
+import primitives.Point;
+import primitives.Ray;
+import primitives.Vector;
 
 import java.util.List;
 
-import static primitives.Util.*;
+import static primitives.Util.alignZero;
+import static primitives.Util.isZero;
 
 /**
  * Class Plane present a geometric flat Infinite surface
@@ -63,7 +66,7 @@ public class Plane extends Geometry {
     }
 
     @Override
-    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray,double maxDistance) {
+    protected List<GeoPoint> findGeoIntersectionsHelper(Ray ray, double maxDistance) {
         //in case the ray starts at point that present the plane
         if (p.equals(ray.getHead()))
             return null;
@@ -78,7 +81,7 @@ public class Plane extends Geometry {
         if (t <= 0) {
             return null;
         }
-        if (alignZero(t - maxDistance)<0)
+        if (alignZero(t - maxDistance) < 0)
             return List.of(new GeoPoint(this, ray.getPoint(t)));
         return null;
     }

@@ -1,14 +1,13 @@
 package renderer;
 
+import primitives.Color;
+
+import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
-import javax.imageio.ImageIO;
-
-import primitives.Color;
 
 /**
  * Image writer class combines accumulation of pixel color matrix and finally
@@ -20,6 +19,11 @@ import primitives.Color;
  */
 public class ImageWriter {
     /**
+     * Directory path for the image file generation - relative to the user
+     * directory
+     */
+    private static final String FOLDER_PATH = System.getProperty("user.dir") + "/images";
+    /**
      * Horizontal resolution of the image - number of pixels in row
      */
     private int nX;
@@ -27,13 +31,6 @@ public class ImageWriter {
      * Vertical resolution of the image - number of pixels in column
      */
     private int nY;
-
-    /**
-     * Directory path for the image file generation - relative to the user
-     * directory
-     */
-    private static final String FOLDER_PATH = System.getProperty("user.dir") + "/images";
-
     /**
      * Image generation buffer (the matrix of the pixels)
      */
@@ -51,6 +48,7 @@ public class ImageWriter {
 
     /**
      * Image Writer constructor accepting image name and View Plane parameters,
+     *
      * @param imageName the name of png file
      * @param nX        amount of pixels by Width
      * @param nY        amount of pixels by height
@@ -64,9 +62,10 @@ public class ImageWriter {
         image = new BufferedImage(nX, nY, BufferedImage.TYPE_INT_RGB);
     }
 
-    /** ***************** Getters/Setters ********************** //
-
     /**
+     * **************** Getters/Setters ********************** //
+     * <p>
+     * /**
      * View Plane Y axis resolution
      *
      * @return the amount of vertical pixels
@@ -84,9 +83,10 @@ public class ImageWriter {
         return nX;
     }
 
-    /** ***************** Operations********************** //
-
     /**
+     * **************** Operations********************** //
+     * <p>
+     * /**
      * Function writeToImage produces unoptimized png file of the image according
      * to
      * pixel color matrix in the directory of the project

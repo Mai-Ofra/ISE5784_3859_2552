@@ -3,14 +3,15 @@ package renderer;
 import org.junit.jupiter.api.Test;
 import primitives.Color;
 
-import static java.awt.Color.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static java.awt.Color.PINK;
 
 /**
  * Tests the ImageWriter class.
  */
 class ImageWriterTest {
-    /**{@link ImageWriter#writeToImage()}.*/
+    /**
+     * {@link ImageWriter#writeToImage()}.
+     */
     @Test
     void testWriteToImage() {
         ImageWriter imageWriter = new ImageWriter("grid", 800, 500);

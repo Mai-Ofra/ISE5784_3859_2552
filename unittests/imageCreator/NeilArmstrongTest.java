@@ -5,10 +5,12 @@ import geometries.Polygon;
 import geometries.Sphere;
 import geometries.Triangle;
 import lighting.DirectionalLight;
-import lighting.PointLight;
 import lighting.SpotLight;
 import org.junit.jupiter.api.Test;
-import primitives.*;
+import primitives.Color;
+import primitives.Material;
+import primitives.Point;
+import primitives.Vector;
 import renderer.Camera;
 import renderer.ImageWriter;
 import renderer.SimpleRayTracer;
@@ -18,11 +20,11 @@ import java.util.Random;
 
 
 class NeilArmstrongTest {
-    Random rand = new Random();
     private static final double KD = 0.5;
     private static final double KS = 0.5;
     private static final int SHININESS = 100;
     private static final Color STAR_COLOR = new Color(255, 252, 117);
+    Random rand = new Random();
 
     @Test
     void testNeilArmstrong() {
@@ -38,13 +40,9 @@ class NeilArmstrongTest {
                 .setEmission(new Color(3, 3, 3))
                 .setMaterial(new Material().setKr(0.5).setShininess(100).setKs(0.9).setKd(0.1));
 
-        Geometry sun = new Sphere(new Point(0, 10, 2), 0.8)
-                .setEmission(new Color(255,154,63)).setMaterial(new Material().setKt(0.9));
-        scene.lights.add(new PointLight(
-                new Color(0, 2, 204),
-                new Point(0, 10, 2)
-        ));
-
+        Geometry starLight = new Sphere(new Point(-0.5, 8, 4), 0.3)
+                .setEmission(new Color(53, 91, 250))
+                .setMaterial(new Material().setKs(0.2).setKd(0.7).setShininess(30).setKt(0.5));//blue
 
         // planets (spheres)
         Geometry planet1 = new Sphere(new Point(-1, -4, 4), 0.5)
@@ -75,7 +73,7 @@ class NeilArmstrongTest {
                 new Point(10, -10, 2),
                 new Point(10, 10, 2),
                 new Point(-10, 10, 2))
-                .setEmission(new Color(139, 69, 19)) // Brown planetFloor
+                .setEmission(new Color(139, 69, 19))
                 .setMaterial(new Material().setKd(KD).setKs(KS).setShininess(SHININESS));
 
         //star1 (4 triangle)
@@ -157,8 +155,8 @@ class NeilArmstrongTest {
                 .setMaterial(new Material().setKd(KD).setKs(KS).setShininess(SHININESS));
 
         //wall of stars1 (spheres)
-        double x, z;
-        double num = 2;
+        double x, y ,z ;//for random positions
+        double num = 2; //for random size
         for (int k = 0; k < 8; k++)
             for (int i = 0; i < 35; i++) {
                 x = rand.nextDouble(-1, 6);
@@ -170,7 +168,6 @@ class NeilArmstrongTest {
             }
 
         //wall of stars2 (spheres)
-        double y;
         for (int k = 0; k < 8; k++)
             for (int i = 0; i < 5; i++) {
                 y = rand.nextDouble(-16, -3);
@@ -195,8 +192,7 @@ class NeilArmstrongTest {
 
         // Add geometries to the scene
         scene.geometries.add(helmet1, helmet2, planet1, planet2, planet3,
-                planet4, planet5, planet6, planet7, planetFloor,sun);
-        // Add stars to the scene
+                planet4, planet5, planet6, planet7, planetFloor, starLight);
         scene.geometries.add(triangle11, triangle12, triangle13, triangle14);
         scene.geometries.add(triangle21, triangle22, triangle23, triangle24);
         scene.geometries.add(triangle31, triangle32, triangle33, triangle34);
@@ -206,11 +202,25 @@ class NeilArmstrongTest {
                 new Color(255, 208, 66),
                 new Vector(0, -1, -0.5)
         ));
-
         scene.lights.add(new SpotLight(
                 new Color(0, 2, 204),
                 new Point(12, -1, 10),
                 new Vector(-1, -1, -0.5)
+        ));
+        scene.lights.add(new SpotLight(
+                new Color(0, 200, 0),
+                new Point(-1.5, 6.5, 3.5),
+                new Point(-0.5, 7, 4).subtract(new Point(-1.5, 6, 3.5))
+        ));
+        scene.lights.add(new SpotLight(
+                new Color(200, 0, 0),
+                new Point(0.5, 6.5, 6),
+                new Point(-0.5, 7, 4).subtract(new Point(0.5, 6.5, 6))
+        ));
+        scene.lights.add(new SpotLight(
+                new Color(0, 0, 200),
+                new Point(5, 6.5, 2.5),
+                new Point(-0.5, 7, 4).subtract(new Point(5, 6.5, 2.5))
         ));
 
         //Add color to the scene
@@ -225,10 +235,9 @@ class NeilArmstrongTest {
                 .setImageWriter(new ImageWriter("Neil Armstrong scene", 1000, 1000))
                 .setRayTracer(new SimpleRayTracer(scene))
                 .setAntiAliasing(17)
-               .setThreadsCount(2).setAdaptive(true);//;//
+                .setThreadsCount(4);//.setAdaptive(true)
         // Render the image
         camera.build()
-
                 .renderImage()
                 .writeToImage();
     }

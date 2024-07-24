@@ -5,12 +5,13 @@ import primitives.Point;
 import primitives.Ray;
 import primitives.Vector;
 
-
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+
 /**
  * Testing Polygons
+ *
  * @author Ofra & Mai
  */
 class TriangleTest {
@@ -20,7 +21,9 @@ class TriangleTest {
      */
     private final double DELTA = 0.000001;
 
-    /**Test method for {@link geometries.Triangle#getNormal(Point)}.*/
+    /**
+     * Test method for {@link geometries.Triangle#getNormal(Point)}.
+     */
     @Test
     void testGetNormal() {
         // ============ Equivalence Partitions Tests ==============
@@ -42,57 +45,61 @@ class TriangleTest {
                 "Triangle's normal is not a unit vector");
         // ensure the result is orthogonal to all the edges
         for (int i = 0; i < 2; ++i)
-            assertEquals(0, result.dotProduct(pts[i].subtract(pts[i+1])) , DELTA,
+            assertEquals(0, result.dotProduct(pts[i].subtract(pts[i + 1])), DELTA,
                     "Triangle's normal is not orthogonal to one of the edges");
     }
 
-    /**Test method for {@link geometries.Triangle#findIntersections(Ray)}.*/
+    /**
+     * Test method for {@link geometries.Triangle#findIntersections(Ray)}.
+     */
     @Test
     void testFindIntersections() {
-        Point p010 = new Point(0,1,0);
-        Point pt110 = new Point(1,1,0);
-        Point pt2 = new Point(0.5,0.5,1);
-        Triangle triangle = new Triangle(Point.ZERO,pt2,pt110);
-        final var exp1 = List.of(new Point(0.5,0.5,0.5));
+        Point p010 = new Point(0, 1, 0);
+        Point pt110 = new Point(1, 1, 0);
+        Point pt2 = new Point(0.5, 0.5, 1);
+        Triangle triangle = new Triangle(Point.ZERO, pt2, pt110);
+        final var exp1 = List.of(new Point(0.5, 0.5, 0.5));
 
 
         // ============ Equivalence Partitions Tests =============
         // TC01: Ray intersects the triangle (1 point)
         final var result1 = triangle.findIntersections(
-                new Ray(p010,new Point(0.5,0.5,0.5).subtract(p010) ))
+                        new Ray(p010, new Point(0.5, 0.5, 0.5).subtract(p010)))
                 .stream().toList();
         assertEquals(1, result1.size(), "Wrong number of points");
         assertEquals(exp1, result1, "Ray crosses triangle");
 
         // TC02: Ray does not intersect the triangle, intersect point opposite a side(0 point)
         assertNull(triangle.findIntersections(
-                new Ray(p010,new Point(1.25,1.25,0.75).subtract(p010))),
+                        new Ray(p010, new Point(1.25, 1.25, 0.75).subtract(p010))),
                 "Ray does not intersect the triangle");
 
         // TC03: Ray does not intersect the triangle, intersect point opposite a corner point(0 point)
         assertNull(triangle.findIntersections(
-                new Ray(p010,new Point(0.5,0.5,1.5).subtract(p010))),
+                        new Ray(p010, new Point(0.5, 0.5, 1.5).subtract(p010))),
                 "Ray does not intersect the triangle");
 
         // =============== Boundary Values Tests ==================
         // TC11:the ray intersect the triangle on a corner point (0 point)
         assertNull(triangle.findIntersections(
-                        new Ray(p010,pt110.subtract(p010))),
+                        new Ray(p010, pt110.subtract(p010))),
                 "Ray does not intersect the triangle");
 
         // TC12: the ray intersect the triangle on one of its sides  (0 point)
         assertNull(triangle.findIntersections(
-                        new Ray(p010,new Point(0.75,0.75,0.5).subtract(p010))),
+                        new Ray(p010, new Point(0.75, 0.75, 0.5).subtract(p010))),
                 "Ray does not intersect the triangle");
 
         // TC13: the ray intersect the triangle in continuation of the side of the triangle(0 point)
         assertNull(triangle.findIntersections(
-                        new Ray(p010,new Point(1,1,2).subtract(p010))),
+                        new Ray(p010, new Point(1, 1, 2).subtract(p010))),
                 "Ray does not intersect the triangle");
 
     }
 
-    /**Test method for {@link geometries.Triangle#findGeoIntersections(Ray, double)}.*/
+    /**
+     * Test method for {@link geometries.Triangle#findGeoIntersections(Ray, double)}.
+     */
     @Test
     void testFindGeoIntersectionsWithDistance() {
         Triangle triangle = new Triangle(

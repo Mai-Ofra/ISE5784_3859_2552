@@ -1,14 +1,16 @@
 package primitives;
 
 public class Material {
-    public Double3 kd =Double3.ZERO;
-    public Double3 ks =Double3.ZERO;
-    public Double3 kt =Double3.ZERO; /*transparency*/
-    public Double3 kr =Double3.ZERO; /*reflection*/
-    public int Shininess=0;
+    public Double3 kd = Double3.ZERO;
+    public Double3 ks = Double3.ZERO;
+    public Double3 kt = Double3.ZERO; /*transparency*/
+    public Double3 kr = Double3.ZERO; /*reflection*/
+    public int Shininess = 0;
 
 
-    /**-----------------Setters---------------------------------*/
+    /**
+     * -----------------Setters---------------------------------
+     */
     public Material setKd(double kd) {
         this.kd = new Double3(kd);
         return this;
@@ -31,7 +33,7 @@ public class Material {
 
     public Material setShininess(int Shininess) {
         this.Shininess = Shininess;
-        return  this;
+        return this;
     }
 
     public Material setKt(Double3 kt) {

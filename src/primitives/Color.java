@@ -10,21 +10,24 @@ package primitives;
  */
 public class Color {
     /**
+     * Black color = (0,0,0)
+     */
+    public static final Color BLACK = new Color();
+    /**
      * The internal fields maintain RGB components as double numbers from 0 to
      * whatever...
      */
     private final Double3 rgb;
-
     /**
-     * Black color = (0,0,0)
+     * optional parameter for counting how much rays the color is from
      */
-    public static final Color BLACK = new Color();
+    public int weightSize = 1;
 
     /**
      * Default constructor - to generate Black Color (privately)
      */
     private Color() {
-        rgb = Double3.ZERO;
+        rgb = Double3.ZERO; weightSize=0;
     }
 
     /**

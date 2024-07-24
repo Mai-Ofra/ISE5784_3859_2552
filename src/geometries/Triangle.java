@@ -44,7 +44,7 @@ public class Triangle extends Polygon {
         double vxn2 = alignZero(ray.getDirection().dotProduct(n2));
         double vxn3 = alignZero(ray.getDirection().dotProduct(n3));
         if ((vxn1 < 0 && vxn2 < 0 && vxn3 < 0) || (vxn1 > 0 && vxn2 > 0 && vxn3 > 0))
-            if (alignZero(ray.getHead().distance(intersections.getFirst()) - maxDistance)<0)
+            if (alignZero(ray.getHead().distance(intersections.getFirst()) - maxDistance) < 0)
                 return List.of(new GeoPoint(this, intersections.getFirst()));
         return null;
     }

@@ -1,5 +1,8 @@
 package lighting;
-import primitives.*;
+
+import primitives.Color;
+import primitives.Point;
+import primitives.Vector;
 
 /**
  * the interface to present light sources
@@ -8,6 +11,7 @@ public interface LightSource {
 
     /**
      * calc the color in a given point
+     *
      * @param p the point we want to calc its color
      * @return the color of the point
      */
@@ -15,6 +19,7 @@ public interface LightSource {
 
     /**
      * Returns the direction of the light at a given point.
+     *
      * @param p the point at which the light direction is required
      * @return the direction of the light at the specified point
      */
@@ -22,6 +27,7 @@ public interface LightSource {
 
     /**
      * Calculates the distance from this light to a point.
+     *
      * @param newPoint The point to which the distance is to be calculated.
      * @return The distance between this light and the point.
      */

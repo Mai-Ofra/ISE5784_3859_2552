@@ -1,6 +1,9 @@
 package lighting;
 
-import primitives.*;
+import primitives.Color;
+import primitives.Point;
+import primitives.Util;
+import primitives.Vector;
 
 /**
  * PointLight represents a light source that radiates light uniformly in all directions
