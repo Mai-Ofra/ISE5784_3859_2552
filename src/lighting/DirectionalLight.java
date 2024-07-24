@@ -1,23 +1,26 @@
 package lighting;
 
-import primitives.*;
+import primitives.Color;
+import primitives.Point;
+import primitives.Vector;
 
 
 /**
  * DirectionalLight represents a light source that has a constant direction
  * and intensity.
  */
-public class DirectionalLight extends Light implements LightSource{
+public class DirectionalLight extends Light implements LightSource {
     private final Vector direction;
 
     /**
      * parameter ctor
+     *
      * @param intensity the intensity of the light
      * @param direction the direction of the light
      */
     public DirectionalLight(Color intensity, Vector direction) {
         super(intensity);
-        this.direction=direction;
+        this.direction = direction;
     }
 
     @Override

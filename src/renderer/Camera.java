@@ -1,6 +1,8 @@
 package renderer;
 
-import primitives.*;
+import primitives.Color;
+import primitives.Point;
+import primitives.Ray;
 import primitives.Vector;
 
 import java.util.*;
@@ -14,6 +16,300 @@ import static primitives.Util.isZero;
 public class Camera implements Cloneable {
     Random rand = new Random();
     private PixelManager pixelManager;
+    private Vector vTo;
+    private Vector vUp;
+    private Vector vRight;
+    private Point p0;
+    private double height = 0d;
+    private double width = 0d;
+    private double distance = 0d;
+    private ImageWriter imageWriter;
+    private RayTracerBase rayTracer;
+    private int numSamples = 1;
+    private int threadsCount = 0;
+    private boolean isAdaptive = false;
+    private int adaptiveDepth = 0;
+    /**
+     * private empty ctor
+     */
+    private Camera() {
+    }
+
+    /**
+     * Gets a new Builder instance for Camera.
+     *
+     * @return a new Builder instance
+     */
+    public static Builder getBuilder() {
+        return new Builder();
+    }
+
+    /**
+     * Constructs a ray through a given pixel in the view plane.
+     *
+     * @param nX the number of pixels in the x direction
+     * @param nY the number of pixels in the y direction
+     * @param j  the pixel's column index
+     * @param i  the pixel's row index
+     * @return the constructed Ray
+     */
+    public Ray constructRay(int nX, int nY, double j, double i) {
+        Point pIJ = findCenterPixel(nX, nY, j, i);
+        return new Ray(p0, pIJ.subtract(p0));
+    }
+
+    private Point findCenterPixel(int nX, int nY, double j, double i) {
+        //the center point of the view plane
+        Point pc = p0.add(vTo.scale(distance));
+
+        if (isZero(nY) || isZero(nX)) {
+            throw new IllegalArgumentException("It is impossible to divide by 0");
+        }
+
+        //the size of the height and width of a pixel
+        double Ry = height / nY;
+        double Rx = width / nX;
+
+        //calculate the number of steps right left up and down
+        double Yi = -(i - (double) (nY - 1) / 2) * Ry;
+        double Xj = (j - (double) (nX - 1) / 2) * Rx;
+
+        Point pIJ = pc;
+        if (!isZero(Xj))
+            pIJ = pIJ.add(vRight.scale(Xj));
+        if (!isZero(Yi))
+            pIJ = pIJ.add(vUp.scale(Yi));
+        return pIJ;
+    }
+
+    /**
+     * Renders the image by casting rays through each pixel and tracing them.
+     */
+    public Camera renderImage() {
+        int Nx = imageWriter.getNx();
+        int Ny = imageWriter.getNy();
+
+        pixelManager = new PixelManager(Nx, Ny, 10);
+        if (threadsCount == 0) {
+            for (int i = 0; i < Nx; i++)
+                for (int j = 0; j < Ny; j++)
+                    castRay(Nx, Ny, j, i);
+        } else { // see further... option 2
+            var threads = new LinkedList<Thread>(); // list of threads
+            while (threadsCount-- > 0) // add appropriate number of threads
+                threads.add(new Thread(() -> { // add a thread with its code
+                    PixelManager.Pixel pixel; // current pixel(row,col)
+                    // allocate pixel(row,col) in loop until there are no more pixels
+                    while ((pixel = pixelManager.nextPixel()) != null)
+                        // cast ray through pixel (and color it – inside castRay)
+                        castRay(Nx, Ny, pixel.col(), pixel.row());
+                }));
+            // start all the threads
+            for (var thread : threads) thread.start();
+            // wait until all the threads have finished
+            try {
+                for (var thread : threads) thread.join();
+            } catch (InterruptedException ignore) {
+            }
+        }
+        return this;
+    }
+
+    /**
+     * Prints a grid on the image with the given interval and color.
+     *
+     * @param interval the interval between grid lines
+     * @param color    the color of the grid lines
+     */
+    public Camera printGrid(int interval, Color color) {
+        int Nx = imageWriter.getNx();
+        int Ny = imageWriter.getNy();
+        for (int i = 0; i < Nx; i += interval)
+            for (int j = 0; j < Ny; j++)
+                imageWriter.writePixel(i, j, color);
+
+        for (int i = 0; i < Ny; i += interval)
+            for (int j = 0; j < Nx; j++)
+                imageWriter.writePixel(j, i, color);
+        writeToImage();
+        return this;
+    }
+
+    /**
+     * Writes the rendered image to a file.
+     */
+    public void writeToImage() {
+        imageWriter.writeToImage();
+    }
+
+    /**
+     * Casts a ray through a specific pixel and writes the traced color to that pixel.
+     * If Anti-Aliasing on, call jittered
+     * If Adaptive then call adaptiveAntiAliasing
+     *
+     * @param Nx the number of pixels in the x direction
+     * @param Ny the number of pixels in the y direction
+     * @param i  the pixel's column index
+     * @param j  the pixel's row index
+     */
+    private void castRay(int Nx, int Ny, int i, int j) {
+        if (numSamples == 1) {
+            imageWriter.writePixel(i, j, rayTracer.traceRay(constructRay(Nx, Ny, i, j)));
+            pixelManager.pixelDone();
+        } else {
+            if (isAdaptive) {
+                if (adaptiveDepth == 0)
+                    adaptiveDepth = findAdaptiveDepth();
+                Color colorSum = adaptiveAntiAliasing(
+                        findCenterPixel(Nx, Ny, i, j),
+                        rayTracer.traceRay(constructRay(Nx, Ny, i, j)),
+                        width / Nx, height / Ny,
+                        adaptiveDepth,
+                        Color.BLACK
+                );
+                imageWriter.writePixel(i, j, colorSum.scale(1.0 / colorSum.weightSize));
+            } else
+                imageWriter.writePixel(i, j, jittered(i, j, Nx, Ny));
+        }
+        pixelManager.pixelDone();
+    }
+
+    /**
+     * function that improve run time
+     * does antialiasing less effectively
+     * works in recursion
+     *
+     * @param centerPoint   the center of part of pixel
+     * @param centerColor   the color of the center of the pixel
+     * @param width         the width of part of pixel
+     * @param height        the height of part of pixel
+     * @param adaptiveDepth the level of recursion
+     * @param sumColors     the sum of the colors from all relevant rays
+     * @return sumColors
+     */
+    private Color adaptiveAntiAliasing(Point centerPoint, Color centerColor,
+                                       double width, double height, int adaptiveDepth, Color sumColors) {
+        if (sumColors.weightSize >= numSamples * numSamples)
+            return sumColors;
+        if (adaptiveDepth == 0) {
+            int weightSize=sumColors.weightSize;
+            sumColors = sumColors.add(centerColor);
+            sumColors.weightSize=++weightSize;
+            return sumColors;
+        }
+        List<Point> centerPoints = findCorners(centerPoint, width / 4, height / 4);
+        Color pointColor;
+        for (Point point : centerPoints) {
+            pointColor = rayTracer.traceRay(new Ray(p0, point.subtract(p0)));
+            if (!pointColor.equals(centerColor))
+                sumColors = adaptiveAntiAliasing(
+                        point, pointColor,
+                        width / 4, height / 4,
+                        adaptiveDepth - 1, sumColors);
+            else {
+                int numPotential = (int) Math.pow(4, adaptiveDepth - 1);
+                int weightSize=sumColors.weightSize;
+                sumColors = sumColors.add(centerColor.scale(numPotential));
+                sumColors.weightSize=weightSize + numPotential;
+            }
+            if (sumColors.weightSize >= numSamples * numSamples)
+                return sumColors;
+        }
+        return sumColors;
+    }
+
+    /**
+     * finds all corners in part of pixel
+     *
+     * @param centerPoint the center of part of pixel
+     * @param width       the width of part of pixel
+     * @param height      the height of part of pixel
+     * @return the list of points
+     */
+    private List<Point> findCorners(Point centerPoint, double width, double height) {
+        List<Point> centers = new ArrayList<>();
+        centers.add(centerPoint.add(vUp.scale(height)).add(vRight.scale(width)));
+        centers.add(centerPoint.add(vUp.scale(-height)).add(vRight.scale(width)));
+        centers.add(centerPoint.add(vUp.scale(height)).add(vRight.scale(-width)));
+        centers.add(centerPoint.add(vUp.scale(-height)).add(vRight.scale(-width)));
+        return centers;
+    }
+
+    /**
+     * Finds the required level of recursion according to the number of rays requested
+     */
+    private int findAdaptiveDepth() {
+        int sum = 5;
+        int depth = 1;
+        while (sum < numSamples * numSamples) {
+            sum += sum * 4 + 1;
+            depth++;
+        }
+        return depth;
+    }
+
+    /**
+     * Finds the average color to be given to the pixel using the  antialiasing method
+     *
+     * @param i  the posithion of the origional pixel
+     * @param j  the posithion of the origional pixel
+     * @param Nx number of pixels in width
+     * @param Ny number of pixels in height
+     * @return the average color of the pixel
+     */
+    public Color jittered(int i, int j, int Nx, int Ny) {
+        double interval = Math.min(Nx, Ny) * 0.003;
+        Ray ray = constructRay(Nx, Ny, i, j);
+        Color color = rayTracer.traceRay(ray);
+        double left = Math.max(i - interval / 2, 0);
+        double right = Math.min(i + interval / 2, Nx);
+        double top = Math.max(j - interval / 2, 0);
+        double bottom = Math.min(j + interval / 2, Ny);
+        for (double k = left; k < right; k += interval / numSamples)
+            for (double l = top; l < bottom; l += interval / numSamples) {
+                double randomK = rand.nextDouble(
+                        Math.max(k - interval / numSamples / 2, left),
+                        Math.min(k + interval / numSamples / 2, right));
+                double randomL = rand.nextDouble(
+                        Math.max(l - interval / numSamples / 2, top),
+                        Math.min(l + interval / numSamples / 2, bottom));
+                ray = constructRay(Nx, Ny, randomK, randomL);
+                color = color.add(rayTracer.traceRay(ray));
+                color.weightSize++;
+            }
+        return color.scale(1.0 / color.weightSize);
+    }
+
+    /**
+     * -----------------Getters---------------------------------
+     */
+    public Vector getVTo() {
+        return vTo;
+    }
+
+    public Vector getVUp() {
+        return vUp;
+    }
+
+    public Vector getVRight() {
+        return vRight;
+    }
+
+    public Point getP0() {
+        return p0;
+    }
+
+    public double getWidth() {
+        return width;
+    }
+
+    public double getHeight() {
+        return height;
+    }
+
+    public double getDistance() {
+        return distance;
+    }
 
     /**
      * Builder class for Camera to support the Builder design pattern.
@@ -126,11 +422,17 @@ public class Camera implements Cloneable {
             return this;
         }
 
+        /**
+         * Sets the number of threads for the camera.
+         */
         public Builder setThreadsCount(int threadsCount) {
             camera.threadsCount = threadsCount;
             return this;
         }
 
+        /**
+         * Sets the adaptive mode for the camera.
+         */
         public Builder setAdaptive(boolean isAdaptive) {
             camera.isAdaptive = isAdaptive;
             return this;
@@ -199,273 +501,6 @@ public class Camera implements Cloneable {
                 throw new RuntimeException(e);
             }
         }
-    }
-
-    private Vector vTo;
-    private Vector vUp;
-    private Vector vRight;
-    private Point p0;
-    private double height = 0d;
-    private double width = 0d;
-    private double distance = 0d;
-    private ImageWriter imageWriter;
-    private RayTracerBase rayTracer;
-    private int numSamples = 1;
-    private int threadsCount = 0;
-    private boolean isAdaptive = false;
-    private int adaptiveDepth = 0;
-
-    /**
-     * private empty ctor
-     */
-    private Camera() {
-    }
-
-
-    /**
-     * Gets a new Builder instance for Camera.
-     *
-     * @return a new Builder instance
-     */
-    public static Builder getBuilder() {
-        return new Builder();
-    }
-
-    /**
-     * Constructs a ray through a given pixel in the view plane.
-     *
-     * @param nX the number of pixels in the x direction
-     * @param nY the number of pixels in the y direction
-     * @param j  the pixel's column index
-     * @param i  the pixel's row index
-     * @return the constructed Ray
-     */
-    public Ray constructRay(int nX, int nY, double j, double i) {
-        Point pIJ = findCenterPixel(nX, nY, j, i);
-        return new Ray(p0, pIJ.subtract(p0));
-    }
-
-    private Point findCenterPixel(int nX, int nY, double j, double i) {
-        //the center point of the view plane
-        Point pc = p0.add(vTo.scale(distance));
-
-        if (isZero(nY) || isZero(nX)) {
-            throw new IllegalArgumentException("It is impossible to divide by 0");
-        }
-
-        //the size of the height and width of a pixel
-        double Ry = height / nY;
-        double Rx = width / nX;
-
-        //calculate the number of steps right left up and down
-        double Yi = -(i - (double) (nY - 1) / 2) * Ry;
-        double Xj = (j - (double) (nX - 1) / 2) * Rx;
-
-        Point pIJ = pc;
-        if (!isZero(Xj))
-            pIJ = pIJ.add(vRight.scale(Xj));
-        if (!isZero(Yi))
-            pIJ = pIJ.add(vUp.scale(Yi));
-        return pIJ;
-    }
-
-    /**
-     * Renders the image by casting rays through each pixel and tracing them.
-     */
-    public Camera renderImage() {
-        int Nx = imageWriter.getNx();
-        int Ny = imageWriter.getNy();
-
-        pixelManager = new PixelManager(Nx, Ny, 10);
-        if (threadsCount == 0) {
-            for (int i = 0; i < Nx; i++)
-                for (int j = 0; j < Ny; j++)
-                    castRay(Nx, Ny, j, i);
-        } else { // see further... option 2
-            var threads = new LinkedList<Thread>(); // list of threads
-            while (threadsCount-- > 0) // add appropriate number of threads
-                threads.add(new Thread(() -> { // add a thread with its code
-                    PixelManager.Pixel pixel; // current pixel(row,col)
-                    // allocate pixel(row,col) in loop until there are no more pixels
-                    while ((pixel = pixelManager.nextPixel()) != null)
-                        // cast ray through pixel (and color it – inside castRay)
-                        castRay(Nx, Ny, pixel.col(), pixel.row());
-                }));
-            // start all the threads
-            for (var thread : threads) thread.start();
-            // wait until all the threads have finished
-            try {
-                for (var thread : threads) thread.join();
-            } catch (InterruptedException ignore) {
-            }
-        }
-        return this;
-    }
-
-    /**
-     * Prints a grid on the image with the given interval and color.
-     *
-     * @param interval the interval between grid lines
-     * @param color    the color of the grid lines
-     */
-    public Camera printGrid(int interval, Color color) {
-        int Nx = imageWriter.getNx();
-        int Ny = imageWriter.getNy();
-        for (int i = 0; i < Nx; i += interval)
-            for (int j = 0; j < Ny; j++)
-                imageWriter.writePixel(i, j, color);
-
-        for (int i = 0; i < Ny; i += interval)
-            for (int j = 0; j < Nx; j++)
-                imageWriter.writePixel(j, i, color);
-        writeToImage();
-        return this;
-    }
-
-    /**
-     * Writes the rendered image to a file.
-     */
-    public void writeToImage() {
-        imageWriter.writeToImage();
-    }
-
-    /**
-     * Casts a ray through a specific pixel and writes the traced color to that pixel.
-     * If Anti-Aliasing on, call jittered
-     *
-     * @param Nx the number of pixels in the x direction
-     * @param Ny the number of pixels in the y direction
-     * @param i  the pixel's column index
-     * @param j  the pixel's row index
-     */
-    private void castRay(int Nx, int Ny, int i, int j) {
-        if (numSamples == 1) {
-            imageWriter.writePixel(i, j, rayTracer.traceRay(constructRay(Nx, Ny, i, j)));
-            pixelManager.pixelDone();
-        } else {
-            if (isAdaptive) {
-                if (adaptiveDepth == 0)
-                    adaptiveDepth = findAdaptiveDepth();
-                SpecialList colors = adaptiveAntiAliasing(
-                        findCenterPixel(Nx, Ny, i, j),
-                        rayTracer.traceRay(constructRay(Nx, Ny, i, j)),
-                        Math.min(Nx, Ny) * 0.003,
-                        adaptiveDepth,
-                        new SpecialList()
-                );
-                //               Color sumColors = Color.BLACK;
-//                for (Color color : colors.colors)
-//                    sumColors = sumColors.add(color);
-                imageWriter.writePixel(i, j, colors.Sumcolors.scale(1.0 / colors.size));
-            } else
-                imageWriter.writePixel(i, j, jittered(i, j, Nx, Ny));
-        }
-        pixelManager.pixelDone();
-    }
-    private SpecialList adaptiveAntiAliasing(Point centerPoint, Color centerColor, double interval, int adaptiveDepth,SpecialList colors) {
-        if(colors.size>= numSamples * numSamples)
-            return colors;
-        if (adaptiveDepth == 0) {
-            colors.Sumcolors=colors.Sumcolors.add(centerColor);
-            colors.size++;
-            return colors;
-        }
-        List<Point> centerPoints = findCenters(centerPoint, interval / 4);
-        Color pointColor;
-        for (Point point : centerPoints) {
-            pointColor = rayTracer.traceRay(new Ray(p0, point.subtract(p0)));
-            if (!pointColor.equals(centerColor))
-                colors=adaptiveAntiAliasing(point, pointColor, interval / 2, adaptiveDepth - 1, colors);
-            else {
-                int numPotential = (int)Math.pow(4,adaptiveDepth-1);
-                //calcPotentialRays(adaptiveDepth-1);
-                colors.Sumcolors=colors.Sumcolors.add(centerColor.scale(numPotential));
-                colors.size+=numPotential;
-            }
-            if(colors.size>= numSamples * numSamples)
-                return colors;
-        }
-        return colors;
-    }
-
-    private int calcPotentialRays(int adaptiveDepth) {
-        int sum = 4;
-        while (adaptiveDepth > 1) {
-            sum *= 4;
-            adaptiveDepth--;
-        }
-        return sum;
-    }
-
-    private List<Point> findCenters(Point centerPoint, double interval) {
-        List<Point> centers = new ArrayList<>();
-        centers.add(centerPoint.add(vUp.scale(interval)).add(vRight.scale(interval)));
-        centers.add(centerPoint.add(vUp.scale(-interval)).add(vRight.scale(interval)));
-        centers.add(centerPoint.add(vUp.scale(interval)).add(vRight.scale(-interval)));
-        centers.add(centerPoint.add(vUp.scale(-interval)).add(vRight.scale(-interval)));
-        return centers;
-    }
-
-    private int findAdaptiveDepth() {
-        int sum = 5;
-        int depth = 1;
-        while (sum < numSamples * numSamples) {
-            sum += sum * 4 + 1;
-            depth++;
-        }
-        return depth;
-    }
-
-
-    public Color jittered(int i, int j, int Nx, int Ny) {
-        double interval = Math.min(Nx, Ny) * 0.003;
-        Ray ray = constructRay(Nx, Ny, i, j);
-        Color color = rayTracer.traceRay(ray);
-        int count = 1;
-        double left = Math.max(i - interval / 2, 0);
-        double right = Math.min(i + interval / 2, Nx);
-        double top = Math.max(j - interval / 2, 0);
-        double bottom = Math.min(j + interval / 2, Ny);
-        for (double k = left; k < right; k += interval / numSamples)
-            for (double l = top; l < bottom; l += interval / numSamples) {
-                double randomK = rand.nextDouble(Math.max(k - interval / numSamples / 2, left), Math.min(k + interval / numSamples / 2, right));
-                double randomL = rand.nextDouble(Math.max(l - interval / numSamples / 2, top), Math.min(l + interval / numSamples / 2, bottom));
-                ray = constructRay(Nx, Ny, randomK, randomL);
-                color = color.add(rayTracer.traceRay(ray));
-                count++;
-            }
-        return color.scale(1.0 / count);
-    }
-
-    /**
-     * -----------------Getters---------------------------------
-     */
-    public Vector getVTo() {
-        return vTo;
-    }
-
-    public Vector getVUp() {
-        return vUp;
-    }
-
-    public Vector getVRight() {
-        return vRight;
-    }
-
-    public Point getP0() {
-        return p0;
-    }
-
-    public double getWidth() {
-        return width;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public double getDistance() {
-        return distance;
     }
 
 }

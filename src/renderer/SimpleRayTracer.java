@@ -4,7 +4,9 @@ import geometries.Intersectable;
 import lighting.LightSource;
 import primitives.*;
 import scene.Scene;
+
 import java.util.List;
+
 import static primitives.Util.alignZero;
 import static primitives.Util.isZero;
 
@@ -17,6 +19,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Constructor that initializes the simple ray tracer with a scene.
+     *
      * @param scene the scene to be used for ray tracing
      */
     public SimpleRayTracer(Scene scene) {
@@ -32,6 +35,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Calculates the color at a given point.
+     *
      * @param geoPoint the point at which to calculate the color
      * @param ray      the ray that intersects the point
      * @return the color at the given point
@@ -43,6 +47,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Calculates the color at a given intersection point, considering local and global effects.
+     *
      * @param geoPoint The intersection point.
      * @param ray      The ray that caused the intersection.
      * @param level    The recursion level for global effects.
@@ -61,6 +66,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Calculates the local effects of lighting at a given point.
+     *
      * @param geoPoint the point at which to calculate the local effects
      * @param ray      the ray that intersects the point
      * @return the color resulting from the local effects
@@ -92,6 +98,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Calculates the global effects (reflection and refraction) at a given intersection point.
+     *
      * @param geoPoint The intersection point.
      * @param ray      The ray that caused the intersection.
      * @param level    The recursion level for global effects.
@@ -107,6 +114,7 @@ public class SimpleRayTracer extends RayTracerBase {
      * Calculates the color contribution from a single global effect
      * (either reflection or refraction).
      * recursive function
+     *
      * @param ray   The ray representing the global effect.
      * @param level The recursion level for global effects.
      * @return The color contribution from the global effect.
@@ -121,6 +129,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Constructs a refracted ray at the given intersection point.
+     *
      * @param geoPoint The intersection point.
      * @param ray      The original ray.
      * @return The refracted ray.
@@ -132,6 +141,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Constructs a reflected ray at the given intersection point.
+     *
      * @param geoPoint The intersection point.
      * @param ray      The original ray.
      * @return The reflected ray.
@@ -145,6 +155,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Finds the closest intersection point for a given ray.
+     *
      * @param ray The ray to check for intersections.
      * @return The closest intersection point, or null if no intersections are found.
      */
@@ -156,6 +167,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Calculates the specular reflection component of lighting.
+     *
      * @param mat the material properties of the intersected geometry
      * @param n   the normal vector at the intersection point
      * @param l   the direction vector from the light source to the intersection point
@@ -170,6 +182,7 @@ public class SimpleRayTracer extends RayTracerBase {
 
     /**
      * Calculates the diffuse reflection component of lighting.
+     *
      * @param mat the material properties of the intersected geometry
      * @param nl  the dot product of the normal vector and the light direction vector
      * @return the diffuse reflection component
@@ -181,6 +194,7 @@ public class SimpleRayTracer extends RayTracerBase {
     /**
      * Calculates the transparency factor at a given intersection point,
      * considering the objects between the point and the light source.
+     *
      * @param geoPoint    The intersection point.
      * @param lightSource The light source being considered.
      * @param l           The direction vector from the intersection point to the light source.

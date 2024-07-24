@@ -1,5 +1,5 @@
 <scene
-        background-color="75 127 190" >
+        background-color="75 127 190">
     <ambient-light
             color="255 191 191"
             k="1.0"

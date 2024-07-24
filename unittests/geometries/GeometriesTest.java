@@ -1,13 +1,18 @@
 package geometries;
 
 import org.junit.jupiter.api.Test;
-import primitives.*;
+import primitives.Point;
+import primitives.Ray;
+import primitives.Vector;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class GeometriesTest {
 
-    /**Test method for {@link Geometries#findIntersections(Ray)}.*/
+    /**
+     * Test method for {@link Geometries#findIntersections(Ray)}.
+     */
     @Test
     void findIntersections() {
         // ============ Equivalence Partitions Tests ==============

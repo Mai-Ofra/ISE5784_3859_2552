@@ -1,15 +1,21 @@
 package scene;
 
+import geometries.*;
 import lighting.AmbientLight;
 import lighting.LightSource;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import primitives.Color;
+import primitives.Point;
+import primitives.Vector;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import java.io.File;
 import java.util.LinkedList;
 import java.util.List;
-import geometries.*;
-import primitives.*;
-import org.w3c.dom.*;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.DocumentBuilder;
-import java.io.File;
 
 /**
  * The {@code Scene} class represents a 3D scene containing various geometric shapes,
@@ -81,6 +87,7 @@ public class Scene {
     /**
      * Reads scene configuration from an XML file and initializes the scene accordingly.
      * Parses background color, ambient light, and geometries from the XML structure.
+     *
      * @param filePath The path to the XML file containing scene configuration.
      */
     public void readFromXML(String filePath) {
@@ -114,6 +121,7 @@ public class Scene {
 
     /**
      * Recursively parses the geometry elements from the XML
+     *
      * @param geometryList The NodeList containing geometry elements to be parsed.
      */
     public void createNodeList(NodeList geometryList) {
@@ -163,12 +171,12 @@ public class Scene {
                             break;
                         case "polygon":
                             emission = readColor(geometryElement, "emission");
-                            List<Point> vertices =readVertices(geometryElement, "vertices");
+                            List<Point> vertices = readVertices(geometryElement, "vertices");
                             if (emission != null) {
                                 geometries
                                         .add(new Polygon(vertices.toArray(new Point[0])).setEmission(emission));
                             } else
-                                geometries.add(new Polygon(vertices .toArray(new Point[0]))
+                                geometries.add(new Polygon(vertices.toArray(new Point[0]))
                                 );
                             break;
                     }
@@ -181,6 +189,7 @@ public class Scene {
 
     /**
      * Parses and retrieves a Color object from the specified attribute of the given XML element.
+     *
      * @param element       The XML element from which to read the color attribute.
      * @param attributeName The name of the attribute containing the color components.
      * @return A Color object parsed from the attribute, or null if parsing fails.
@@ -200,6 +209,7 @@ public class Scene {
     /**
      * Parses and retrieves a list of Point objects representing vertices from the specified attribute
      * of the given XML element.
+     *
      * @param element       The XML element from which to read the vertices attribute.
      * @param attributeName The name of the attribute containing the vertices coordinates.
      * @return A list of Point objects representing the vertices of a polygon or similar geometry.
@@ -219,6 +229,7 @@ public class Scene {
 
     /**
      * Parses and retrieves a Point object from the specified attribute of the given XML element.
+     *
      * @param element       The XML element from which to read the point attribute.
      * @param attributeName The name of the attribute containing the point coordinates.
      * @return A Point object parsed from the attribute.

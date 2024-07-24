@@ -1,6 +1,7 @@
 package renderer;
 
-import primitives.*;
+import primitives.Color;
+import primitives.Ray;
 import scene.Scene;
 
 /**
@@ -11,6 +12,7 @@ public abstract class RayTracerBase {
 
     /**
      * Constructor that initializes the ray tracer with a scene.
+     *
      * @param scene the scene to be used for ray tracing
      */
     public RayTracerBase(Scene scene) {
@@ -19,6 +21,7 @@ public abstract class RayTracerBase {
 
     /**
      * Abstract method to trace a ray and determine its color.
+     *
      * @param ray the ray to be traced
      * @return the color of the ray
      */
