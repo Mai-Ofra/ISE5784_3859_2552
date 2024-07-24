@@ -38,11 +38,23 @@ class NeilArmstrongTest {
                 .setEmission(new Color(3, 3, 3))
                 .setMaterial(new Material().setKr(0.5).setShininess(100).setKs(0.9).setKd(0.1));
 
-        Geometry sun = new Sphere(new Point(0, 10, 2), 0.8)
-                .setEmission(new Color(255,154,63)).setMaterial(new Material().setKt(0.9));
-        scene.lights.add(new PointLight(
-                new Color(0, 2, 204),
-                new Point(0, 10, 2)
+        Geometry starLight3 = new Sphere(new Point(-0.5, 8,4), 0.3)
+                .setEmission(new Color(53,91,250))
+                .setMaterial(new Material().setKs(0.2).setKd(0.7).setShininess(30).setKt(0.5));//blue
+        scene.lights.add(new SpotLight(
+                new Color(0, 200, 0),
+                new Point(-1.5, 6.5, 3.5),
+                new Point(-0.5, 7,4).subtract(new Point(-1.5, 6, 3.5))
+        ));
+        scene.lights.add(new SpotLight(
+                new Color(200, 0, 0),
+                new Point(0.5,6.5,6),
+                new Point(-0.5, 7,4).subtract(new Point(0.5,6.5,6))
+        ));
+        scene.lights.add(new SpotLight(
+                new Color(0, 0, 200),
+                new Point(5,6.5,2.5),
+                new Point(-0.5, 7,4).subtract(new Point(5,6.5,2.5))
         ));
 
 
@@ -195,7 +207,7 @@ class NeilArmstrongTest {
 
         // Add geometries to the scene
         scene.geometries.add(helmet1, helmet2, planet1, planet2, planet3,
-                planet4, planet5, planet6, planet7, planetFloor,sun);
+                planet4, planet5, planet6, planet7, planetFloor,starLight3);
         // Add stars to the scene
         scene.geometries.add(triangle11, triangle12, triangle13, triangle14);
         scene.geometries.add(triangle21, triangle22, triangle23, triangle24);
@@ -224,11 +236,9 @@ class NeilArmstrongTest {
                 .setViewPlaneSize(500, 500)
                 .setImageWriter(new ImageWriter("Neil Armstrong scene", 1000, 1000))
                 .setRayTracer(new SimpleRayTracer(scene))
-                .setAntiAliasing(17)
-               .setThreadsCount(2).setAdaptive(true);//;//
+                .setAntiAliasing(17).setThreadsCount(4).setAdaptive(true);
         // Render the image
         camera.build()
-
                 .renderImage()
                 .writeToImage();
     }
