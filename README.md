@@ -5,18 +5,19 @@
   <summary>Table of Contents</summary>
   <ol>
     <li><a href="#about-the-project">About The Project</a></li>
-    <li><a href="#installation_guide">Installation guide</a></li>
-    <li><a href="#view_our_images">View our images</a></li>
-    <li><a href="#roadmap">Now it's your turn!</a></li>
-    <li><a href="#to_sum_up">To sum up</a></li>
+    <li><a href="#installation-guide">Installation guide</a></li>
+    <li><a href="#view-our-images">View our images</a></li>
+    <li><a href="#now-its-your-turn">Now it's your turn!</a></li>
+    <li><a href="#to-sum-up">To sum up</a></li>
   </ol>
 </details>
 
-## About The Project
-## Installation guide
-## View our images
-## Now it's your turn!
-## To sum up
+# About The Project
+
+# Installation guide
+# View our images
+# Now it's your turn!
+# To sum up
 
 
 
