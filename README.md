@@ -27,7 +27,16 @@ To get started with the project, follow these steps:
   Make sure you have JDK (Java Development Kit) installed on your machine. You can download it from [here](https://adoptopenjdk.net/).
   Additionally, ensure that JUnit 5.8.1 is set up for testing. The framework will prompt you to download the relevant JUnit version required for the project when you open it.
 # View our images
+
+Before you start creating a new scene, we recommend checking out the [images folder](./images). It contains pictures we've created, which can serve as inspiration for your work.
+
+Here’s an example:  
+<div align="center">
+  <img src="https://github.com/user-attachments/assets/f9d1fcf8-5ab7-4d0d-84d1-6c6935d1413b" alt="Alt text" height="450" width="450">
+</div>
+
 # Now it's your turn!
+
 # To sum up
 
 
