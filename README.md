@@ -37,18 +37,23 @@ Here’s an example:
 
 # Now it's your turn!
 
-# To sum up
+# Wrapping Up
+This project was created by two dedicated students as part of our journey into computer graphics and software engineering principles.
+Found a bug or have an idea for improvement? Feel free to contact us at:
+
+📧 maihayo18@gmail.com
+
+📧 ofra1levy@gmail.com
+
+We hope you enjoyed exploring the README and running the project. Thanks for stopping by, see you in the next adventure! 🚀
 
 
 
-Follow these steps to set up the project.
-
-**yv**
 ## Usage
 Instructions on how to use the project.
 ## Features
 Key features of this project.
-
+**yv**
 #installation
 
 1. Clone the repository:
