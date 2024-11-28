@@ -41,81 +41,131 @@ To create a scene, you need three basic components: a camera, a light source, an
 
 The project structure is organized for easy navigation. Each folder is named according to its contents. for example the folder [geometries](./src/geometries) contains all the geomeries and the folder [lighting](./src/lighting) contains lights, etc.
 ### So let's start creating a scene:
-A scene contains: name, background color, ambientLight, geometies and lights. In the bulid function you must send the name but all the other have difult values or 
- you can edit them using set functions.
-all the variables are public so you can add to the difult values things (like add more light or shapes)
-for example:
+A scene contains several components: the name, background color, ambient light, geometries, and lights.
 
-<div style="background-color: #2d2d2d; padding: 10px; border-radius: 5px;">
-<pre style="color: #ffffff;">
-<code class="language-java">
-Scene scene = new Scene("ThreeBubbles");
-// Add geometries to the scene
-scene.geometries.add(bubble1, bubble2, bubble3, mirror, floor);
-// add light
-scene.lights.add(new SpotLight(
-    new Color(130, 130, 130),
-    new Point(-3, -12, 30),
-    new Vector(1, 0, -3)));
-// scene.lights.add(new DirectionalLight(new Color(150,150,150), new Vector(0.7, 0, -1)));
-scene.background = new Color(200, 200, 200);
-</code>
-</pre>
-</div>
+In the `build()` function, you must specify the name of the scene, but all other components have default values. These values can be changed using setter functions.
 
+Since all the variables are public, you can modify the default values directly—such as adding more lights or geometries.
+For example:
+```java
+        // Add geometries to the scene
+        scene.geometries.add(bubble1, bubble2, bubble3, mirror, floor);
+        //add light
+        scene.lights.add(new SpotLight(
+                new Color(130, 130, 130),
+                new Point(-3, -12, 30),
+                new Vector(1, 0, -3)));
+        // scene.lights.add(new DirectionalLight(new Color(150,150,150), new Vector(0.7, 0, -1)));
+        scene.background = new Color(200, 200, 200);
+```
+Now that we got the secne we can set the geometries.
+### Creating geometries:
+The available shapes are triangle, sphere, polygon, and plane. We recommend using tools like [GeoGebra](https://www.geogebra.org/3d) to help with proportions and directions when creating your scene. Each shape has its own builder based on mathematical principles. For example, to create a sphere, you provide a center point and radius, while a plane requires either three points or one point with a vector (a vector is defined by three values, like in math). A polygon is defined by multiple points on the same plane, and for triangle you simply need three points.
 
+You can set various properties for each geometry, including color, material type, transparency (Kt), shininess, and reflection (Kr). 
 
+For example:
+```java
+//How to create a pink, semi-transparent sphere with a balance of diffuse and specular reflections.
+Geometry bubble1 = new Sphere(new Point(4, -10, 3.8), 0.47)
+        .setEmission(new Color(137, 21, 59)) // Sets the color (pink)
+        .setMaterial(new Material()
+            .setKs(0.2)  // Specular reflection coefficient (controls the sharpness of highlights)
+            .setKd(0.7)  // Diffuse reflection coefficient (controls how the surface scatters light)
+            .setShininess(30)  // Determines how shiny the surface appears
+            .setKt(0.5));  // Transparency coefficient (controls how much light passes through)
+```
+Kd determines how much light is scattered, giving a matte look, and Ks controls how sharp the highlights are for a shinier effect.
+### Lights:
+The code defines three types of lights: DirectionalLight, PointLight, and SpotLight.
 
+DirectionalLight shines in one direction with no fading over distance. It needs a Color for brightness and a Vector for direction.
+PointLight shines from one spot in all directions and gets weaker with distance. It needs a Color and a Point for its position. You can also adjust how fast the light fades (kc, kl, kq).
+SpotLight is like PointLight but shines in one direction like a flashlight. It needs a Color, a Point, and a Vector for the direction and also lets you adjust fading.
+For example:
+```java
+        scene.lights.add(new SpotLight(
+                new Color(130, 130, 130),
+                new Point(-3, -12, 30),
+                new Vector(1, 0, -3)));
+        // scene.lights.add(new DirectionalLight(new Color(150,150,150), new Vector(0.7, 0, -1)));
+```
+### Camera:
 
+The Camera class creates a 3D image by shooting rays through pixels on a view plane. To use it, first, create a camera with the Builder and set its position, direction, view size, and distance. Next, connect it to an ImageWriter to save the image and a RayTracer to calculate the colors. Once ready, call renderImage() to process the scene and writeToImage() to save the final result.
+For example:
+```java
+        // Set up the camera
+        Camera.Builder camera = Camera.getBuilder()
+                .setLocation(new Point(4.4, -16, 4.6))
+                .setDirection(new Vector(0, 1, -0.2), new Vector(0, 0.2, 1))
+                .setViewPlaneDistance(1000)
+                .setViewPlaneSize(500, 500)
+                .setThreadsCount(4)
+                .setImageWriter(new ImageWriter("ThreeBubbles", 1000, 1000))
+                .setRayTracer(new SimpleRayTracer(scene));
 
+        // Render the image
+        camera.build()
+                .renderImage()
+                .writeToImage();
+```
+### Anti-aliasing 
+To improve the visibility and smoothness of images, you can use anti-aliasing. It reduces jagged edges and minimizes pixelation, especially at the boundaries between different objects or colors, making rendered images look more polished and lifelike.
 
+We can see the diffrence in these photos:
 
+<table align="center">
+  <tr>
+    <td align="center">
+      <strong>Before</strong><br>
+      <img src="https://github.com/user-attachments/assets/f4b5c0f6-4f9e-4a75-813b-35fe16bf458a" alt="Before Image">
+    </td>
+    <td align="center">
+      <strong>After</strong><br>
+      <img src="https://github.com/user-attachments/assets/0b73920b-a17c-42a8-9301-d663119921a7" alt="After Image">
+    </td>
+  </tr>
+</table>
+To add anti-aliasing, simply call setAntiAliasing(9) in the camera builder. The number "9" (which in the picture above is 17) represents the number of rays used to smooth the image. A higher value improves quality but increases rendering time. Here's how it's done:
 
+```java
+       Camera.Builder camera = Camera.getBuilder()
+                .setLocation(new Point(4.4, -16, 4.6))
+                .setDirection(new Vector(0, 1, -0.2), new Vector(0, 0.2, 1))
+                ...
+                .setAntiAliasing(9)
+```
+### Runtime improvements
+Sometimes the scene has a lot of shapes and lights and you may want to use the picture improvements. all that make the run time to be long.
+in order to make it faster you can add two Runtime improvements.
+#### Theareds (high improvement)
+This feature enables your computer to run multiple threads simultaneously, calculating several pixels at once. You can set it in the camera builder as shown:
 
-
-
-
-# Wrapping Up
-This project was created by two dedicated students as part of our journey into computer graphics and software engineering principles.
-Found a bug or have an idea for improvement? Feel free to contact us at:
-
-📧 maihayo18@gmail.com
-
-📧 ofra1levy@gmail.com
-
-We hope you enjoyed exploring the README and running the project. Thanks for stopping by, see you in the next adventure! 🚀
-
-
-
-## Usage
-Instructions on how to use the project.
-## Features
-Key features of this project.
-**yv**
-#installation
-
-1. Clone the repository:
-```bash
-   git clone https://github.com/username/MyProject.git
-   cd MyProject
-  npm install
+```java
+Copy code
+Camera.Builder camera = Camera.getBuilder()
+        .setLocation(new Point(4, -14, 3))
+        ...
+        .setThreadsCount(4);
 ```
 
-# About the project
-**Dgesh**
+The number 4 represents how many threads will run concurrently. Avoid setting it too high, as it can slow down performance. We recommend using three or four threads for optimal efficiency.
+#### Adaptive rendering
+Adaptive rendering adjusts the number of rays cast in each pixel based on the complexity of the scene. It focuses more on detailed areas like edges and less on flat regions, improving efficiency and reducing rendering time.
+```java
+Copy code
+Camera.Builder camera = Camera.getBuilder()
+        .setLocation(new Point(4, -14, 3))
+        ...
+        .setAdaptive(true);
+```
+# Wrapping Up
+We've introduced only the basic functionality of this project, but there's much more to explore! You can also implement functions for additional geometric shapes, such as cylinders and tubes, to make them renderable in the scene.
 
-Follow the steps in the [Installation](#installation) section.
+This project was built by two dedicated students on a journey into computer graphics and software engineering. Found a bug or have an idea for improvement? Feel free to contact us at:
 
+📧 maihayo18@gmail.com
+📧 ofra1levy@gmail.com
 
-
-
-
-
-
-
-
-
-
-
-
-## License
+Thank you for exploring the README and running the project. We hope you enjoyed it—see you on the next adventure! 🚀
