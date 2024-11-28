@@ -36,6 +36,44 @@ Here’s an example:
 </div>
 
 # Now it's your turn!
+### How to Use:
+To create a scene, you need three basic components: a camera, a light source, and geometric shapes. These elements come together to form a complete scene. Let’s walk through each step.
+
+The project structure is organized for easy navigation. Each folder is named according to its contents. for example the folder [geometries](./src/geometries) contains all the geomeries and the folder [lighting](./src/lighting) contains lights, etc.
+### So let's start creating a scene:
+A scene contains: name, background color, ambientLight, geometies and lights. In the bulid function you must send the name but all the other have difult values or 
+ you can edit them using set functions.
+all the variables are public so you can add to the difult values things (like add more light or shapes)
+for example:
+
+<div style="background-color: #2d2d2d; padding: 10px; border-radius: 5px;">
+<pre style="color: #ffffff;">
+<code class="language-java">
+Scene scene = new Scene("ThreeBubbles");
+// Add geometries to the scene
+scene.geometries.add(bubble1, bubble2, bubble3, mirror, floor);
+// add light
+scene.lights.add(new SpotLight(
+    new Color(130, 130, 130),
+    new Point(-3, -12, 30),
+    new Vector(1, 0, -3)));
+// scene.lights.add(new DirectionalLight(new Color(150,150,150), new Vector(0.7, 0, -1)));
+scene.background = new Color(200, 200, 200);
+</code>
+</pre>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
 
 # Wrapping Up
 This project was created by two dedicated students as part of our journey into computer graphics and software engineering principles.
